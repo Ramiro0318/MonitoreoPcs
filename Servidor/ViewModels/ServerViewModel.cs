@@ -30,6 +30,9 @@ namespace Servidor.ViewModels
 
             UdpClient server = new UdpClient(endpoint);
             Thread hiloEscuchar = new(RecibirMensajes);
+            hiloEscuchar.IsBackground = true;
+            hiloEscuchar.Start();
+
         }
 
 
