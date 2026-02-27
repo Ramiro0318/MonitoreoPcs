@@ -54,7 +54,6 @@ namespace Cliente.ViewModels
             {
                 Ip = IPAddress.Parse(IpPorValidar);
                 IPEndPoint remoto = new IPEndPoint(Ip, puerto);
-                //Cliente.Connect(Ip, puerto);
 
                 string comando = $"REGISTRO|{Nombre}";
                 byte[] buffer = Encoding.UTF8.GetBytes(comando);

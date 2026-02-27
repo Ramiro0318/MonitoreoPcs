@@ -26,18 +26,21 @@ namespace Servidor.ViewModels
         public PcInfo ComputadoraSeleccionada { get; set; }
         public ObservableCollection<PcInfo> Computadoras { get; set; } = new();
         public ObservableCollection<PcInfo> HistorialComputadoras { get; set; } = new();
+        public string Info { set; get; } = "Error";
 
+        string computadorasFilename = "computadoras.json";
+        string historialFilename = "historial.json";
         IPAddress ip = IPAddress.Parse("127.0.0.1");
         int puerto = 60000;
         string mensaje = "";
-        public string Info { set; get; } = "Error";
         UdpClient Server { get; set; }
 
         public ServerViewModel()
         {
             IPEndPoint endpoint = new IPEndPoint(ip, puerto);
 
-            AbrirOC();
+            AbrirOC(Computadoras, computadorasFilename);
+            AbrirOC(HistorialComputadoras, historialFilename);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
 
 
@@ -62,7 +65,6 @@ namespace Servidor.ViewModels
                 if (comandoSeparado[0] == "REGISTRO" && comandoSeparado[1] != null)
                 {
                     //Mostrar solicitud de registro
-                    //IrRegistrar
                     IrRegistrar(remoto, comandoSeparado[1]);
                     Info = "Mensaje recibido";
                     PropertyChanged?.Invoke(this, new(nameof(Info)));
@@ -94,16 +96,20 @@ namespace Servidor.ViewModels
         {
             if (pc != null)
             {
-                pc.PrimeraConexion = DateTime.Now;
+                pc.HoraConexion = null;
                 //Confirmar registro
                 EnviarMensajes("REGISTROAPROBADO", pc);
-                Computadoras.Add(pc);
-                GuardarOC();
-                //Guardarla en la lista de historial
-                if (!HistorialComputadoras.Contains(pc))
+                if (!Computadoras.Contains(pc))                                 //Si no funciona usaré LinQ
                 {
-                    HistorialComputadoras.Add(pc);
+                    Computadoras.Add(pc);
+                    GuardarOC(Computadoras, computadorasFilename);
                 }
+                pc.HoraConexion = DateTime.Now;
+
+                //Guardarla en la lista de historial
+                HistorialComputadoras.Add(pc);
+                GuardarOC(HistorialComputadoras, historialFilename);
+                //También aplicar el guardado para Historial
             }
             pc = null;
         }
@@ -112,46 +118,41 @@ namespace Servidor.ViewModels
         {
             if (comando == "REGISTROAPROBADO")
             {
+                //Creo que no es necesario el connect
                 Server.Connect(pc.Ip, pc.Puerto);
                 string mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";
                 byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
 
-                IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
+                IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
                 Server.Send(buffer, buffer.Length);
             }
 
         }
 
-        string computadorasFilename = "computadoras.json";
-        string historialFilename = "computadoras.json";
-        private void GuardarOC()
+        private void GuardarOC(ObservableCollection<PcInfo> oc, string filename)
         {
             var computadoras = new List<PcInfo> { };
-            foreach (var c in Computadoras)
+            foreach (var c in oc)
             {
                 computadoras.Add(c);
             }
             string jsonString = JsonSerializer.Serialize(computadoras);
-            File.WriteAllText(computadorasFilename, jsonString);
+            File.WriteAllText(filename, jsonString);
 
         }
 
-        private void AbrirOC()
+        private void AbrirOC(ObservableCollection<PcInfo> oc, string filename)
         {
-            if (File.Exists(computadorasFilename))
+            if (File.Exists(filename))
             {
-                var jsonString = File.ReadAllText(computadorasFilename);
+                var jsonString = File.ReadAllText(filename);
                 var observableCollection = JsonSerializer.Deserialize<ObservableCollection<PcInfo>>(jsonString);
 
                 if (observableCollection != null)
                 {
-                    //Preparar para file == computadoras.json
-                    if (true)
+                    foreach (var c in observableCollection)
                     {
-                        foreach (var c in observableCollection)
-                        {
-                            Computadoras.Add(c);
-                        }
+                        oc.Add(c);
                     }
                 }
             }

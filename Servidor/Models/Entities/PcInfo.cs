@@ -11,7 +11,7 @@ namespace Servidor.Models.Entities
         public string Ip { get; set; } = null!;
         public int Puerto { get; set; }
         public bool EstadoConectado { get; set; }
-        public DateTime? PrimeraConexion { get; set; }
+        public DateTime? HoraConexion { get; set; }
         public string Identificador => $"{Nombre}@{Ip}:{Puerto}";
     }
 }

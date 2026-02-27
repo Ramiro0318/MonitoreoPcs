@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Servidor"
         xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Servidor" Height="450" Width="800">
     <Window.DataContext>
         <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
     </Window.DataContext>
@@ -18,10 +18,24 @@
         <Button Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
 
         <Label Content="{Binding Info}"></Label>
+
+        <Label>Lista de computadoras:</Label>
         <ListBox ItemsSource="{Binding Computadoras}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
+                        <TextBlock Text="{Binding Identificador}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Label>Lista de historial de conexiones:</Label>
+        <ListBox ItemsSource="{Binding HistorialComputadoras}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding HoraConexion}"></TextBlock>
                         <TextBlock Text="{Binding Identificador}"></TextBlock>
                     </StackPanel>
                 </DataTemplate>
