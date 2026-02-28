@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
+using System.Timers;
 
 namespace Cliente.ViewModels
 {
@@ -29,6 +30,7 @@ namespace Cliente.ViewModels
         public bool Registrada { set; get; }
         public string Info { set; get; } = "Error";
         public ServerInfo Registro { set; get; }
+        public int LatidosEnviados { set; get; }
 
         public ICommand EnviarRegistroCommand { get; set; }
         public ClienteViewModel()
@@ -45,6 +47,11 @@ namespace Cliente.ViewModels
                 Thread hiloEscuchar = new(RecibirMensajes);
                 hiloEscuchar.IsBackground = true;
                 hiloEscuchar.Start();
+
+                Thread hiloLatir = new(EnviarHearthbeat);
+                hiloLatir.IsBackground = true;
+                hiloLatir.Start();
+
             }
         }
 
@@ -70,17 +77,28 @@ namespace Cliente.ViewModels
         }
 
 
+
         public void EnviarHearthbeat()
         {
+            System.Timers.Timer TimerBeat = new System.Timers.Timer();
+            TimerBeat.Interval = 5000;
+            TimerBeat.Elapsed += beat_Tick;
+            TimerBeat.Start();
             latiendo = true;
-            while (latiendo)
-            {
-                IPEndPoint remoto = new IPEndPoint(Ip, puerto);
-                string comando = $"HEARTHBEAT|{Nombre}";
-                byte[] buffer = Encoding.UTF8.GetBytes(Nombre);
-                Cliente.Send(buffer, buffer.Length, remoto);
-                //Averiguar como enviar cada x segundos.
-            }
+
+
+        }
+
+        private void beat_Tick(object? sender, ElapsedEventArgs e)
+        {
+            IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.Ip), Registro.Puerto);
+            string comando = $"HEARTHBEAT|{Registro.NombreAsignado}";
+            byte[] buffer = Encoding.UTF8.GetBytes(comando);
+            Cliente.Send(buffer, buffer.Length, remoto);
+            //Averiguar como enviar cada x segundos.
+
+            LatidosEnviados++;
+            PropertyChanged?.Invoke(this, new(nameof(LatidosEnviados)));
 
         }
 
@@ -101,7 +119,7 @@ namespace Cliente.ViewModels
                     case "CONECTADO":
                         if (!latiendo)
                         {
-                            EnviarHearthbeat();
+
                         }
                         break;
                     case "REGISTROAPROBADO":
@@ -131,6 +149,8 @@ namespace Cliente.ViewModels
                 Ip = Ip.ToString(),
                 Puerto = puerto
             };
+            Registro = registro;
+            PropertyChanged?.Invoke(this, new(nameof(Registro)));
             string jsonString = JsonSerializer.Serialize(registro);
             File.WriteAllText(filename, jsonString);
 

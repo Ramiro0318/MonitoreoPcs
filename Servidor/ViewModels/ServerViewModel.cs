@@ -34,6 +34,7 @@ namespace Servidor.ViewModels
         int puerto = 60000;
         string mensaje = "";
         UdpClient Server { get; set; }
+        public int LatidosRecibidos { get; set; }
 
         public ServerViewModel()
         {
@@ -51,7 +52,7 @@ namespace Servidor.ViewModels
 
         }
 
-
+        
         public void RecibirMensajes()
         {
             while (true)
@@ -72,7 +73,9 @@ namespace Servidor.ViewModels
                 }
                 else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
                 {
-
+                    LatidosRecibidos++;
+                    PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
+                    //EnviarMensajes("CONECTADO");
                 }
             }
         }
@@ -115,7 +118,8 @@ namespace Servidor.ViewModels
 
         public void EnviarMensajes(string comando, PcInfo pc)
         {
-            if (comando == "REGISTROAPROBADO")
+
+            if (comando == "REGISTROAPROBADO") //Verificar si pc es diferente de nulo si es necesario
             {
                 //Creo que no es necesario el connect
                 Server.Connect(pc.Ip, pc.Puerto);
@@ -125,8 +129,13 @@ namespace Servidor.ViewModels
                 IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
                 Server.Send(buffer, buffer.Length);
             }
+            if (comando == "HEARTHBEAT")
+            {
+                //Mandar confirmacion de conexión
+            }
 
         }
+
 
         private void GuardarOC(ObservableCollection<PcInfo> oc, string filename)
         {

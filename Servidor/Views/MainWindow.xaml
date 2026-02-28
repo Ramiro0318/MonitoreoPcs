@@ -18,7 +18,8 @@
         <Button Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
 
         <Label Content="{Binding Info}"></Label>
-
+        <Label Content="{Binding LatidosRecibidos}"></Label>
+        
         <Label>Lista de computadoras:</Label>
         <ListBox ItemsSource="{Binding Computadoras}">
             <ListBox.ItemTemplate>
