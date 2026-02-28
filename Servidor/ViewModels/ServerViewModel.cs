@@ -96,10 +96,9 @@ namespace Servidor.ViewModels
         {
             if (pc != null)
             {
-                pc.HoraConexion = null;
                 //Confirmar registro
                 EnviarMensajes("REGISTROAPROBADO", pc);
-                if (!Computadoras.Contains(pc))                                 //Si no funciona usaré LinQ
+                if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
                 {
                     Computadoras.Add(pc);
                     GuardarOC(Computadoras, computadorasFilename);
@@ -111,7 +110,7 @@ namespace Servidor.ViewModels
                 GuardarOC(HistorialComputadoras, historialFilename);
                 //También aplicar el guardado para Historial
             }
-            pc = null;
+            pc = new();
         }
 
         public void EnviarMensajes(string comando, PcInfo pc)

@@ -16,6 +16,11 @@
         <Button Command="{Binding EnviarRegistroCommand}">Enviar registro</Button>
 
         <Label Content="{Binding Info}" FontSize="30"></Label>
+
+
+        <Label Content="{Binding Registro.NombreAsignado}"></Label>
+        <Label Content="{Binding Registro.Ip}"></Label>
+        <Label Content="{Binding Registro.Puerto}"></Label>
         
     </StackPanel>
 </Window>

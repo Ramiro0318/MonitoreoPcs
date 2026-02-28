@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Servidor"
         xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
         mc:Ignorable="d"
-        Title="Servidor" Height="450" Width="800">
+        Title="Servidor" Height="850" Width="800">
     <Window.DataContext>
         <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
     </Window.DataContext>
