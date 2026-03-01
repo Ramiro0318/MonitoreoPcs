@@ -27,15 +27,14 @@ namespace Cliente.ViewModels
 
         public IPAddress Ip { set; get; } = IPAddress.Parse("127.0.0.1"); // IpServidor
         UdpClient Cliente { get; set; }
-        public bool Registrada { set; get; }
         public string Info { set; get; } = "Error";
         public ServerInfo Registro { set; get; }
-        public int LatidosEnviados { set; get; }
+        public int LatidosEnviados { set; get; } //Esta propiedad no es necesaria, solo es para tener una referencia desde la vista
 
         public ICommand EnviarRegistroCommand { get; set; }
         public ClienteViewModel()
         {
-            IPEndPoint endpoint = new IPEndPoint(Ip, 60001);
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("192.168.1.67"), 60001);
             //Deserializar el registro
             AbrirRegistro();
             EnviarRegistroCommand = new RelayCommand(EnviarRegistro);
@@ -60,7 +59,7 @@ namespace Cliente.ViewModels
             if (IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
             {
                 Ip = IPAddress.Parse(IpPorValidar);
-                IPEndPoint remoto = new IPEndPoint(Ip, puerto);
+                IPEndPoint remoto = new IPEndPoint(Ip, 60000);//
 
                 string comando = $"REGISTRO|{Nombre}";
                 byte[] buffer = Encoding.UTF8.GetBytes(comando);
@@ -77,16 +76,14 @@ namespace Cliente.ViewModels
         }
 
 
-
+        System.Timers.Timer TimerBeat;
         public void EnviarHearthbeat()
         {
-            System.Timers.Timer TimerBeat = new System.Timers.Timer();
+            TimerBeat = new System.Timers.Timer();
             TimerBeat.Interval = 5000;
             TimerBeat.Elapsed += beat_Tick;
             TimerBeat.Start();
             latiendo = true;
-
-
         }
 
         private void beat_Tick(object? sender, ElapsedEventArgs e)
@@ -100,15 +97,21 @@ namespace Cliente.ViewModels
             LatidosEnviados++;
             PropertyChanged?.Invoke(this, new(nameof(LatidosEnviados)));
 
+            if (LatidosEnviados >= 5)
+            {
+                Info = "Se ha perdido la conexión con el servidor";
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                //Se cambia de estado a desconectado
+            }
         }
 
         public void RecibirMensajes()
         {
+            Info = "Escuchando mensajes";
+            PropertyChanged?.Invoke(this, new(nameof(Info)));
             while (true)
             {
                 IPEndPoint remoto = new(IPAddress.Any, 0);
-                Info = "Escuchando mensajes";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
                 byte[] buffer = Cliente.Receive(ref remoto);
 
                 string comando = Encoding.UTF8.GetString(buffer);
@@ -117,10 +120,9 @@ namespace Cliente.ViewModels
                 switch (comandoSeparado[0])
                 {
                     case "CONECTADO":
-                        if (!latiendo)
-                        {
-
-                        }
+                        Info = "CONECTADO!";
+                        LatidosEnviados = 0;
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
                         break;
                     case "REGISTROAPROBADO":
                         Info = "Registro aprobado... ";

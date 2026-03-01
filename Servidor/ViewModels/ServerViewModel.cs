@@ -30,7 +30,7 @@ namespace Servidor.ViewModels
 
         string computadorasFilename = "computadoras.json";
         string historialFilename = "historial.json";
-        IPAddress ip = IPAddress.Parse("127.0.0.1");
+        IPAddress ip = IPAddress.Parse("192.168.1.67");
         int puerto = 60000;
         string mensaje = "";
         UdpClient Server { get; set; }
@@ -57,7 +57,7 @@ namespace Servidor.ViewModels
         {
             while (true)
             {
-                IPEndPoint remoto = new IPEndPoint(IPAddress.None, 0);
+                IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
                 byte[] buffer = Server.Receive(ref remoto);
 
                 string comando = Encoding.UTF8.GetString(buffer);
@@ -75,7 +75,15 @@ namespace Servidor.ViewModels
                 {
                     LatidosRecibidos++;
                     PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
-                    //EnviarMensajes("CONECTADO");
+
+                    PcInfo pc = new PcInfo
+                    {
+                        Nombre = comandoSeparado[1],
+                        Ip = remoto.Address.ToString(),
+                        Puerto = remoto.Port,
+                        EstadoConectado = true
+                    };
+                    EnviarMensajes("CONECTADO",pc);
                 }
             }
         }
@@ -119,7 +127,7 @@ namespace Servidor.ViewModels
         public void EnviarMensajes(string comando, PcInfo pc)
         {
 
-            if (comando == "REGISTROAPROBADO") //Verificar si pc es diferente de nulo si es necesario
+            //if (comando == "REGISTROAPROBADO") //Verificar si pc es diferente de nulo si es necesario
             {
                 //Creo que no es necesario el connect
                 Server.Connect(pc.Ip, pc.Puerto);
@@ -129,10 +137,10 @@ namespace Servidor.ViewModels
                 IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
                 Server.Send(buffer, buffer.Length);
             }
-            if (comando == "HEARTHBEAT")
-            {
-                //Mandar confirmacion de conexión
-            }
+            //if (comando == "CONECTADO")
+            //{
+            //    //Mandar confirmacion de conexión
+            //}
 
         }
 
