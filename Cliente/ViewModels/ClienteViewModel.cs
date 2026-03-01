@@ -34,7 +34,7 @@ namespace Cliente.ViewModels
         public ICommand EnviarRegistroCommand { get; set; }
         public ClienteViewModel()
         {
-            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("192.168.1.67"), 60001);
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("192.168.1.70"), 60001);
             //Deserializar el registro
             AbrirRegistro();
             EnviarRegistroCommand = new RelayCommand(EnviarRegistro);
