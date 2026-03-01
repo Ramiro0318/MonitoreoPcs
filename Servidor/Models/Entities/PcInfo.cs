@@ -12,6 +12,7 @@ namespace Servidor.Models.Entities
         public int Puerto { get; set; }
         public bool EstadoConectado { get; set; }
         public DateTime? HoraConexion { get; set; }
+        public DateTime? UltimoLatido { get; set; }
         public string Identificador => $"{Nombre}@{Ip}:{Puerto}";
     }
 }

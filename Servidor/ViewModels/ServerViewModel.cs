@@ -52,7 +52,7 @@ namespace Servidor.ViewModels
 
         }
 
-        
+
         public void RecibirMensajes()
         {
             while (true)
@@ -81,9 +81,18 @@ namespace Servidor.ViewModels
                         Nombre = comandoSeparado[1],
                         Ip = remoto.Address.ToString(),
                         Puerto = remoto.Port,
-                        EstadoConectado = true
+                        EstadoConectado = true,
+                        UltimoLatido = DateTime.Now
                     };
-                    EnviarMensajes("CONECTADO",pc);
+                    EnviarMensajes("CONECTADO", pc);
+                }
+                foreach (var pc in Computadoras) //No estoy seguro si lo mas eficiente es anidar otro ciclo para comprobar o hacer un timer dedicado que revise periodicamente
+                {
+                    if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30))
+                    {
+                        pc.EstadoConectado = false;
+                        PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
+                    }
                 }
             }
         }
@@ -127,7 +136,7 @@ namespace Servidor.ViewModels
         public void EnviarMensajes(string comando, PcInfo pc)
         {
 
-            //if (comando == "REGISTROAPROBADO") //Verificar si pc es diferente de nulo si es necesario
+            if ((comando == "REGISTROAPROBADO" || comando == "CONECTADO") && pc != null) //Verificar si pc es diferente de nulo si es necesario
             {
                 //Creo que no es necesario el connect
                 Server.Connect(pc.Ip, pc.Puerto);
@@ -137,10 +146,6 @@ namespace Servidor.ViewModels
                 IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
                 Server.Send(buffer, buffer.Length);
             }
-            //if (comando == "CONECTADO")
-            //{
-            //    //Mandar confirmacion de conexión
-            //}
 
         }
 
