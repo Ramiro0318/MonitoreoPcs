@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
-using System.Timers;
+using System.Windows.Threading;
 
 namespace Cliente.ViewModels
 {
@@ -32,6 +32,8 @@ namespace Cliente.ViewModels
         public int LatidosEnviados { set; get; } //Esta propiedad no es necesaria, solo es para tener una referencia desde la vista
 
         public ICommand EnviarRegistroCommand { get; set; }
+        private DispatcherTimer TimerBeat;
+
         public ClienteViewModel()
         {
             EnviarRegistroCommand = new RelayCommand(EnviarRegistro);
@@ -48,9 +50,7 @@ namespace Cliente.ViewModels
                 hiloEscuchar.IsBackground = true;
                 hiloEscuchar.Start();
 
-                Thread hiloLatir = new(EnviarHearthbeat);
-                hiloLatir.IsBackground = true;
-                hiloLatir.Start();
+                EnviarHearthbeat();
 
             }
         }
@@ -60,7 +60,7 @@ namespace Cliente.ViewModels
             if (IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
             {
                 Ip = IPAddress.Parse(IpPorValidar);
-                IPEndPoint remoto = new IPEndPoint(Ip, 60000);//
+                IPEndPoint remoto = new IPEndPoint(Ip, 60000);
 
                 string comando = $"REGISTRO|{Nombre}";
                 byte[] buffer = Encoding.UTF8.GetBytes(comando);
@@ -77,23 +77,21 @@ namespace Cliente.ViewModels
         }
 
 
-        System.Timers.Timer TimerBeat;
         public void EnviarHearthbeat()
         {
-            TimerBeat = new System.Timers.Timer();
-            TimerBeat.Interval = 5000;
-            TimerBeat.Elapsed += beat_Tick;
+            TimerBeat = new DispatcherTimer();
+            TimerBeat.Interval = TimeSpan.FromSeconds(5);
+            TimerBeat.Tick += TimerBeat_Tick;
             TimerBeat.Start();
             latiendo = true;
         }
 
-        private void beat_Tick(object? sender, ElapsedEventArgs e)
+        private void TimerBeat_Tick(object? sender, EventArgs e)
         {
             IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.Ip), Registro.Puerto);
             string comando = $"HEARTHBEAT|{Registro.NombreAsignado}";
             byte[] buffer = Encoding.UTF8.GetBytes(comando);
             Cliente.Send(buffer, buffer.Length, remoto);
-            //Averiguar como enviar cada x segundos.
 
             LatidosEnviados++;
             PropertyChanged?.Invoke(this, new(nameof(LatidosEnviados)));
@@ -112,33 +110,37 @@ namespace Cliente.ViewModels
             PropertyChanged?.Invoke(this, new(nameof(Info)));
             while (true)
             {
-                IPEndPoint remoto = new(IPAddress.Any, 0);
-                byte[] buffer = Cliente.Receive(ref remoto);
+                //try
+                //{
+                    IPEndPoint remoto = new(IPAddress.Any, 0);
+                    byte[] buffer = Cliente.Receive(ref remoto);
 
-                string comando = Encoding.UTF8.GetString(buffer);
-                string[] comandoSeparado = comando.Split('|');
+                    string comando = Encoding.UTF8.GetString(buffer);
+                    string[] comandoSeparado = comando.Split('|');
 
-                switch (comandoSeparado[0])
-                {
-                    case "CONECTADO":
-                        Info = "CONECTADO!";
-                        LatidosEnviados = 0;
-                        PropertyChanged?.Invoke(this, new(nameof(Info)));
-                        break;
-                    case "REGISTROAPROBADO":
-                        Info = "Registro aprobado... ";
-                        PropertyChanged?.Invoke(this, new(nameof(Info)));
-                        //Serializar la ip y puerto
-                        GuardarRegistro();
-                        if (!latiendo)
-                        {
-                            EnviarHearthbeat();
-                        }
-                        break;
-                    case "APAGAR":
-                    case "REINICIAR":
-                    case "CAMBIARID": break;
-                }
+                    switch (comandoSeparado[0])
+                    {
+                        case "CONECTADO":
+                            Info = "CONECTADO!";
+                            LatidosEnviados = 0;
+                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            break;
+                        case "REGISTROAPROBADO":
+                            Info = "Registro aprobado... ";
+                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            //Serializar la ip y puerto
+                            GuardarRegistro();
+                            if (!latiendo)
+                            {
+                                EnviarHearthbeat();
+                            }
+                            break;
+                        case "APAGAR":
+                        case "REINICIAR":
+                        case "CAMBIARID": break;
+                    }
+                //}
+                //catch (Exception) { }
             }
 
         }

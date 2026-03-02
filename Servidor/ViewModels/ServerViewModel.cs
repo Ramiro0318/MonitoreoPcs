@@ -97,10 +97,7 @@ namespace Servidor.ViewModels
                         }
                     }
                 //}
-                //catch (Exception)
-                //{
-
-                //}
+                //catch (Exception) { }
             }
         }
 
