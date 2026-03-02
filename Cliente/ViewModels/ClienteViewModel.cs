@@ -34,15 +34,15 @@ namespace Cliente.ViewModels
         public ICommand EnviarRegistroCommand { get; set; }
         public ClienteViewModel()
         {
-            //IPAddress.Parse("192.168.1.70")
-            IPEndPoint endpoint = new (IPAddress.Parse(IpPorValidar), 60001);
+            EnviarRegistroCommand = new RelayCommand(EnviarRegistro);
             //Deserializar el registro
             AbrirRegistro();
-            EnviarRegistroCommand = new RelayCommand(EnviarRegistro);
-            Cliente = new UdpClient(endpoint);
 
             if (Registro != null)
             {
+                //IPAddress.Parse("192.168.1.70")
+                IPEndPoint endpoint = new(IPAddress.Parse("192.168.1.70"), 60001);
+                Cliente = new UdpClient(endpoint);
                 //Empieza a escuchar
                 Thread hiloEscuchar = new(RecibirMensajes);
                 hiloEscuchar.IsBackground = true;

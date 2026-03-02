@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.ViewModels
@@ -35,6 +36,7 @@ namespace Servidor.ViewModels
         string mensaje = "";
         UdpClient Server { get; set; }
         public int LatidosRecibidos { get; set; }
+        private DispatcherTimer TimerEstado;
 
         public ServerViewModel()
         {
@@ -50,49 +52,67 @@ namespace Servidor.ViewModels
             hiloEscuchar.IsBackground = true;
             hiloEscuchar.Start();
 
+
+            TimerEstado = new DispatcherTimer();
+            TimerEstado.Interval = TimeSpan.FromSeconds(1);
+            TimerEstado.Tick += TimerEstado_Tick;
+            TimerEstado.Start();
         }
+
 
 
         public void RecibirMensajes()
         {
             while (true)
             {
-                IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
-                byte[] buffer = Server.Receive(ref remoto);
+                //try
+                //{
+                    IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
+                    byte[] buffer = Server.Receive(ref remoto);
 
-                string comando = Encoding.UTF8.GetString(buffer);
-                string[] comandoSeparado = comando.Split('|');
+                    string comando = Encoding.UTF8.GetString(buffer);
+                    string[] comandoSeparado = comando.Split('|');
 
-                if (comandoSeparado[0] == "REGISTRO" && comandoSeparado[1] != null)
-                {
-                    //Mostrar solicitud de registro
-                    IrRegistrar(remoto, comandoSeparado[1]);
-                    Info = "Mensaje recibido";
-                    PropertyChanged?.Invoke(this, new(nameof(Info)));
-
-                }
-                else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
-                {
-                    LatidosRecibidos++;
-                    PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
-
-                    PcInfo pc = new PcInfo
+                    if (comandoSeparado[0] == "REGISTRO" && comandoSeparado[1] != null)
                     {
-                        Nombre = comandoSeparado[1],
-                        Ip = remoto.Address.ToString(),
-                        Puerto = remoto.Port,
-                        EstadoConectado = true,
-                        UltimoLatido = DateTime.Now
-                    };
-                    EnviarMensajes("CONECTADO", pc);
-                }
-                foreach (var pc in Computadoras) //No estoy seguro si lo mas eficiente es anidar otro ciclo para comprobar o hacer un timer dedicado que revise periodicamente
-                {
-                    if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30))
-                    {
-                        pc.EstadoConectado = false;
-                        PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
+                        //Mostrar solicitud de registro
+                        IrRegistrar(remoto, comandoSeparado[1]);
+                        Info = "Mensaje recibido";
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+
                     }
+                    else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
+                    {
+                        LatidosRecibidos++;
+                        PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
+
+                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                        if (pc != null)
+                        {
+                            pc.UltimoLatido = DateTime.Now;
+                            pc.EstadoConectado = true;
+                            Info = "true";
+                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            EnviarMensajes("CONECTADO", pc);
+                        }
+                    }
+                //}
+                //catch (Exception)
+                //{
+
+                //}
+            }
+        }
+
+        private void TimerEstado_Tick(object? sender, EventArgs e)
+        {
+            foreach (var pc in Computadoras)
+            {
+                if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoConectado)
+                {
+                    pc.EstadoConectado = false;
+                    Info = "false";
+                    PropertyChanged?.Invoke(this, new(nameof(Info)));
                 }
             }
         }

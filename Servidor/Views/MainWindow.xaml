@@ -26,6 +26,7 @@
                 <DataTemplate>
                     <StackPanel>
                         <TextBlock Text="{Binding Identificador}"></TextBlock>
+                        <TextBlock Text="{Binding EstadoConectado}"></TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
