@@ -40,11 +40,12 @@ namespace Cliente.ViewModels
             //Deserializar el registro
             AbrirRegistro();
 
+            IPEndPoint endpoint = new(IPAddress.Any, 60001);
+            Cliente = new UdpClient(endpoint);
             if (Registro != null)
             {
-                //IPAddress.Parse("192.168.1.70")
-                IPEndPoint endpoint = new(IPAddress.Parse("192.168.1.70"), 60001);
-                Cliente = new UdpClient(endpoint);
+                //No estoy seguro si es necesario que la ip sea guardada en el registro, si lo veo necesario, lo haré después
+                //Si no es necesario, puedo instanciarlo fuera del if y eliminar el duplicado en EnviarRegistro()
                 //Empieza a escuchar
                 Thread hiloEscuchar = new(RecibirMensajes);
                 hiloEscuchar.IsBackground = true;
@@ -60,6 +61,11 @@ namespace Cliente.ViewModels
             if (IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
             {
                 Ip = IPAddress.Parse(IpPorValidar);
+
+
+                //IPEndPoint endpoint = new(IPAddress.Any, 60001);
+                //Cliente = new UdpClient(endpoint);
+
                 IPEndPoint remoto = new IPEndPoint(Ip, 60000);
 
                 string comando = $"REGISTRO|{Nombre}";
@@ -112,33 +118,36 @@ namespace Cliente.ViewModels
             {
                 //try
                 //{
-                    IPEndPoint remoto = new(IPAddress.Any, 0);
-                    byte[] buffer = Cliente.Receive(ref remoto);
+                IPEndPoint remoto = new(IPAddress.Any, 0);
+                byte[] buffer = Cliente.Receive(ref remoto);
 
-                    string comando = Encoding.UTF8.GetString(buffer);
-                    string[] comandoSeparado = comando.Split('|');
+                string comando = Encoding.UTF8.GetString(buffer);
+                string[] comandoSeparado = comando.Split('|');
 
-                    switch (comandoSeparado[0])
-                    {
-                        case "CONECTADO":
-                            Info = "CONECTADO!";
-                            LatidosEnviados = 0;
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            break;
-                        case "REGISTROAPROBADO":
-                            Info = "Registro aprobado... ";
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            //Serializar la ip y puerto
-                            GuardarRegistro();
-                            if (!latiendo)
+                switch (comandoSeparado[0])
+                {
+                    case "CONECTADO":
+                        Info = "CONECTADO!";
+                        LatidosEnviados = 0;
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        break;
+                    case "REGISTROAPROBADO":
+                        Info = "Registro aprobado... ";
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        //Serializar la ip y puerto
+                        GuardarRegistro();
+                        if (!latiendo)
+                        {
+                            App.Current.Dispatcher.Invoke(() =>
                             {
                                 EnviarHearthbeat();
-                            }
-                            break;
-                        case "APAGAR":
-                        case "REINICIAR":
-                        case "CAMBIARID": break;
-                    }
+                            });
+                        }
+                        break;
+                    case "APAGAR":
+                    case "REINICIAR":
+                    case "CAMBIARID": break;
+                }
                 //}
                 //catch (Exception) { }
             }
