@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.ViewModels
@@ -30,10 +31,11 @@ namespace Servidor.ViewModels
 
         string computadorasFilename = "computadoras.json";
         string historialFilename = "historial.json";
-        IPAddress ip = IPAddress.Parse("127.0.0.1");
+        IPAddress ip = IPAddress.Parse("192.168.1.67");
         int puerto = 60000;
-        string mensaje = "";
         UdpClient Server { get; set; }
+        public int LatidosRecibidos { get; set; }
+        private DispatcherTimer TimerEstado;
 
         public ServerViewModel()
         {
@@ -49,14 +51,22 @@ namespace Servidor.ViewModels
             hiloEscuchar.IsBackground = true;
             hiloEscuchar.Start();
 
+
+            TimerEstado = new DispatcherTimer();
+            TimerEstado.Interval = TimeSpan.FromSeconds(1);
+            TimerEstado.Tick += TimerEstado_Tick;
+            TimerEstado.Start();
         }
+
 
 
         public void RecibirMensajes()
         {
             while (true)
             {
-                IPEndPoint remoto = new IPEndPoint(IPAddress.None, 0);
+                //try
+                //{
+                IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
                 byte[] buffer = Server.Receive(ref remoto);
 
                 string comando = Encoding.UTF8.GetString(buffer);
@@ -72,7 +82,42 @@ namespace Servidor.ViewModels
                 }
                 else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
                 {
+                    LatidosRecibidos++;
+                    PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
 
+                    var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                    if (pc != null)
+                    {
+                        pc.UltimoLatido = DateTime.Now;
+                        if (!pc.EstadoConectado)
+                        {
+                            pc.HoraConexion = DateTime.Now;
+                            App.Current.Dispatcher.Invoke(() =>
+                            {   //Guardar el historial en cada nueva conexión
+                                HistorialComputadoras.Add(pc);
+                                GuardarOC(HistorialComputadoras, historialFilename);
+                            });
+                            pc.EstadoConectado = true;
+                        }
+                        Info = "true";
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        EnviarMensajes("CONECTADO", pc);
+                    }
+                }
+                //}
+                //catch (Exception) { }
+            }
+        }
+
+        private void TimerEstado_Tick(object? sender, EventArgs e)
+        {
+            foreach (var pc in Computadoras)
+            {
+                if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoConectado)
+                {
+                    pc.EstadoConectado = false;
+                    Info = "false";
+                    PropertyChanged?.Invoke(this, new(nameof(Info)));
                 }
             }
         }
@@ -97,25 +142,21 @@ namespace Servidor.ViewModels
             if (pc != null)
             {
                 //Confirmar registro
+                //Guardar en lista de computadoras registradas
                 EnviarMensajes("REGISTROAPROBADO", pc);
                 if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
                 {
                     Computadoras.Add(pc);
                     GuardarOC(Computadoras, computadorasFilename);
                 }
-                pc.HoraConexion = DateTime.Now;
-
-                //Guardarla en la lista de historial
-                HistorialComputadoras.Add(pc);
-                GuardarOC(HistorialComputadoras, historialFilename);
-                //También aplicar el guardado para Historial
             }
             pc = new();
         }
 
         public void EnviarMensajes(string comando, PcInfo pc)
         {
-            if (comando == "REGISTROAPROBADO")
+
+            if ((comando == "REGISTROAPROBADO" || comando == "CONECTADO") && pc != null)
             {
                 //Creo que no es necesario el connect
                 Server.Connect(pc.Ip, pc.Puerto);
@@ -127,6 +168,7 @@ namespace Servidor.ViewModels
             }
 
         }
+
 
         private void GuardarOC(ObservableCollection<PcInfo> oc, string filename)
         {
