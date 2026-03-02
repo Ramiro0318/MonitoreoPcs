@@ -142,17 +142,13 @@ namespace Servidor.ViewModels
             if (pc != null)
             {
                 //Confirmar registro
-                //Guardar en lista de computadoras registradas y en historial
+                //Guardar en lista de computadoras registradas
                 EnviarMensajes("REGISTROAPROBADO", pc);
                 if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
                 {
                     Computadoras.Add(pc);
                     GuardarOC(Computadoras, computadorasFilename);
                 }
-                pc.HoraConexion = DateTime.Now;
-
-                HistorialComputadoras.Add(pc);
-                GuardarOC(HistorialComputadoras, historialFilename);
             }
             pc = new();
         }
