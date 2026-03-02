@@ -23,4 +23,11 @@
         <Label Content="{Binding Registro.Puerto}"></Label>
         
     </StackPanel>
+    
+    
+    
+    
+    
+    
+    
 </Window>

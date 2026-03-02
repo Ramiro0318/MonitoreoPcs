@@ -6,40 +6,208 @@
         xmlns:local="clr-namespace:Servidor"
         xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
         mc:Ignorable="d"
-        Title="Servidor" Height="850" Width="800">
+        Title="Servidor" Height="800" Width="800">
     <Window.DataContext>
         <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
     </Window.DataContext>
-    <StackPanel Orientation="Vertical">
-        <Label>Registro</Label>
-        <Label Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
-        <Label Content="{Binding ComputadoraSeleccionada.Ip}"></Label>
-        <Label Content="{Binding ComputadoraSeleccionada.Puerto}"></Label>
-        <Button Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
+    
+ 
+    
+    <Grid Margin="20">
 
-        <Label Content="{Binding Info}"></Label>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+          
 
-        <Label>Lista de computadoras:</Label>
-        <ListBox ItemsSource="{Binding Computadoras}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Identificador}"></TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        </Grid.RowDefinitions>
+        
+        
+        <Label Grid.Row="0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="25" > Servidor - Control de Laboratorios </Label>
 
-        <Label>Lista de historial de conexiones:</Label>
-        <ListBox ItemsSource="{Binding HistorialComputadoras}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding HoraConexion}"></TextBlock>
-                        <TextBlock Text="{Binding Identificador}"></TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </StackPanel>
+      
+
+        <Border  Grid.Row="1" Padding="10" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                   
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                <TextBlock FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="18">Nueva Solicitud de Registro</TextBlock>
+                 <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
+            
+                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
+ 
+                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
+               
+            </StackPanel>
+                <Button Grid.Column="1" FontFamily="Britannic Bold" Foreground="White" Background="#237227" HorizontalAlignment="Center"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
+                <Button Grid.Column="2" FontFamily="Britannic Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Center">Rechazar</Button>
+            </Grid>
+            
+            
+        </Border>
+
+
+        <StackPanel Grid.Row="2">
+               <TextBlock Text="{Binding Info}" HorizontalAlignment="Center"></TextBlock>
+        </StackPanel>
+
+        
+        
+        
+        
+        
+        
+        
+        <Border Padding="10" Grid.Row="3">
+          <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+           
+            <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de computadoras</Label>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="220" ></ColumnDefinition>
+                        <ColumnDefinition Width="100" ></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+                <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
+                <Label Grid.Column="1" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >IP</Label>
+                <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Puerto</Label>
+                <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Estado</Label>
+                <Label Grid.Column="4" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comandos</Label>
+
+
+            </Grid>
+
+           <Grid Grid.Row="2"> 
+            <ListBox ItemsSource="{Binding Computadoras}" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="220"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                
+                         
+
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Identificador}" ></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoConectado}" Grid.Column="3"></TextBlock>
+                              
+                                <Grid Grid.Column="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+  
+                                    <!--los botones llevaran iconos pero aun no me decido por la paleta de colores--> 
+                                    <Button Background="Red" Width="20"></Button>  <!--apagar--> 
+                                    <Button Background="Blue" Grid.Column="1" Width="20"></Button>  <!--reiniciar-->
+                                    <Button Background="Gray" Grid.Column="2" Width="20"></Button>  <!--editar--> 
+                                    <Button Background="Black" Grid.Column="3" Width="20"></Button> <!--eliminar--> 
+                                </Grid>
+                               
+
+                            </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+         </Grid>   
+        </Grid>
+
+        </Border>
+
+
+
+
+        <Border Padding="10" Grid.Row="4">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de historial de conexiones</Label>
+                <Button Grid.Row="0" HorizontalAlignment="Right">limpiar</Button>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250" ></ColumnDefinition>
+                        <ColumnDefinition Width="250" ></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                   
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
+                    <Label  Grid.Column="1"  FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Fecha</Label>
+                    <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comando</Label>
+
+
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <ListBox ItemsSource="{Binding HistorialComputadoras}" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="250" ></ColumnDefinition>
+                                        <ColumnDefinition Width="250" ></ColumnDefinition>
+                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+
+
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Identificador}" ></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding HoraConexion }" Grid.Column="1"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Grid.Column="2"> apagado</TextBlock>
+                                   
+
+                                   
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+
+        </Border>
+
+
+
+
+
+       
+     
+        
+
+        
+    </Grid>
 </Window>
