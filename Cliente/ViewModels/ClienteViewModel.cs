@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -114,7 +115,8 @@ namespace Cliente.ViewModels
         {
             Info = "Escuchando mensajes";
             PropertyChanged?.Invoke(this, new(nameof(Info)));
-            while (true)
+            bool escuchando = true;
+            while (escuchando)
             {
                 //try
                 //{
@@ -145,7 +147,22 @@ namespace Cliente.ViewModels
                         }
                         break;
                     case "APAGAR":
+                        //s = Apagar
+                        //t 0 = Tiempo de espera 0 segundos
+                        escuchando = false;
+                        Info = "Esta computadora se apagará en unos segundos...";
+                        Process.Start("shutdown", "/s /t 10");
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        Thread.Sleep(10000);
+                        break;
                     case "REINICIAR":
+                        //r = Reiniciar
+                        escuchando = false;
+                        Info = "Esta computadora se reiniciará en unos segundos...";
+                        Process.Start("shutdown", "/r /t 10");
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        Thread.Sleep(10000);
+                        break;  //Preguntar si es mejor una bandera escucuchando o mandar a dormir el hilo.
                     case "CAMBIARID": break;
                 }
                 //}
@@ -170,7 +187,7 @@ namespace Cliente.ViewModels
 
         }
 
-        private ServerInfo AbrirRegistro()
+        private void AbrirRegistro()
         {
             if (File.Exists(filename))
             {
@@ -179,9 +196,9 @@ namespace Cliente.ViewModels
                 if (registro != null)
                 {
                     Registro = registro;
+                    PropertyChanged?.Invoke(this, new(nameof(Registro)));
                 }
             }
-            return Registro;
         }
     }
 }
