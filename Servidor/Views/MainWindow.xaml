@@ -50,7 +50,7 @@
                
             </StackPanel>
                 <Button Grid.Column="1" FontFamily="Britannic Bold" Foreground="White" Background="#237227" HorizontalAlignment="Center"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
-                <Button Grid.Column="2" FontFamily="Britannic Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Center">Rechazar</Button>
+                <Button Grid.Column="2" FontFamily="Britannic Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Center" Command="{Binding RechazarCommand}">Rechazar</Button>
             </Grid>
             
             

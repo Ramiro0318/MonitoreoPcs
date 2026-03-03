@@ -24,6 +24,7 @@ namespace Servidor.ViewModels
         public event EventHandler? CanExecuteChanged;
 
         public ICommand RegistrarCommand { set; get; }
+        public ICommand RechazarCommand { set; get; }
         public PcInfo ComputadoraSeleccionada { get; set; }
         public ObservableCollection<PcInfo> Computadoras { get; set; } = new();
         public ObservableCollection<PcInfo> HistorialComputadoras { get; set; } = new();
@@ -44,6 +45,7 @@ namespace Servidor.ViewModels
             AbrirOC(Computadoras, computadorasFilename);
             AbrirOC(HistorialComputadoras, historialFilename);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
+            RechazarCommand = new RelayCommand(Rechazar);
 
 
             Server = new UdpClient(endpoint);
@@ -58,7 +60,42 @@ namespace Servidor.ViewModels
             TimerEstado.Start();
         }
 
+        public void IrRegistrar(IPEndPoint remoto, string identificador)
+        {
+            PcInfo pc = new PcInfo
+            {
+                Nombre = identificador,
+                Ip = remoto.Address.ToString(),
+                Puerto = remoto.Port,
+                EstadoConectado = false,
+            };
 
+            ComputadoraSeleccionada = pc;
+            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+            //Cambiar de vista o mostrar modal de registro con botones para aceptar o rechazar
+        }
+
+        private void Registrar(PcInfo pc)
+        {
+            if (pc != null)
+            {
+                //Confirmar registro
+                //Guardar en lista de computadoras registradas
+                EnviarMensajes("REGISTROAPROBADO", pc);
+                if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
+                {
+                    Computadoras.Add(pc);
+                    GuardarOC(Computadoras, computadorasFilename);
+                }
+            }
+            pc = new();
+        }
+
+        private void Rechazar()
+        {
+            ComputadoraSeleccionada = new();
+            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+        }
 
         public void RecibirMensajes()
         {
@@ -122,37 +159,6 @@ namespace Servidor.ViewModels
             }
         }
 
-        public void IrRegistrar(IPEndPoint remoto, string identificador)
-        {
-            PcInfo pc = new PcInfo
-            {
-                Nombre = identificador,
-                Ip = remoto.Address.ToString(),
-                Puerto = remoto.Port,
-                EstadoConectado = false,
-            };
-
-            ComputadoraSeleccionada = pc;
-            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-            //Cambiar de vista o mostrar modal de registro con botones para aceptar o rechazar
-        }
-
-        public void Registrar(PcInfo pc)
-        {
-            if (pc != null)
-            {
-                //Confirmar registro
-                //Guardar en lista de computadoras registradas
-                EnviarMensajes("REGISTROAPROBADO", pc);
-                if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
-                {
-                    Computadoras.Add(pc);
-                    GuardarOC(Computadoras, computadorasFilename);
-                }
-            }
-            pc = new();
-        }
-
         public void EnviarMensajes(string comando, PcInfo pc)
         {
 
@@ -160,7 +166,7 @@ namespace Servidor.ViewModels
             {
                 //Creo que no es necesario el connect
                 Server.Connect(pc.Ip, pc.Puerto);
-                string mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";
+                string mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";   //Quitar los parametros del comando, ambos solo necesitan recibir el mensaje
                 byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
 
                 IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
