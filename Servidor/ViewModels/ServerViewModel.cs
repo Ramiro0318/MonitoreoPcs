@@ -48,7 +48,7 @@ namespace Servidor.ViewModels
             AbrirOC(HistorialComputadoras, historialFilename);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
             RechazarCommand = new RelayCommand(Rechazar);
-            EnviarComandoCommand = new RelayCommand<string>(EnviarComando);
+            EnviarComandoCommand = new RelayCommand<string>(EnviarMensajes);
             EliminarCommand = new RelayCommand<PcInfo>(Eliminar);
 
 
@@ -72,41 +72,11 @@ namespace Servidor.ViewModels
                 Computadoras.Remove(Computadoras.First(x => x.Nombre == pc.Nombre));
                 GuardarOC(Computadoras, computadorasFilename);
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                EnviarMensajes("OLVIDAR", pc);
+                ComputadoraSeleccionada = pc;
+                EnviarMensajes("OLVIDAR");
             }
             ComputadoraSeleccionada = null;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-        }
-
-
-        private void EnviarComando(string comando)
-        {//Unir a EnviarMensaje
-            if (comando == "APAGAR" && ComputadoraSeleccionada != null)
-            {
-                EnviarMensajes("APAGAR", ComputadoraSeleccionada);
-                PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                Info = "a Apagar";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
-            }
-            if (comando == "REINICIAR" && ComputadoraSeleccionada != null)
-            {
-                EnviarMensajes("REINICIAR", ComputadoraSeleccionada);
-                PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                Info = "a Reiniciar";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
-            }
-            if (comando == "CAMBIARID" && ComputadoraSeleccionada != null)
-            {
-                EnviarMensajes("CAMBIARID", ComputadoraSeleccionada);
-                PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                Info = "a CambiarID";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
-            }
-
-
         }
 
         public void IrRegistrar(IPEndPoint remoto, string identificador)
@@ -130,7 +100,8 @@ namespace Servidor.ViewModels
             {
                 //Confirmar registro
                 //Guardar en lista de computadoras registradas
-                EnviarMensajes("REGISTROAPROBADO", pc);
+                ComputadoraSeleccionada = pc;
+                EnviarMensajes("REGISTROAPROBADO");
                 if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
                 {
                     Computadoras.Add(pc);
@@ -188,7 +159,8 @@ namespace Servidor.ViewModels
                         }
                         Info = "true";
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
-                        EnviarMensajes("CONECTADO", pc);
+                        ComputadoraSeleccionada = pc;
+                        EnviarMensajes("CONECTADO");
                     }
                 }
                 //}
@@ -209,20 +181,28 @@ namespace Servidor.ViewModels
             }
         }
 
-        public void EnviarMensajes(string comando, PcInfo pc)
+        public void EnviarMensajes(string comando)
         {
-
-            if ((comando == "REGISTROAPROBADO" || comando == "CONECTADO" || comando == "APAGAR" || comando == "REINICIAR" || comando == "CAMBIARID" || comando == "OLVIDAR") && pc != null)
+            if (ComputadoraSeleccionada != null && !string.IsNullOrWhiteSpace(comando))
             {
-                //Creo que no es necesario el connect
-                Server.Connect(pc.Ip, pc.Puerto);
-                string mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";   //Quitar los parametros del comando, ambos solo necesitan recibir el mensaje
-                byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
+                var pc = ComputadoraSeleccionada;
+                if (comando == "REGISTROAPROBADO" || comando == "CONECTADO" || comando == "APAGAR" || comando == "REINICIAR" || comando == "CAMBIARID" || comando == "OLVIDAR")
+                {
+                    Info = $"a {comando.ToLower()}";
+                    PropertyChanged?.Invoke(this, new(nameof(Info)));
 
-                IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
-                Server.Send(buffer, buffer.Length);
+                    //Creo que no es necesario el connect
+                    Server.Connect(pc.Ip, pc.Puerto);
+                    string mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";   //Quitar los parametros del comando, ambos solo necesitan recibir el mensaje
+                    byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
+
+                    IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
+                    Server.Send(buffer, buffer.Length);
+                }
+
+                //ComputadoraSeleccionada = null;       //De momento seguiré mostrando la pc seleccionada
+                PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
             }
-
         }
 
 

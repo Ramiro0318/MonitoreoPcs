@@ -138,7 +138,7 @@
                                     <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
                                     <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="APAGAR" Content="Apagar"></Button>  <!--apagar-->
                                         <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="REINICIAR" Content="Reiniciar"></Button>  <!--reiniciar-->
-                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="CAMBIARID" Content="Apagar" ></Button>  <!--editar--> 
+                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="CAMBIARID" Content="CambiarId" ></Button>  <!--editar--> 
                                     <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" ></Button> <!--eliminar--> 
                                 </Grid>
                                
