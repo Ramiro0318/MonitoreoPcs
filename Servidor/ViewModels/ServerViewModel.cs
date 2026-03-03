@@ -25,7 +25,7 @@ namespace Servidor.ViewModels
 
         public ICommand RegistrarCommand { set; get; }
         public ICommand RechazarCommand { set; get; }
-        public PcInfo ComputadoraSeleccionada { get; set; }
+        public PcInfo? ComputadoraSeleccionada { get; set; }
         public ObservableCollection<PcInfo> Computadoras { get; set; } = new();
         public ObservableCollection<PcInfo> HistorialComputadoras { get; set; } = new();
         public string Info { set; get; } = "Error";
@@ -88,12 +88,13 @@ namespace Servidor.ViewModels
                     GuardarOC(Computadoras, computadorasFilename);
                 }
             }
-            pc = new();
+            ComputadoraSeleccionada = null;
+            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
         }
 
         private void Rechazar()
         {
-            ComputadoraSeleccionada = new();
+            ComputadoraSeleccionada = null;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
         }
 
