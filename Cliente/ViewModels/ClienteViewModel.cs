@@ -19,21 +19,21 @@ namespace Cliente.ViewModels
     {
 
         public event PropertyChangedEventHandler? PropertyChanged;
+        public ICommand EnviarRegistroCommand { get; set; }
 
+        private DispatcherTimer TimerBeat;
         private int puerto = 60000;
         private bool latiendo = false;
 
-        public string IpPorValidar { get; set; } //Esta propiedad es para poder aplicar un IsValid para validar la ip
-        public string Nombre { set; get; } = "Pc-local";
-
-        public IPAddress Ip { set; get; } = IPAddress.Parse("127.0.0.1"); // IpServidor
-        UdpClient Cliente { get; set; }
-        public string Info { set; get; } = "Error";
-        public ServerInfo Registro { set; get; }
         public int LatidosEnviados { set; get; } //Esta propiedad no es necesaria, solo es para tener una referencia desde la vista
+        public string IpPorValidar { get; set; } //Esta propiedad es para poder aplicar un IsValid para validar la ip
+        public string? Nombre { set; get; }
+        public string Info { set; get; } = "Error";
+        public IPAddress Ip { set; get; } // IpServidor
+        public Info Registro { set; get; }
+        UdpClient Cliente { get; set; }
 
-        public ICommand EnviarRegistroCommand { get; set; }
-        private DispatcherTimer TimerBeat;
+
 
         public ClienteViewModel()
         {
@@ -95,7 +95,7 @@ namespace Cliente.ViewModels
 
         private void TimerBeat_Tick(object? sender, EventArgs e)
         {
-            IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.Ip), Registro.Puerto);
+            IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
             string comando = $"HEARTHBEAT|{Registro.NombreAsignado}";
             byte[] buffer = Encoding.UTF8.GetBytes(comando);
             Cliente.Send(buffer, buffer.Length, remoto);
@@ -163,7 +163,17 @@ namespace Cliente.ViewModels
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
                         Thread.Sleep(10000);
                         break;  //Preguntar si es mejor una bandera escucuchando o mandar a dormir el hilo.
-                    case "CAMBIARID": break;
+                    case "CAMBIARID":
+                        if (comandoSeparado.Length > 0)
+                        {
+                            Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
+                            Registro.NombreAsignado = comandoSeparado[1];
+                            Registro.IpServidor = remoto.Address.ToString();
+                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                            GuardarRegistro();
+                        }
+                        break;
                 }
                 //}
                 //catch (Exception) { }
@@ -174,13 +184,14 @@ namespace Cliente.ViewModels
         string filename = "registro.json";
         private void GuardarRegistro()
         {
-            var registro = new ServerInfo
+            var registro = new Info
             {
-                NombreAsignado = Nombre,
-                Ip = Ip.ToString(),
-                Puerto = puerto
+                NombreAsignado = Nombre ?? Registro.NombreAsignado,
+                IpServidor = Registro == null ? Ip.ToString() : Registro.IpServidor,
+                PuertoServidor = Registro == null ? puerto : Registro.PuertoServidor
             };
             Registro = registro;
+
             PropertyChanged?.Invoke(this, new(nameof(Registro)));
             string jsonString = JsonSerializer.Serialize(registro);
             File.WriteAllText(filename, jsonString);
@@ -192,7 +203,7 @@ namespace Cliente.ViewModels
             if (File.Exists(filename))
             {
                 var jsonString = File.ReadAllText(filename);
-                var registro = JsonSerializer.Deserialize<ServerInfo>(jsonString);
+                var registro = JsonSerializer.Deserialize<Info>(jsonString);
                 if (registro != null)
                 {
                     Registro = registro;

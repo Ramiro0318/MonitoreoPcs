@@ -20,8 +20,8 @@
         <Label Content="{Binding LatidosEnviados}"></Label>
 
         <Label Content="{Binding Registro.NombreAsignado}"></Label>
-        <Label Content="{Binding Registro.Ip}"></Label>
-        <Label Content="{Binding Registro.Puerto}"></Label>
+        <Label Content="{Binding Registro.IpServidor}"></Label>
+        <Label Content="{Binding Registro.PuertoServidor}"></Label>
         
         
     </StackPanel>
