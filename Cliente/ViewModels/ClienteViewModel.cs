@@ -63,7 +63,6 @@ namespace Cliente.ViewModels
             {
                 try
                 {
-
                     Ip = IPAddress.Parse(IpPorValidar);
 
 
@@ -153,23 +152,20 @@ namespace Cliente.ViewModels
                             break;
 
                         case "APAGAR":
-                            //s = Apagar
-                            //t 0 = Tiempo de espera 0 segundos
                             escuchando = false;
                             Info = "Esta computadora se apagará en unos segundos...";
-                            Process.Start("shutdown", "/s /t 10");
+                            Process.Start("shutdown", "/s /t 10");                             //s = Apagar
                             PropertyChanged?.Invoke(this, new(nameof(Info)));
                             Thread.Sleep(10000);
                             break;
 
                         case "REINICIAR":
-                            //r = Reiniciar
                             escuchando = false;
                             Info = "Esta computadora se reiniciará en unos segundos...";
-                            Process.Start("shutdown", "/r /t 10");
+                            Process.Start("shutdown", "/r /t 10");                             //r = Reiniciar
                             PropertyChanged?.Invoke(this, new(nameof(Info)));
                             Thread.Sleep(10000);
-                            break;  //Preguntar si es mejor una bandera escucuchando o mandar a dormir el hilo.
+                            break;
 
                         case "CAMBIARID":
                             if (comandoSeparado.Length > 0 && Registro != null)

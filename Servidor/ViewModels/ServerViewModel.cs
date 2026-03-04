@@ -164,13 +164,12 @@ namespace Servidor.ViewModels
         {
             if (ComputadoraSeleccionada != null)
             {
-                Computadoras.Remove(Computadoras.First(x => x.Identificador == ComputadoraSeleccionada.Identificador));
+                var pcOlviar = ComputadoraSeleccionada;
+                EnviarMensajes("OLVIDAR");
+                Computadoras.Remove(pcOlviar);
                 GuardarOC(Computadoras, computadorasFilename);
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                EnviarMensajes("OLVIDAR");
             }
-            ComputadoraSeleccionada = null;
-            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
         }
         public void RecibirMensajes()
         {
