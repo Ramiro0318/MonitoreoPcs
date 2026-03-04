@@ -8,9 +8,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -18,11 +21,14 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.ViewModels
 {
+
     public class ServerViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? CanExecuteChanged;
 
+
+ 
         public ICommand RegistrarCommand { set; get; }
         public PcInfo ComputadoraSeleccionada { get; set; }
         public ObservableCollection<PcInfo> Computadoras { get; set; } = new();
@@ -44,6 +50,8 @@ namespace Servidor.ViewModels
             AbrirOC(Computadoras, computadorasFilename);
             AbrirOC(HistorialComputadoras, historialFilename);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
+    
+
 
 
             Server = new UdpClient(endpoint);

@@ -20,8 +20,8 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
           
 
         </Grid.RowDefinitions>
@@ -98,7 +98,7 @@
             </Grid>
 
            <Grid Grid.Row="2"> 
-            <ListBox ItemsSource="{Binding Computadoras}" >
+            <ListBox ItemsSource="{Binding Computadoras}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                             <Grid>
@@ -126,7 +126,7 @@
                                     </Grid.ColumnDefinitions>
   
                                     <!--los botones llevaran iconos pero aun no me decido por la paleta de colores--> 
-                                    <Button Background="Red" Width="20"></Button>  <!--apagar--> 
+                                    <Button Background="Red" Width="20" ></Button>  <!--apagar--> 
                                     <Button Background="Blue" Grid.Column="1" Width="20"></Button>  <!--reiniciar-->
                                     <Button Background="Gray" Grid.Column="2" Width="20"></Button>  <!--editar--> 
                                     <Button Background="Black" Grid.Column="3" Width="20"></Button> <!--eliminar--> 
@@ -172,7 +172,7 @@
                 </Grid>
 
                 <Grid Grid.Row="2">
-                    <ListBox ItemsSource="{Binding HistorialComputadoras}" >
+                    <ListBox ItemsSource="{Binding HistorialComputadoras}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
