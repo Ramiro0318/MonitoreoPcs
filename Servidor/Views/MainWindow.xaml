@@ -10,9 +10,9 @@
     <Window.DataContext>
         <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
     </Window.DataContext>
-    
- 
-    
+
+
+
     <Grid Margin="20">
 
         <Grid.RowDefinitions>
@@ -22,133 +22,137 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-          
+
 
         </Grid.RowDefinitions>
-        
-        
-        <Label Grid.Row="0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="25" > Servidor - Control de Laboratorios </Label>
 
-      
+
+        <Label Grid.Row="0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="25" >Servidor - Control de Laboratorios</Label>
+
+
 
         <Border  Grid.Row="1" Padding="10" >
             <Grid>
                 <Grid.ColumnDefinitions>
-                   
+
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                
+
                 <StackPanel Grid.Column="0">
-                <TextBlock FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="18">Nueva Solicitud de Registro</TextBlock>
-                 <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
-            
-                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
- 
-                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
-               
-            </StackPanel>
+                    <TextBlock FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="18">Nueva Solicitud de Registro</TextBlock>
+                    <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
+
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
+
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
+
+                </StackPanel>
                 <Button Grid.Column="1" FontFamily="Britannic Bold" Foreground="White" Background="#237227" HorizontalAlignment="Center"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
                 <Button Grid.Column="2" FontFamily="Britannic Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Center" Command="{Binding RechazarCommand}">Rechazar</Button>
             </Grid>
-            
-            
+
+
         </Border>
 
 
         <StackPanel Grid.Row="2">
-               <TextBlock Text="{Binding Info}" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Text="{Binding Info}" HorizontalAlignment="Center"></TextBlock>
         </StackPanel>
 
-        
-        
-        
-        
-        
-        
-        
-        <Border Padding="10" Grid.Row="3">
-          <Grid >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-           
-            <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de computadoras</Label>
 
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
+
+
+
+
+
+
+        <Border Padding="10" Grid.Row="3">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de computadoras</Label>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="220" ></ColumnDefinition>
                         <ColumnDefinition Width="100" ></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+                    </Grid.ColumnDefinitions>
 
 
-                <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
-                <Label Grid.Column="1" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >IP</Label>
-                <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Puerto</Label>
-                <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Estado</Label>
-                <Label Grid.Column="4" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comandos</Label>
+                    <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
+                    <Label Grid.Column="1" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >IP</Label>
+                    <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Puerto</Label>
+                    <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Estado</Label>
+                    <Label Grid.Column="4" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comandos</Label>
 
 
-            </Grid>
+                </Grid>
 
-           <Grid Grid.Row="2"> 
-            <ListBox ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Style.Triggers>
-                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter Property="IsSelected" Value="True"></Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
+                <Grid Grid.Row="2">
+                    <ListBox ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Style.Triggers>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="IsSelected" Value="True"></Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="220"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                
-                         
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="220"></ColumnDefinition>
+                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+
 
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Identificador}" ></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoConectado}" Grid.Column="3"></TextBlock>
-                              
-                                <Grid Grid.Column="4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-  
-                                    <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
-                                    <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="APAGAR" Content="Apagar"></Button>  <!--apagar-->
-                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="REINICIAR" Content="Reiniciar"></Button>  <!--reiniciar-->
-                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="CAMBIARID" Content="CambiarId" ></Button>  <!--editar--> 
-                                    <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" ></Button> <!--eliminar--> 
-                                </Grid>
-                               
 
-                            </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-         </Grid>   
-        </Grid>
+                                    <Grid Grid.Column="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
+                                        <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="APAGAR" Content="Apagar"></Button>
+                                        <!--apagar-->
+                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="REINICIAR" Content="Reiniciar"></Button>
+                                        <!--reiniciar-->
+                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}" Content="CambiarId" ></Button>
+                                        <!--editar-->
+                                        <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" ></Button>
+                                        <!--eliminar-->
+                                    </Grid>
+
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
 
         </Border>
 
@@ -170,7 +174,7 @@
                         <ColumnDefinition Width="250" ></ColumnDefinition>
                         <ColumnDefinition Width="250" ></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
-                   
+
                     </Grid.ColumnDefinitions>
 
 
@@ -197,9 +201,9 @@
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Identificador}" ></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding HoraConexion }" Grid.Column="1"></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Grid.Column="2"> apagado</TextBlock>
-                                   
 
-                                   
+
+
 
                                 </Grid>
                             </DataTemplate>
@@ -214,10 +218,13 @@
 
 
 
-       
-     
-        
+        <StackPanel Grid.Row="5">
 
-        
+            <TextBox Text="{Binding Clon.Nombre}"></TextBox>
+
+            <Button Command="{Binding EditarCommand}" CommandParameter="{Binding Clon}">Editar</Button>
+            <Button Command="{Binding RechazarCommand}">Cancelar</Button>
+        </StackPanel>
+
     </Grid>
 </Window>

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Printing;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
@@ -26,19 +27,22 @@ namespace Servidor.ViewModels
         public ICommand RegistrarCommand { set; get; }
         public ICommand RechazarCommand { set; get; }
         public ICommand EnviarComandoCommand { set; get; }
+        public ICommand IrEditarCommand { set; get; }
+        public ICommand EditarCommand { set; get; }
         public ICommand EliminarCommand { set; get; }
-        public PcInfo? ComputadoraSeleccionada { get; set; }
-        public ObservableCollection<PcInfo> Computadoras { get; set; } = new();
-        public ObservableCollection<PcInfo> HistorialComputadoras { get; set; } = new();
-        public string Info { set; get; } = "Error";
 
-        string computadorasFilename = "computadoras.json";
-        string historialFilename = "historial.json";
-        IPAddress ip = IPAddress.Parse("192.168.1.67");
-        int puerto = 60000;
-        UdpClient Server { get; set; }
-        public int LatidosRecibidos { get; set; }
         private DispatcherTimer TimerEstado;
+        private string computadorasFilename = "computadoras.json";
+        private string historialFilename = "historial.json";
+        private IPAddress ip = IPAddress.Parse("192.168.1.67");
+        private int puerto = 60000;
+        public int LatidosRecibidos { set; get; }
+        public string Info { set; get; } = "Error";
+        public PcInfo? ComputadoraSeleccionada { set; get; }
+        public PcInfo Clon { set; get; }
+        public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
+        public ObservableCollection<PcInfo> HistorialComputadoras { set; get; } = new();
+        UdpClient Server { set; get; }
 
         public ServerViewModel()
         {
@@ -49,6 +53,8 @@ namespace Servidor.ViewModels
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
             RechazarCommand = new RelayCommand(Rechazar);
             EnviarComandoCommand = new RelayCommand<string>(EnviarMensajes);
+            IrEditarCommand = new RelayCommand(IrEditar);
+            EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand<PcInfo>(Eliminar);
 
 
@@ -62,21 +68,6 @@ namespace Servidor.ViewModels
             TimerEstado.Interval = TimeSpan.FromSeconds(1);
             TimerEstado.Tick += TimerEstado_Tick;
             TimerEstado.Start();
-        }
-
-        private void Eliminar(PcInfo pc)
-        {
-            if (pc != null)
-            {
-
-                Computadoras.Remove(Computadoras.First(x => x.Nombre == pc.Nombre));
-                GuardarOC(Computadoras, computadorasFilename);
-                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                ComputadoraSeleccionada = pc;
-                EnviarMensajes("OLVIDAR");
-            }
-            ComputadoraSeleccionada = null;
-            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
         }
 
         public void IrRegistrar(IPEndPoint remoto, string identificador)
@@ -114,10 +105,67 @@ namespace Servidor.ViewModels
 
         private void Rechazar()
         {
+            //Depende de cómo esté diseñado, el método rechazar se puede reutilizar como cancelar al editar
             ComputadoraSeleccionada = null;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
         }
+        private string? identificador;
+        private void IrEditar()
+        {
+            if (ComputadoraSeleccionada != null)
+            {
+                identificador = ComputadoraSeleccionada.Identificador;
+                Clon = new PcInfo
+                {
+                    Nombre = ComputadoraSeleccionada.Nombre,
+                    Ip = ComputadoraSeleccionada.Ip,
+                    Puerto = ComputadoraSeleccionada.Puerto,
+                    HoraConexion = ComputadoraSeleccionada.HoraConexion,//Estas 3 no estoy seguro
+                    UltimoLatido = ComputadoraSeleccionada.UltimoLatido,
+                    EstadoConectado = ComputadoraSeleccionada.EstadoConectado
 
+                };
+                PropertyChanged?.Invoke(this, new(nameof(Clon)));
+            }
+        }
+
+        private void Editar(PcInfo clon)
+        {
+            if (clon != null && !string.IsNullOrWhiteSpace(identificador))
+            {
+                var pcOriginal = Computadoras.FirstOrDefault(x => x.Identificador == identificador);
+                if (pcOriginal != null && clon.Nombre != pcOriginal.Nombre)
+                {
+                    pcOriginal.Nombre = clon.Nombre;
+                    var registroHistorial = HistorialComputadoras.Where(x => x.Identificador == identificador).ToList();
+                    registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
+                    GuardarOC(Computadoras, computadorasFilename);
+                    GuardarOC(HistorialComputadoras, historialFilename);
+                    //Dependiendo de el diseño se debe de mostrar la actualización de las listas de una forma o de otra.
+                    //Se pueden ver los cambios al cerrar y volver a abrir el programa
+                    //La manera más sencilla de refrescar sería limpiando las OC aquí y volverlas a cargar con el método de deserializar
+                    //No es lo más eficiente.
+                }
+
+            }
+            identificador = null;
+        }
+
+
+        private void Eliminar(PcInfo pc)
+        {
+            if (pc != null)
+            {
+
+                Computadoras.Remove(Computadoras.First(x => x.Nombre == pc.Nombre));
+                GuardarOC(Computadoras, computadorasFilename);
+                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
+                ComputadoraSeleccionada = pc;
+                EnviarMensajes("OLVIDAR");
+            }
+            ComputadoraSeleccionada = null;
+            PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+        }
         public void RecibirMensajes()
         {
             while (true)
