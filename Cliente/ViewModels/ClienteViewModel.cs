@@ -24,10 +24,10 @@ namespace Cliente.ViewModels
         private DispatcherTimer TimerBeat;
         private int puerto = 60000;
         private bool latiendo = false;
-
+        string filename = "registro.json";
         public int LatidosEnviados { set; get; } //Esta propiedad no es necesaria, solo es para tener una referencia desde la vista
         public string IpPorValidar { get; set; } //Esta propiedad es para poder aplicar un IsValid para validar la ip
-        public string? Nombre { set; get; }
+        public string Nombre { set; get; } = null!;
         public string Info { set; get; } = "Error";
         public IPAddress Ip { set; get; } // IpServidor
         public Info Registro { set; get; }
@@ -133,6 +133,7 @@ namespace Cliente.ViewModels
                         LatidosEnviados = 0;
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
                         break;
+
                     case "REGISTROAPROBADO":
                         Info = "Registro aprobado... ";
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
@@ -146,6 +147,7 @@ namespace Cliente.ViewModels
                             });
                         }
                         break;
+
                     case "APAGAR":
                         //s = Apagar
                         //t 0 = Tiempo de espera 0 segundos
@@ -155,6 +157,7 @@ namespace Cliente.ViewModels
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
                         Thread.Sleep(10000);
                         break;
+
                     case "REINICIAR":
                         //r = Reiniciar
                         escuchando = false;
@@ -163,6 +166,7 @@ namespace Cliente.ViewModels
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
                         Thread.Sleep(10000);
                         break;  //Preguntar si es mejor una bandera escucuchando o mandar a dormir el hilo.
+                    
                     case "CAMBIARID":
                         if (comandoSeparado.Length > 0)
                         {
@@ -174,6 +178,15 @@ namespace Cliente.ViewModels
                             GuardarRegistro();
                         }
                         break;
+
+                    case "OLVIDAR":
+                        Info = "Registro eliminado";
+                        latiendo = false;
+                        TimerBeat.Stop();
+                        File.Delete(filename);
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                        break;
                 }
                 //}
                 //catch (Exception) { }
@@ -181,20 +194,32 @@ namespace Cliente.ViewModels
 
         }
 
-        string filename = "registro.json";
         private void GuardarRegistro()
         {
-            var registro = new Info
+            if (Registro == null)
             {
-                NombreAsignado = Nombre ?? Registro.NombreAsignado,
-                IpServidor = Registro == null ? Ip.ToString() : Registro.IpServidor,
-                PuertoServidor = Registro == null ? puerto : Registro.PuertoServidor
-            };
-            Registro = registro;
+                var registro = new Info
+                {
+                    NombreAsignado = Nombre,
+                    IpServidor = Ip.ToString(),
+                    PuertoServidor = puerto
+                };
+                Registro = registro;
+            }
+            else
+            {
+                var registro = new Info
+                {
+                    NombreAsignado = Registro.NombreAsignado,
+                    IpServidor = Registro.IpServidor,
+                    PuertoServidor = Registro.PuertoServidor
+                };
+                Registro = registro;
+            }
 
-            PropertyChanged?.Invoke(this, new(nameof(Registro)));
-            string jsonString = JsonSerializer.Serialize(registro);
+            string jsonString = JsonSerializer.Serialize(Registro);
             File.WriteAllText(filename, jsonString);
+            PropertyChanged?.Invoke(this, new(nameof(Registro)));
 
         }
 

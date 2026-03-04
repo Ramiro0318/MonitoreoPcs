@@ -50,12 +50,14 @@ namespace Servidor.ViewModels
 
             AbrirOC(Computadoras, computadorasFilename);
             AbrirOC(HistorialComputadoras, historialFilename);
+
+
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
             RechazarCommand = new RelayCommand(Rechazar);
             EnviarComandoCommand = new RelayCommand<string>(EnviarMensajes);
             IrEditarCommand = new RelayCommand(IrEditar);
             EditarCommand = new RelayCommand<PcInfo>(Editar);
-            EliminarCommand = new RelayCommand<PcInfo>(Eliminar);
+            EliminarCommand = new RelayCommand(Eliminar);
 
 
             Server = new UdpClient(endpoint);
@@ -158,15 +160,13 @@ namespace Servidor.ViewModels
         }
 
 
-        private void Eliminar(PcInfo pc)
+        private void Eliminar()
         {
-            if (pc != null)
+            if (ComputadoraSeleccionada != null)
             {
-
-                Computadoras.Remove(Computadoras.First(x => x.Nombre == pc.Nombre));
+                Computadoras.Remove(Computadoras.First(x => x.Identificador == ComputadoraSeleccionada.Identificador));
                 GuardarOC(Computadoras, computadorasFilename);
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
-                ComputadoraSeleccionada = pc;
                 EnviarMensajes("OLVIDAR");
             }
             ComputadoraSeleccionada = null;
@@ -249,12 +249,12 @@ namespace Servidor.ViewModels
                     Server.Connect(pc.Ip, pc.Puerto);
                     string mensaje = "";
                     if (comando == "CAMBIARID")
-                    {
-                        mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";
+                    {//Nuevo nombre
+                        mensaje = $"{comando}|{pc.Nombre}";
                     }
                     else
                     {
-                        mensaje = comando; //Quitar los parametros del comando, ambos solo necesitan recibir el mensaje
+                        mensaje = comando;
                     }
                     byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
 
@@ -262,7 +262,7 @@ namespace Servidor.ViewModels
                     Server.Send(buffer, buffer.Length);
                 }
 
-                //ComputadoraSeleccionada = null;       //De momento seguiré mostrando la pc seleccionada
+                ComputadoraSeleccionada = null;       //De momento seguiré mostrando la pc seleccionada
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
             }
         }
