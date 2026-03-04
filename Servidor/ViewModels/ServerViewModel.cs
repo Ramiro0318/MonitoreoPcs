@@ -39,7 +39,7 @@ namespace Servidor.ViewModels
         public int LatidosRecibidos { set; get; }
         public string Info { set; get; } = "Error";
         public PcInfo? ComputadoraSeleccionada { set; get; }
-        public PcInfo Clon { set; get; }
+        public PcInfo? Clon { set; get; }
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialComputadoras { set; get; } = new();
         UdpClient Server { set; get; }
@@ -107,7 +107,9 @@ namespace Servidor.ViewModels
         {
             //Depende de cómo esté diseñado, el método rechazar se puede reutilizar como cancelar al editar
             ComputadoraSeleccionada = null;
+            Clon = null;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+            PropertyChanged?.Invoke(this, new(nameof(Clon)));
         }
         private string? identificador;
         private void IrEditar()
@@ -144,9 +146,13 @@ namespace Servidor.ViewModels
                     //Dependiendo de el diseño se debe de mostrar la actualización de las listas de una forma o de otra.
                     //Se pueden ver los cambios al cerrar y volver a abrir el programa
                     //La manera más sencilla de refrescar sería limpiando las OC aquí y volverlas a cargar con el método de deserializar
-                    //No es lo más eficiente.
-                }
+                    ComputadoraSeleccionada = clon;
+                    PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+                    EnviarMensajes("CAMBIARID");
 
+                }
+                Clon = null;
+                PropertyChanged?.Invoke(this, new(nameof(Clon)));
             }
             identificador = null;
         }
@@ -236,12 +242,20 @@ namespace Servidor.ViewModels
                 var pc = ComputadoraSeleccionada;
                 if (comando == "REGISTROAPROBADO" || comando == "CONECTADO" || comando == "APAGAR" || comando == "REINICIAR" || comando == "CAMBIARID" || comando == "OLVIDAR")
                 {
-                    Info = $"a {comando.ToLower()}";
+                    Info = $"a {comando.ToLower()} {pc.Nombre}";
                     PropertyChanged?.Invoke(this, new(nameof(Info)));
 
                     //Creo que no es necesario el connect
                     Server.Connect(pc.Ip, pc.Puerto);
-                    string mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";   //Quitar los parametros del comando, ambos solo necesitan recibir el mensaje
+                    string mensaje = "";
+                    if (comando == "CAMBIARID")
+                    {
+                        mensaje = $"{comando}|{pc.Identificador}@{pc.Ip}:{pc.Puerto}";
+                    }
+                    else
+                    {
+                        mensaje = comando; //Quitar los parametros del comando, ambos solo necesitan recibir el mensaje
+                    }
                     byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
 
                     IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
