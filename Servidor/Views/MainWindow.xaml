@@ -97,8 +97,8 @@
 
             </Grid>
 
-           <Grid Grid.Row="2"> 
-            <ListBox ItemsSource="{Binding Computadoras}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+           <Grid Grid.Row="2">
+                <ListBox ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                             <Grid>
@@ -126,14 +126,11 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
-                                        <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="APAGAR" Content="Apagar"></Button>
-                                        <!--apagar-->
-                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="REINICIAR" Content="Reiniciar"></Button>
-                                        <!--reiniciar-->
-                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}" Content="CambiarId" ></Button>
-                                        <!--editar-->
-                                        <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" ></Button>
-                                        <!--eliminar-->
+                                        <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="APAGAR" Content="Apagar"></Button><!--apagar-->
+                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="REINICIAR" Content="Reiniciar"></Button><!--reiniciar-->
+                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}" Content="CambiarId" ></Button><!--editar-->
+                                        <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" ></Button><!--eliminar-->
+                                        
                                     </Grid>
 
 
