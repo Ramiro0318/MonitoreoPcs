@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Cliente.Models.Entities
 {
-    public class ServerInfo
+    public class Info
     {
         public string NombreAsignado { get; set; } = null!;
-        public string Ip { get; set; } = null!;
-        public int Puerto { get; set; }
+        public string IpServidor { get; set; } = null!;
+        public int PuertoServidor { get; set; }
     }
 
 }
