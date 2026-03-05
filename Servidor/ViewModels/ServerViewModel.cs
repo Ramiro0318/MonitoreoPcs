@@ -91,8 +91,6 @@ namespace Servidor.ViewModels
         {
             if (pc != null)
             {
-                //Confirmar registro
-                //Guardar en lista de computadoras registradas
                 ComputadoraSeleccionada = pc;
                 EnviarMensajes("REGISTROAPROBADO");
                 if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
@@ -159,7 +157,6 @@ namespace Servidor.ViewModels
             identificador = null;
         }
 
-
         private void Eliminar()
         {
             if (ComputadoraSeleccionada != null)
@@ -171,53 +168,54 @@ namespace Servidor.ViewModels
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
             }
         }
+
         public void RecibirMensajes()
         {
             while (true)
             {
-                //try
-                //{
-                IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
-                byte[] buffer = Server.Receive(ref remoto);
-
-                string comando = Encoding.UTF8.GetString(buffer);
-                string[] comandoSeparado = comando.Split('|');
-
-                if (comandoSeparado[0] == "REGISTRO" && comandoSeparado[1] != null)
+                try
                 {
-                    //Mostrar solicitud de registro
-                    IrRegistrar(remoto, comandoSeparado[1]);
-                    Info = "Mensaje recibido";
-                    PropertyChanged?.Invoke(this, new(nameof(Info)));
+                    IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
+                    byte[] buffer = Server.Receive(ref remoto);
 
-                }
-                else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
-                {
-                    LatidosRecibidos++;
-                    PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
+                    string comando = Encoding.UTF8.GetString(buffer);
+                    string[] comandoSeparado = comando.Split('|');
 
-                    var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
-                    if (pc != null)
+                    if (comandoSeparado[0] == "REGISTRO" && comandoSeparado[1] != null)
                     {
-                        pc.UltimoLatido = DateTime.Now;
-                        if (!pc.EstadoConectado)
-                        {
-                            pc.HoraConexion = DateTime.Now;
-                            App.Current.Dispatcher.Invoke(() =>
-                            {   //Guardar el historial en cada nueva conexión
-                                HistorialComputadoras.Add(pc);
-                                GuardarOC(HistorialComputadoras, historialFilename);
-                            });
-                            pc.EstadoConectado = true;
-                        }
-                        Info = "true";
+                        //Mostrar solicitud de registro
+                        IrRegistrar(remoto, comandoSeparado[1]);
+                        Info = "Mensaje recibido";
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
-                        ComputadoraSeleccionada = pc;
-                        EnviarMensajes("CONECTADO");
+
+                    }
+                    else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
+                    {
+                        LatidosRecibidos++;
+                        PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
+
+                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                        if (pc != null)
+                        {
+                            pc.UltimoLatido = DateTime.Now;
+                            if (!pc.EstadoConectado)
+                            {
+                                pc.HoraConexion = DateTime.Now;
+                                App.Current.Dispatcher.Invoke(() =>
+                                {   //Guardar el historial en cada nueva conexión
+                                    HistorialComputadoras.Add(pc);
+                                    GuardarOC(HistorialComputadoras, historialFilename);
+                                });
+                                pc.EstadoConectado = true;
+                            }
+                            Info = "true";
+                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            ComputadoraSeleccionada = pc;
+                            EnviarMensajes("CONECTADO");
+                        }
                     }
                 }
-                //}
-                //catch (Exception) { }
+                catch (Exception) { }
             }
         }
 
@@ -244,25 +242,12 @@ namespace Servidor.ViewModels
                     Info = $"a {comando.ToLower()} {pc.Nombre}";
                     PropertyChanged?.Invoke(this, new(nameof(Info)));
 
-                    //Creo que no es necesario el connect
-                    Server.Connect(pc.Ip, pc.Puerto);
-                    string mensaje = "";
-                    if (comando == "CAMBIARID")
-                    {//Nuevo nombre
-                        mensaje = $"{comando}|{pc.Nombre}";
-                    }
-                    else
-                    {
-                        mensaje = comando;
-                    }
+                    string mensaje = comando == "CAMBIARID" ? $"{comando}|{pc.Nombre}" : mensaje = comando;
                     byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
 
-                    IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);  //De momento no se usa el endpoint
-                    Server.Send(buffer, buffer.Length);
+                    IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
+                    Server.Send(buffer, buffer.Length, destino);
                 }
-
-                ComputadoraSeleccionada = null;       //De momento seguiré mostrando la pc seleccionada
-                PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
             }
         }
 
