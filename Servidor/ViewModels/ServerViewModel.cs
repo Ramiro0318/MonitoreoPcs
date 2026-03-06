@@ -34,6 +34,7 @@ namespace Servidor.ViewModels
         public ICommand IrEditarCommand { set; get; }
         public ICommand EditarCommand { set; get; }
         public ICommand EliminarCommand { set; get; }
+        public ICommand LimpiarCommand { set; get; }
 
         private DispatcherTimer TimerEstado;
         private string computadorasFilename = "computadoras.json";
@@ -65,6 +66,7 @@ namespace Servidor.ViewModels
             IrEditarCommand = new RelayCommand(IrEditar);
             EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand(Eliminar);
+            LimpiarCommand = new RelayCommand<string>(LimpiarOC);
 
 
             Server = new UdpClient(endpoint);
@@ -285,6 +287,23 @@ namespace Servidor.ViewModels
                     {
                         oc.Add(o);
                     }
+                }
+            }
+        }
+
+        private void LimpiarOC(string? nombreLista)
+        {
+            if (!string.IsNullOrEmpty(nombreLista))
+            {
+                if (nombreLista == "conexiones")
+                {
+                    HistorialComputadoras.Clear();
+                    GuardarOC(HistorialComputadoras, historialFilename);
+                }
+                else if (nombreLista == "comandos")
+                {
+                    HistorialComandos.Clear();
+                    GuardarOC(HistorialComandos, comandosFilename);
                 }
             }
         }

@@ -156,7 +156,7 @@
                 </Grid.RowDefinitions>
 
                 <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de historial de conexiones</Label>
-                <Button Grid.Row="0" HorizontalAlignment="Right">limpiar</Button>
+                <Button Grid.Row="0" Command="{Binding LimpiarCommand}" CommandParameter="conexiones" HorizontalAlignment="Right">limpiar</Button>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" ></ColumnDefinition>
@@ -216,7 +216,7 @@
                 </Grid.RowDefinitions>
 
                 <Label FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="20" >Lista de historial de comandos</Label>
-                <Button Grid.Row="0" HorizontalAlignment="Right">limpiar</Button>
+                <Button Grid.Row="0" Command="{Binding LimpiarCommand}" CommandParameter="comandos" HorizontalAlignment="Right">limpiar</Button>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" ></ColumnDefinition>
