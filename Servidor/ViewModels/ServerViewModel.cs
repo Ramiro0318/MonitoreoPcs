@@ -38,7 +38,7 @@ namespace Servidor.ViewModels
 
         private DispatcherTimer TimerEstado;
         private string computadorasFilename = "computadoras.json";
-        private string historialFilename = "historial.json";
+        private string conexionesFilename = "conexiones.json";
         private string comandosFilename = "comandos.json";
         private IPAddress ip = IPAddress.Parse("192.168.1.67");
         private int puerto = 60000;
@@ -47,7 +47,7 @@ namespace Servidor.ViewModels
         public PcInfo? ComputadoraSeleccionada { set; get; }
         public PcInfo? Clon { set; get; }
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
-        public ObservableCollection<PcInfo> HistorialComputadoras { set; get; } = new();
+        public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
         UdpClient Server { set; get; }
 
@@ -56,7 +56,7 @@ namespace Servidor.ViewModels
             IPEndPoint endpoint = new IPEndPoint(ip, puerto);
 
             AbrirOC(Computadoras, computadorasFilename);
-            AbrirOC(HistorialComputadoras, historialFilename);
+            AbrirOC(HistorialConexiones, conexionesFilename);
             AbrirOC(HistorialComandos, comandosFilename);
 
 
@@ -66,7 +66,7 @@ namespace Servidor.ViewModels
             IrEditarCommand = new RelayCommand(IrEditar);
             EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand(Eliminar);
-            LimpiarCommand = new RelayCommand<string>(LimpiarOC);
+            LimpiarCommand = new RelayCommand<bool>(LimpiarOC);
 
 
             Server = new UdpClient(endpoint);
@@ -147,13 +147,11 @@ namespace Servidor.ViewModels
                 if (pcOriginal != null && clon.Nombre != pcOriginal.Nombre)
                 {
                     pcOriginal.Nombre = clon.Nombre;
-                    var registroHistorial = HistorialComputadoras.Where(x => x.Identificador == identificador).ToList();
+                    var registroHistorial = HistorialConexiones.Where(x => x.Identificador == identificador).ToList();
                     registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
                     GuardarOC(Computadoras, computadorasFilename);
-                    GuardarOC(HistorialComputadoras, historialFilename);
-                    //Dependiendo de el diseño se debe de mostrar la actualización de las listas de una forma o de otra.
-                    //Se pueden ver los cambios al cerrar y volver a abrir el programa
-                    //La manera más sencilla de refrescar sería limpiando las OC aquí y volverlas a cargar con el método de deserializar
+                    GuardarOC(HistorialConexiones, conexionesFilename);
+
                     ComputadoraSeleccionada = clon;
                     PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
                     EnviarMensajes(Orden.CAMBIARID);
@@ -211,8 +209,8 @@ namespace Servidor.ViewModels
                                 pc.HoraConexion = DateTime.Now;
                                 App.Current.Dispatcher.Invoke(() =>
                                 {   //Guardar el historial en cada nueva conexión
-                                    HistorialComputadoras.Add(pc);
-                                    GuardarOC(HistorialComputadoras, historialFilename);
+                                    HistorialConexiones.Add(pc);
+                                    GuardarOC(HistorialConexiones, conexionesFilename);
                                 });
                                 pc.EstadoConectado = true;
                             }
@@ -223,7 +221,7 @@ namespace Servidor.ViewModels
                         }
                     }
                 }
-                catch (Exception) { }
+                catch { }
             }
         }
 
@@ -254,6 +252,7 @@ namespace Servidor.ViewModels
                         Fecha = DateTime.Now,
                         NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
                     });
+                    GuardarOC(HistorialComandos, comandosFilename);
                 }
 
                 Info = $"a {comando.ToString()} {pc.Nombre}";
@@ -291,20 +290,17 @@ namespace Servidor.ViewModels
             }
         }
 
-        private void LimpiarOC(string? nombreLista)
+        private void LimpiarOC(bool esConexiones)
         {
-            if (!string.IsNullOrEmpty(nombreLista))
+            if (esConexiones)
             {
-                if (nombreLista == "conexiones")
-                {
-                    HistorialComputadoras.Clear();
-                    GuardarOC(HistorialComputadoras, historialFilename);
-                }
-                else if (nombreLista == "comandos")
-                {
-                    HistorialComandos.Clear();
-                    GuardarOC(HistorialComandos, comandosFilename);
-                }
+                HistorialConexiones.Clear();
+                GuardarOC(HistorialConexiones, conexionesFilename);
+            }
+            else
+            {
+                HistorialComandos.Clear();
+                GuardarOC(HistorialComandos, comandosFilename);
             }
         }
     }

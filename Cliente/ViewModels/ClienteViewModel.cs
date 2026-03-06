@@ -64,11 +64,6 @@ namespace Cliente.ViewModels
                 try
                 {
                     Ip = IPAddress.Parse(IpPorValidar);
-
-
-                    //IPEndPoint endpoint = new(IPAddress.Any, 60001);
-                    //Cliente = new UdpClient(endpoint);
-
                     IPEndPoint remoto = new IPEndPoint(Ip, puerto);
 
                     string comando = $"REGISTRO|{Nombre}";
