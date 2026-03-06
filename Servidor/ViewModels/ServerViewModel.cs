@@ -257,7 +257,7 @@ namespace Servidor.ViewModels
 
                 Info = $"a {comando.ToString()} {pc.Nombre}";
 
-                string mensaje = comando == Orden.CAMBIARID ? $"{comando}|{pc.Nombre}" : "comando";
+                string mensaje = comando == Orden.CAMBIARID ? $"{comando}|{pc.Nombre}" : comando.ToString();
                 byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
                 IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
                 Server.Send(buffer, buffer.Length, destino);
@@ -294,13 +294,13 @@ namespace Servidor.ViewModels
         {
             if (Oc == "conexiones")
             {
-                HistorialComandos.Clear();
-                GuardarOC(HistorialComandos, comandosFilename);
+                HistorialConexiones.Clear();
+                GuardarOC(HistorialConexiones, conexionesFilename);
             }
             else if (Oc == "comandos")
             {
-                HistorialConexiones.Clear();
-                GuardarOC(HistorialConexiones, conexionesFilename);
+                HistorialComandos.Clear();
+                GuardarOC(HistorialComandos, comandosFilename);
             }
         }
     }
