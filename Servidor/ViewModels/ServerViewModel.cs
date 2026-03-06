@@ -66,7 +66,7 @@ namespace Servidor.ViewModels
             IrEditarCommand = new RelayCommand(IrEditar);
             EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand(Eliminar);
-            LimpiarCommand = new RelayCommand<bool>(LimpiarOC);
+            LimpiarCommand = new RelayCommand<string>(LimpiarOC);
 
 
             Server = new UdpClient(endpoint);
@@ -290,17 +290,17 @@ namespace Servidor.ViewModels
             }
         }
 
-        private void LimpiarOC(bool esConexiones)
+        private void LimpiarOC(string Oc)
         {
-            if (esConexiones)
-            {
-                HistorialConexiones.Clear();
-                GuardarOC(HistorialConexiones, conexionesFilename);
-            }
-            else
+            if (Oc == "conexiones")
             {
                 HistorialComandos.Clear();
                 GuardarOC(HistorialComandos, comandosFilename);
+            }
+            else if (Oc == "comandos")
+            {
+                HistorialConexiones.Clear();
+                GuardarOC(HistorialConexiones, conexionesFilename);
             }
         }
     }
