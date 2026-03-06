@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Cliente"
+        xmlns:local="clr-namespace:Cliente.ViewModels"
         xmlns:viewmodel="clr-namespace:Cliente.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ClienteViewModel}"
         mc:Ignorable="d"
         Title="Cliente" Height="250" Width="400">
@@ -64,7 +64,7 @@
 
 
 
-            <Button Grid.Column="1" Padding="6,0,6,0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  Background="#30364F" Foreground="#F0F0DB"   Command="{Binding EnviarRegistroCommand}">Enviar</Button>
+            <Button Grid.Column="1" Padding="6,0,6,0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  Background="#30364F" Foreground="#F0F0DB" Command="{Binding EnviarRegistroCommand}">Enviar</Button>
         </Grid>
 
         <Grid Grid.Row="5">

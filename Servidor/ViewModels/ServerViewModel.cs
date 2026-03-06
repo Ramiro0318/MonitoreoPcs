@@ -26,7 +26,6 @@ namespace Servidor.ViewModels
     public class ServerViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler? CanExecuteChanged;
 
         public ICommand RegistrarCommand { set; get; }
         public ICommand RechazarCommand { set; get; }
@@ -43,7 +42,7 @@ namespace Servidor.ViewModels
         private IPAddress ip = IPAddress.Parse("192.168.1.67");
         private int puerto = 60000;
         public int LatidosRecibidos { set; get; }
-        public string Info { set; get; } = "Error";
+        public string? Info { set; get; }
         public PcInfo? ComputadoraSeleccionada { set; get; }
         public PcInfo? Clon { set; get; }
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
@@ -187,15 +186,18 @@ namespace Servidor.ViewModels
                     string comando = Encoding.UTF8.GetString(buffer);
                     string[] comandoSeparado = comando.Split('|');
 
-                    if (comandoSeparado[0] == Orden.REGISTRO.ToString() && comandoSeparado[1] != null)
+                    if (comandoSeparado[0] == Orden.REGISTRO.ToString() && comandoSeparado[1] != null && comandoSeparado.Length > 2)
                     {
                         //Mostrar solicitud de registro
-                        IrRegistrar(remoto, comandoSeparado[1]);
-                        Info = "Mensaje recibido";
-                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        App.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            IrRegistrar(remoto, comandoSeparado[1]);
+                            Info = "Mensaje recibido";
+                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                        });
 
                     }
-                    else if (comandoSeparado[0] == Orden.HEARTHBEAT.ToString() && comandoSeparado[1] != null)
+                    else if (comandoSeparado[0] == Orden.HEARTHBEAT.ToString() && comandoSeparado[1] != null && comandoSeparado.Length > 2)
                     {
                         LatidosRecibidos++;
                         PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
@@ -227,13 +229,11 @@ namespace Servidor.ViewModels
 
         private void TimerEstado_Tick(object? sender, EventArgs e)
         {
-            foreach (var pc in Computadoras)
+            foreach (var pc in Computadoras.ToList())
             {
                 if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoConectado)
                 {
                     pc.EstadoConectado = false;
-                    Info = "false";
-                    PropertyChanged?.Invoke(this, new(nameof(Info)));
                 }
             }
         }
