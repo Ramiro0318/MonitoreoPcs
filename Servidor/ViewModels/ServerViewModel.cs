@@ -22,6 +22,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.ViewModels
 {
+    public enum Orden { REGISTROAPROBADO, REGISTRO, CONECTADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT }
     public class ServerViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -37,6 +38,7 @@ namespace Servidor.ViewModels
         private DispatcherTimer TimerEstado;
         private string computadorasFilename = "computadoras.json";
         private string historialFilename = "historial.json";
+        private string comandosFilename = "comandos.json";
         private IPAddress ip = IPAddress.Parse("192.168.1.67");
         private int puerto = 60000;
         public int LatidosRecibidos { set; get; }
@@ -45,6 +47,7 @@ namespace Servidor.ViewModels
         public PcInfo? Clon { set; get; }
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialComputadoras { set; get; } = new();
+        public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
         UdpClient Server { set; get; }
 
         public ServerViewModel()
@@ -53,11 +56,12 @@ namespace Servidor.ViewModels
 
             AbrirOC(Computadoras, computadorasFilename);
             AbrirOC(HistorialComputadoras, historialFilename);
+            AbrirOC(HistorialComandos, comandosFilename);
 
 
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
             RechazarCommand = new RelayCommand(Rechazar);
-            EnviarComandoCommand = new RelayCommand<string>(EnviarMensajes);
+            EnviarComandoCommand = new RelayCommand<Orden>(EnviarMensajes);
             IrEditarCommand = new RelayCommand(IrEditar);
             EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand(Eliminar);
@@ -87,7 +91,6 @@ namespace Servidor.ViewModels
 
             ComputadoraSeleccionada = pc;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-            //Cambiar de vista o mostrar modal de registro con botones para aceptar o rechazar
         }
 
         private void Registrar(PcInfo pc)
@@ -95,7 +98,7 @@ namespace Servidor.ViewModels
             if (pc != null)
             {
                 ComputadoraSeleccionada = pc;
-                EnviarMensajes("REGISTROAPROBADO");
+                EnviarMensajes(Orden.REGISTROAPROBADO);
                 if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
                 {
                     Computadoras.Add(pc);
@@ -108,12 +111,12 @@ namespace Servidor.ViewModels
 
         private void Rechazar()
         {
-            //Depende de cómo esté diseñado, el método rechazar se puede reutilizar como cancelar al editar
             ComputadoraSeleccionada = null;
             Clon = null;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
             PropertyChanged?.Invoke(this, new(nameof(Clon)));
         }
+
         private string? identificador;
         private void IrEditar()
         {
@@ -151,7 +154,7 @@ namespace Servidor.ViewModels
                     //La manera más sencilla de refrescar sería limpiando las OC aquí y volverlas a cargar con el método de deserializar
                     ComputadoraSeleccionada = clon;
                     PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                    EnviarMensajes("CAMBIARID");
+                    EnviarMensajes(Orden.CAMBIARID);
 
                 }
                 Clon = null;
@@ -165,7 +168,7 @@ namespace Servidor.ViewModels
             if (ComputadoraSeleccionada != null)
             {
                 var pcOlviar = ComputadoraSeleccionada;
-                EnviarMensajes("OLVIDAR");
+                EnviarMensajes(Orden.OLVIDAR);
                 Computadoras.Remove(pcOlviar);
                 GuardarOC(Computadoras, computadorasFilename);
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
@@ -184,7 +187,7 @@ namespace Servidor.ViewModels
                     string comando = Encoding.UTF8.GetString(buffer);
                     string[] comandoSeparado = comando.Split('|');
 
-                    if (comandoSeparado[0] == "REGISTRO" && comandoSeparado[1] != null)
+                    if (comandoSeparado[0] == Orden.REGISTRO.ToString() && comandoSeparado[1] != null)
                     {
                         //Mostrar solicitud de registro
                         IrRegistrar(remoto, comandoSeparado[1]);
@@ -192,7 +195,7 @@ namespace Servidor.ViewModels
                         PropertyChanged?.Invoke(this, new(nameof(Info)));
 
                     }
-                    else if (comandoSeparado[0] == "HEARTHBEAT" && comandoSeparado[1] != null)
+                    else if (comandoSeparado[0] == Orden.HEARTHBEAT.ToString() && comandoSeparado[1] != null)
                     {
                         LatidosRecibidos++;
                         PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
@@ -214,7 +217,7 @@ namespace Servidor.ViewModels
                             Info = "true";
                             PropertyChanged?.Invoke(this, new(nameof(Info)));
                             ComputadoraSeleccionada = pc;
-                            EnviarMensajes("CONECTADO");
+                            EnviarMensajes(Orden.CONECTADO);
                         }
                     }
                 }
@@ -235,50 +238,52 @@ namespace Servidor.ViewModels
             }
         }
 
-        public void EnviarMensajes(string comando)
+        public void EnviarMensajes(Orden comando)
         {
-            if (ComputadoraSeleccionada != null && !string.IsNullOrWhiteSpace(comando))
+            if (ComputadoraSeleccionada != null && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT)
             {
                 var pc = ComputadoraSeleccionada;
-                if (comando == "REGISTROAPROBADO" || comando == "CONECTADO" || comando == "APAGAR" || comando == "REINICIAR" || comando == "CAMBIARID" || comando == "OLVIDAR")
+                if (comando != Orden.CONECTADO)
                 {
-                    Info = $"a {comando.ToLower()} {pc.Nombre}";
-                    PropertyChanged?.Invoke(this, new(nameof(Info)));
-
-                    string mensaje = comando == "CAMBIARID" ? $"{comando}|{pc.Nombre}" : mensaje = comando;
-                    byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
-
-                    IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
-                    Server.Send(buffer, buffer.Length, destino);
+                    HistorialComandos.Add(new ComandoInfo
+                    {
+                        Destino = pc.Identificador,
+                        Comando = comando,
+                        Fecha = DateTime.Now,
+                        NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
+                    });
                 }
+
+                Info = $"a {comando.ToString()} {pc.Nombre}";
+
+                string mensaje = comando == Orden.CAMBIARID ? $"{comando}|{pc.Nombre}" : "comando";
+                byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
+                IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
+                Server.Send(buffer, buffer.Length, destino);
+
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
             }
         }
 
 
-        private void GuardarOC(ObservableCollection<PcInfo> oc, string filename)
+        private void GuardarOC<T>(ObservableCollection<T> oc, string filename)
         {
-            var computadoras = new List<PcInfo> { };
-            foreach (var c in oc)
-            {
-                computadoras.Add(c);
-            }
-            string jsonString = JsonSerializer.Serialize(computadoras);
+            string jsonString = JsonSerializer.Serialize(oc);
             File.WriteAllText(filename, jsonString);
-
         }
 
-        private void AbrirOC(ObservableCollection<PcInfo> oc, string filename)
+        private void AbrirOC<T>(ObservableCollection<T> oc, string filename)
         {
             if (File.Exists(filename))
             {
                 var jsonString = File.ReadAllText(filename);
-                var observableCollection = JsonSerializer.Deserialize<ObservableCollection<PcInfo>>(jsonString);
+                var observableCollection = JsonSerializer.Deserialize<ObservableCollection<T>>(jsonString);
 
                 if (observableCollection != null)
                 {
-                    foreach (var c in observableCollection)
+                    foreach (var o in observableCollection)
                     {
-                        oc.Add(c);
+                        oc.Add(o);
                     }
                 }
             }
