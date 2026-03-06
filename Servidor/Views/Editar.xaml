@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Servidor.Views"
         mc:Ignorable="d"
-        Title="Editar" Height="300" Width="600">
-    <Grid Margin="20" Background="#E1D9BC">
+         Title="Editar" Height="300" Width="600" Background="#EBF2FA">
+    <Grid Margin="20" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
@@ -14,10 +14,20 @@
 
         </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0" >
 
-        <Label Grid.Row="0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  Margin="10,5" FontSize="25" >Servidor - Control de Laboratorios</Label>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
 
-        <Border Grid.Row="1" BorderBrush="#30364F" BorderThickness="5" Margin="10" Background="#E1D9BC" >
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Image Source="/Images/cliente-servidor.png" Width="70" Height="60" Margin="40,5,0,5" Grid.Column="0" HorizontalAlignment="Right"/>
+            <Label FontFamily="Bold" HorizontalAlignment="Center" Foreground="#064789 " Margin="15" FontSize="25"  Grid.Column="1">Servidor - Control de Laboratorios</Label>
+
+        </Grid>
+
+        <Border Grid.Row="1" BorderBrush="#427aa1" BorderThickness="3" CornerRadius="10"  Margin="10" Background="White" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -26,20 +36,33 @@
                 </Grid.RowDefinitions>
 
 
-                <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  Margin="10,5" FontSize="15" >Deseas editar esta computadora?</Label>
-
-                <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="{Binding Identificador}" Background="#30364F" ></TextBlock>
-
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,10,0,0">
+                <Label FontFamily="Bold"  HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="10,5" FontSize="18" >¿Deseas editar esta computadora?</Label>
 
 
 
-                    <Button  Padding="5" Margin="5" HorizontalAlignment="Right" Background="#30364F" Foreground="#F0F0DB" FontFamily="bold">Editar</Button>
-                    <Button   Padding="5" Margin="5" HorizontalAlignment="Left" Background="#30364F" Foreground="#F0F0DB" FontFamily="bold">Cancelar</Button>
+
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,5">
+
+                    <Border Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="10"  Width="250">
+
+                        <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Identificador}" ></TextBlock>
+                    </Border>
+
+
+                </StackPanel>
+
+
+
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <Button  Padding="5" Margin="5" HorizontalAlignment="Right" Background="#679436 " Foreground="#F0F0DB" Width="100" FontFamily="bold">Editar</Button>
+                    <Button   Padding="5" Margin="5" HorizontalAlignment="Left" Background="#30364F" Foreground="#F0F0DB" Width="100" FontFamily="bold">Cancelar</Button>
                 </StackPanel>
 
             </Grid>
         </Border>
+
+
 
 
 
