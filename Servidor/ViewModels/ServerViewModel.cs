@@ -80,7 +80,7 @@ namespace Servidor.ViewModels
             TimerEstado.Tick += TimerEstado_Tick;
             TimerEstado.Start();
         }
-        
+
         public void IrRegistrar(IPEndPoint remoto, string identificador)
         {
             PcInfo pc = new PcInfo
@@ -217,8 +217,6 @@ namespace Servidor.ViewModels
                                 });
                                 pc.EstadoConectado = true;
                             }
-                            Info = "true";
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
                             ComputadoraResponder = pc;
                             EnviarMensajes(Orden.CONECTADO);
                         }
@@ -244,26 +242,30 @@ namespace Servidor.ViewModels
             if ((ComputadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT)
             {
                 var pc = comando != Orden.CONECTADO ? ComputadoraSeleccionada : ComputadoraResponder;
-                if (comando != Orden.CONECTADO)
+                if (pc != null)
                 {
-                    HistorialComandos.Add(new ComandoInfo
+
+                    if (comando != Orden.CONECTADO)
                     {
-                        Destino = pc.Identificador,
-                        Comando = comando,
-                        Fecha = DateTime.Now,
-                        NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
-                    });
-                    GuardarOC(HistorialComandos, comandosFilename);
+                        HistorialComandos.Add(new ComandoInfo
+                        {
+                            Destino = pc.Identificador,
+                            Comando = comando,
+                            Fecha = DateTime.Now,
+                            NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
+                        });
+                        GuardarOC(HistorialComandos, comandosFilename);
+                    }
+
+                    Info = $"a {comando.ToString()} {pc.Nombre}";
+
+                    string mensaje = comando == Orden.CAMBIARID ? $"{comando}|{pc.Nombre}" : comando.ToString();
+                    byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
+                    IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
+                    Server.Send(buffer, buffer.Length, destino);
+
+                    PropertyChanged?.Invoke(this, new(nameof(Info)));
                 }
-
-                Info = $"a {comando.ToString()} {pc.Nombre}";
-
-                string mensaje = comando == Orden.CAMBIARID ? $"{comando}|{pc.Nombre}" : comando.ToString();
-                byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
-                IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
-                Server.Send(buffer, buffer.Length, destino);
-
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
             }
         }
 
