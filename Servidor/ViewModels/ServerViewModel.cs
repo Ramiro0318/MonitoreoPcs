@@ -44,6 +44,7 @@ namespace Servidor.ViewModels
         public int LatidosRecibidos { set; get; }
         public string? Info { set; get; }
         public PcInfo? ComputadoraSeleccionada { set; get; }
+        public PcInfo? ComputadoraResponder { set; get; }
         public PcInfo? Clon { set; get; }
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
@@ -79,7 +80,7 @@ namespace Servidor.ViewModels
             TimerEstado.Tick += TimerEstado_Tick;
             TimerEstado.Start();
         }
-
+        
         public void IrRegistrar(IPEndPoint remoto, string identificador)
         {
             PcInfo pc = new PcInfo
@@ -186,7 +187,7 @@ namespace Servidor.ViewModels
                     string comando = Encoding.UTF8.GetString(buffer);
                     string[] comandoSeparado = comando.Split('|');
 
-                    if (comandoSeparado[0] == Orden.REGISTRO.ToString() && comandoSeparado[1] != null && comandoSeparado.Length > 2)
+                    if (comandoSeparado[0] == Orden.REGISTRO.ToString() && comandoSeparado.Length == 2)
                     {
                         //Mostrar solicitud de registro
                         App.Current.Dispatcher.BeginInvoke(() =>
@@ -197,7 +198,7 @@ namespace Servidor.ViewModels
                         });
 
                     }
-                    else if (comandoSeparado[0] == Orden.HEARTHBEAT.ToString() && comandoSeparado[1] != null && comandoSeparado.Length > 2)
+                    else if (comandoSeparado[0] == Orden.HEARTHBEAT.ToString() && comandoSeparado.Length == 2)
                     {
                         LatidosRecibidos++;
                         PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
@@ -218,7 +219,7 @@ namespace Servidor.ViewModels
                             }
                             Info = "true";
                             PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            ComputadoraSeleccionada = pc;
+                            ComputadoraResponder = pc;
                             EnviarMensajes(Orden.CONECTADO);
                         }
                     }
@@ -240,9 +241,9 @@ namespace Servidor.ViewModels
 
         public void EnviarMensajes(Orden comando)
         {
-            if (ComputadoraSeleccionada != null && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT)
+            if ((ComputadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT)
             {
-                var pc = ComputadoraSeleccionada;
+                var pc = comando != Orden.CONECTADO ? ComputadoraSeleccionada : ComputadoraResponder;
                 if (comando != Orden.CONECTADO)
                 {
                     HistorialComandos.Add(new ComandoInfo
