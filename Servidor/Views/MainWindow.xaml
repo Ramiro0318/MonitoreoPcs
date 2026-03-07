@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Servidor"
+        xmlns:local="clr-namespace:Servidor.ViewModels"
         xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
         mc:Ignorable="d" x:Name="MainWindowServidor"
         Title="Servidor" Height="800" Width="800">
@@ -81,8 +81,9 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="220" ></ColumnDefinition>
+                        <ColumnDefinition Width="200" ></ColumnDefinition>
                         <ColumnDefinition Width="100" ></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
@@ -93,7 +94,8 @@
                 <Label Grid.Column="1" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >IP</Label>
                 <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Puerto</Label>
                 <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Estado</Label>
-                <Label Grid.Column="4" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comandos</Label>
+                <Label Grid.Column="4" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Internet</Label>
+                <Label Grid.Column="5" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comandos</Label>
 
 
             </Grid>
@@ -104,7 +106,8 @@
                     <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="220"></ColumnDefinition>
+                                    <ColumnDefinition Width="200"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
                                     <ColumnDefinition Width="100"></ColumnDefinition>
                                     <ColumnDefinition Width="100"></ColumnDefinition>
                                     <ColumnDefinition Width="100"></ColumnDefinition>
@@ -116,9 +119,10 @@
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Identificador}" ></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                                     <TextBlock HorizontalAlignment="Left" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoConectado}" Grid.Column="3"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoEnlazado}" Grid.Column="3"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoInternet}" Grid.Column="4"></TextBlock>
 
-                                    <Grid Grid.Column="4">
+                                    <Grid Grid.Column="5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition></ColumnDefinition>
                                             <ColumnDefinition></ColumnDefinition>

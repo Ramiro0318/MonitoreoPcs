@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -187,6 +188,9 @@ namespace Cliente.ViewModels
                                     //Serializar la ip y puerto
                                     EnviarHearthbeat();
                                 });
+                                Thread hiloInternet = new(RevisarInternet);
+                                hiloInternet.IsBackground = true;
+                                hiloInternet.Start();
                             }
                             break;
 

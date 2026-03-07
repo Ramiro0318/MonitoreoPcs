@@ -39,7 +39,7 @@ namespace Servidor.ViewModels
         private string computadorasFilename = "computadoras.json";
         private string conexionesFilename = "conexiones.json";
         private string comandosFilename = "comandos.json";
-        private IPAddress ip = IPAddress.Parse("192.168.1.67");
+        private IPAddress ip = IPAddress.Parse("192.168.1.64");
         private int puerto = 60000;
         public int LatidosRecibidos { set; get; }
         public string? Info { set; get; }
