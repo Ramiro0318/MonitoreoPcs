@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -15,7 +16,7 @@ using System.Windows.Threading;
 
 namespace Cliente.ViewModels
 {
-    public enum Orden { REGISTROAPROBADO, REGISTRO, CONECTADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT }
+    public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT, INTERNET }
     public class ClienteViewModel : INotifyPropertyChanged
     {
 
@@ -24,9 +25,9 @@ namespace Cliente.ViewModels
 
         private DispatcherTimer TimerBeat;
         private int puerto = 60000; //Puerto de servidor
-        private bool latiendo = false;
+        private bool latiendo, internet;
         string filename = "registro.json";
-        public int LatidosEnviados { set; get; } //Esta propiedad no es necesaria, solo es para tener una referencia desde la vista
+        private int latidosEnviados, pingsEnviados;
         public string IpPorValidar { get; set; } //Esta propiedad es para poder aplicar un IsValid para validar la ip
         public string Nombre { set; get; } = null!;
         public string Info { set; get; }
@@ -46,12 +47,13 @@ namespace Cliente.ViewModels
             Cliente = new UdpClient(endpoint);
             if (Registro != null)
             {
-                //No estoy seguro si es necesario que la ip sea guardada en el registro, si lo veo necesario, lo haré después
-                //Si no es necesario, puedo instanciarlo fuera del if y eliminar el duplicado en EnviarRegistro()
-                //Empieza a escuchar
                 Thread hiloEscuchar = new(RecibirMensajes);
                 hiloEscuchar.IsBackground = true;
                 hiloEscuchar.Start();
+
+                Thread hiloInternet = new(RevisarInternet);
+                hiloInternet.IsBackground = true;
+                hiloInternet.Start();
 
                 EnviarHearthbeat();
 
@@ -87,6 +89,7 @@ namespace Cliente.ViewModels
 
         public void EnviarHearthbeat()
         {
+
             TimerBeat = new DispatcherTimer();
             TimerBeat.Interval = TimeSpan.FromSeconds(5);
             TimerBeat.Tick += TimerBeat_Tick;
@@ -102,16 +105,48 @@ namespace Cliente.ViewModels
                 byte[] buffer = Encoding.UTF8.GetBytes(comando);
                 Cliente.Send(buffer, buffer.Length, remoto);
 
-                LatidosEnviados++;
-                PropertyChanged?.Invoke(this, new(nameof(LatidosEnviados)));
+                latidosEnviados++;
+                PropertyChanged?.Invoke(this, new(nameof(latidosEnviados)));
 
-                if (LatidosEnviados >= 5)
+                if (latidosEnviados >= 5)
                 {
                     Info = "Se ha perdido la conexión con el servidor";
                     PropertyChanged?.Invoke(this, new(nameof(Info)));
-                    //Se cambia de estado a desconectado
                 }
             }
+        }
+
+
+        private void RevisarInternet()
+        {
+            while (true)
+            {
+                if (Registro != null)
+                {
+
+                    IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
+                    if (HacerPing())
+                    {
+                        pingsEnviados = 0;
+                        string comando = $"{Orden.INTERNET}|{Registro.NombreAsignado}";
+                        byte[] buffer = Encoding.UTF8.GetBytes(comando);
+                        Cliente.Send(buffer, buffer.Length, remoto);
+                    }
+                    Thread.Sleep(5000);
+                }
+                else return;
+            }
+        }
+
+        private bool HacerPing()
+        {
+            try
+            {
+                using Ping ping = new();
+                PingReply respuesta = ping.Send("8.8.8.8", 1000);
+                return respuesta.Status == IPStatus.Success;
+            }
+            catch { return false; }
         }
 
         public void RecibirMensajes()
@@ -131,16 +166,16 @@ namespace Cliente.ViewModels
 
                     switch (comandoSeparado[0])
                     {
-                        case "CONECTADO":
+                        case nameof(Orden.ENLAZADO):
                             App.Current.Dispatcher.Invoke(() =>
                             {
-                                Info = "CONECTADO!";
-                                LatidosEnviados = 0;
+                                Info = "ENLAZADO!";
+                                latidosEnviados = 0;
                                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                             });
                             break;
 
-                        case "REGISTROAPROBADO":
+                        case nameof(Orden.REGISTROAPROBADO):
                             if (!latiendo)
                             {
                                 latiendo = true;
@@ -155,7 +190,7 @@ namespace Cliente.ViewModels
                             }
                             break;
 
-                        case "APAGAR":
+                        case nameof(Orden.APAGAR):
                             escuchando = false;
                             App.Current.Dispatcher.Invoke(() =>
                             {
@@ -166,7 +201,7 @@ namespace Cliente.ViewModels
                             Thread.Sleep(10000);
                             break;
 
-                        case "REINICIAR":
+                        case nameof(Orden.REINICIAR):
                             escuchando = false;
                             App.Current.Dispatcher.Invoke(() =>
                             {
@@ -177,7 +212,7 @@ namespace Cliente.ViewModels
                             Thread.Sleep(10000);
                             break;
 
-                        case "CAMBIARID":
+                        case nameof(Orden.CAMBIARID):
                             if (comandoSeparado.Length == 2 && Registro != null)
                             {
                                 Registro.NombreAsignado = comandoSeparado[1];
@@ -191,7 +226,7 @@ namespace Cliente.ViewModels
                             }
                             break;
 
-                        case "OLVIDAR":
+                        case nameof(Orden.OLVIDAR):
                             escuchando = false;
                             App.Current.Dispatcher.Invoke(() =>
                             {

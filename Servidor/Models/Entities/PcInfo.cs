@@ -8,22 +8,37 @@ namespace Servidor.Models.Entities
 {
     public class PcInfo: INotifyPropertyChanged
     {
-        private bool estadoConectado;
+        private bool estadoEnlazado;
+        private bool estadoInternet;
         public string Nombre { get; set; } = null!;
         public string Ip { get; set; } = null!;
         public int Puerto { get; set; }
         public DateTime? HoraConexion { get; set; }
         public DateTime? UltimoLatido { get; set; }
+        public DateTime? UltimoPing { get; set; }
         public string Identificador => $"{Nombre}@{Ip}:{Puerto}";
 
-        public bool EstadoConectado
+        public bool EstadoEnlazado
         {
-            get { return estadoConectado; }
+            get { return estadoEnlazado; }
             set {
-                if(estadoConectado != value)
+                if(estadoEnlazado != value)
                 {
-                    estadoConectado = value;
-                    PropertyChanged?.Invoke(this, new(nameof(EstadoConectado)));
+                    estadoEnlazado = value;
+                    PropertyChanged?.Invoke(this, new(nameof(EstadoEnlazado)));
+                }
+            }
+        }
+
+        public bool EstadoInternet
+        {
+            get { return estadoInternet; }
+            set
+            {
+                if (estadoInternet != value)
+                {
+                    estadoInternet = value;
+                    PropertyChanged?.Invoke(this, new(nameof(estadoInternet)));
                 }
             }
         }

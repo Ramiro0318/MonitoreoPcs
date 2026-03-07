@@ -22,7 +22,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.ViewModels
 {
-    public enum Orden { REGISTROAPROBADO, REGISTRO, CONECTADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT }
+    public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT, INTERNET }
     public class ServerViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -88,7 +88,7 @@ namespace Servidor.ViewModels
                 Nombre = identificador,
                 Ip = remoto.Address.ToString(),
                 Puerto = remoto.Port,
-                EstadoConectado = false,
+                EstadoEnlazado = false,
             };
 
             ComputadoraSeleccionada = pc;
@@ -132,7 +132,7 @@ namespace Servidor.ViewModels
                     Puerto = ComputadoraSeleccionada.Puerto,
                     HoraConexion = ComputadoraSeleccionada.HoraConexion,//Estas 3 no estoy seguro
                     UltimoLatido = ComputadoraSeleccionada.UltimoLatido,
-                    EstadoConectado = ComputadoraSeleccionada.EstadoConectado
+                    EstadoEnlazado = ComputadoraSeleccionada.EstadoEnlazado
 
                 };
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));
@@ -187,7 +187,7 @@ namespace Servidor.ViewModels
                     string comando = Encoding.UTF8.GetString(buffer);
                     string[] comandoSeparado = comando.Split('|');
 
-                    if (comandoSeparado[0] == Orden.REGISTRO.ToString() && comandoSeparado.Length == 2)
+                    if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 2)
                     {
                         //Mostrar solicitud de registro
                         App.Current.Dispatcher.BeginInvoke(() =>
@@ -198,7 +198,7 @@ namespace Servidor.ViewModels
                         });
 
                     }
-                    else if (comandoSeparado[0] == Orden.HEARTHBEAT.ToString() && comandoSeparado.Length == 2)
+                    else if (comandoSeparado[0] == nameof(Orden.HEARTHBEAT) && comandoSeparado.Length == 2)
                     {
                         LatidosRecibidos++;
                         PropertyChanged?.Invoke(this, new(nameof(LatidosRecibidos)));
@@ -207,7 +207,7 @@ namespace Servidor.ViewModels
                         if (pc != null)
                         {
                             pc.UltimoLatido = DateTime.Now;
-                            if (!pc.EstadoConectado)
+                            if (!pc.EstadoEnlazado)
                             {
                                 pc.HoraConexion = DateTime.Now;
                                 App.Current.Dispatcher.Invoke(() =>
@@ -215,10 +215,24 @@ namespace Servidor.ViewModels
                                     HistorialConexiones.Add(pc);
                                     GuardarOC(HistorialConexiones, conexionesFilename);
                                 });
-                                pc.EstadoConectado = true;
+                                pc.EstadoEnlazado = true;
                             }
                             ComputadoraResponder = pc;
-                            EnviarMensajes(Orden.CONECTADO);
+                            EnviarMensajes(Orden.ENLAZADO);
+                        }
+                    }
+                    else if (comandoSeparado[0] == nameof(Orden.INTERNET) && comandoSeparado.Length == 2)
+                    {
+                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                        if (pc != null)
+                        {
+                            pc.UltimoPing = DateTime.Now;
+                            pc.EstadoInternet = true;
+                            App.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                Info = "TieneInternet";
+                                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            });
                         }
                     }
                 }
@@ -230,9 +244,13 @@ namespace Servidor.ViewModels
         {
             foreach (var pc in Computadoras.ToList())
             {
-                if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoConectado)
+                if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
                 {
-                    pc.EstadoConectado = false;
+                    pc.EstadoEnlazado = false;
+                }
+                if (DateTime.Now - pc.UltimoPing >= TimeSpan.FromSeconds(30) && pc.EstadoInternet)
+                {
+                    pc.EstadoInternet = false;
                 }
             }
         }
@@ -241,11 +259,11 @@ namespace Servidor.ViewModels
         {
             if ((ComputadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT)
             {
-                var pc = comando != Orden.CONECTADO ? ComputadoraSeleccionada : ComputadoraResponder;
+                var pc = comando != Orden.ENLAZADO ? ComputadoraSeleccionada : ComputadoraResponder;
                 if (pc != null)
                 {
 
-                    if (comando != Orden.CONECTADO)
+                    if (comando != Orden.ENLAZADO)
                     {
                         HistorialComandos.Add(new ComandoInfo
                         {
