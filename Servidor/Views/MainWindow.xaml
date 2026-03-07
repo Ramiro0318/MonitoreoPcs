@@ -20,6 +20,7 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
           
@@ -126,8 +127,8 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
-                                        <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="APAGAR" Content="Apagar"></Button><!--apagar-->
-                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="REINICIAR" Content="Reiniciar"></Button><!--reiniciar-->
+                                        <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" Content="Apagar"></Button><!--apagar-->
+                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.REINICIAR}" Content="Reiniciar"></Button><!--reiniciar-->
                                         <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}" Content="CambiarId" ></Button><!--editar-->
                                         <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" ></Button><!--eliminar-->
                                         
@@ -155,12 +156,14 @@
                 </Grid.RowDefinitions>
 
                 <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de historial de conexiones</Label>
-                <Button Grid.Row="0" HorizontalAlignment="Right">limpiar</Button>
+                <Button Grid.Row="0" Command="{Binding LimpiarCommand}" CommandParameter="conexiones" HorizontalAlignment="Right">limpiar</Button>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" ></ColumnDefinition>
                         <ColumnDefinition Width="250" ></ColumnDefinition>
                         <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="59*"/>
+                        <ColumnDefinition Width="11*"/>
 
                     </Grid.ColumnDefinitions>
 
@@ -173,7 +176,7 @@
                 </Grid>
 
                 <Grid Grid.Row="2">
-                    <ListBox ItemsSource="{Binding HistorialComputadoras}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ListBox ItemsSource="{Binding HistorialConexiones}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -201,14 +204,84 @@
 
         </Border>
 
-
-
-
-
-       
-     
+        
+        
+        
         
 
-        
+        <Border Padding="10" Grid.Row="5">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="20" >Lista de historial de comandos</Label>
+                <Button Grid.Row="0" Command="{Binding LimpiarCommand}" CommandParameter="comandos" HorizontalAlignment="Right">limpiar</Button>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" ></ColumnDefinition>
+                        <ColumnDefinition Width="100" ></ColumnDefinition>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
+                    <Label  Grid.Column="1"  FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15">Comando</Label>
+                    <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15">Nuevo nombre</Label>
+                    <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15">Fecha</Label>
+
+
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <ListBox ItemsSource="{Binding HistorialComandos}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" ></ColumnDefinition>
+                                        <ColumnDefinition Width="100" ></ColumnDefinition>
+                                        <ColumnDefinition Width="200"></ColumnDefinition>
+                                        <ColumnDefinition Width="150"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+
+
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" ></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Comando }" Grid.Column="1"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding NuevoNombre }" Grid.Column="2"></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Fecha }" Grid.Column="3"></TextBlock>
+
+
+
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+
+        </Border>
+
+        <StackPanel Grid.Row="6">
+
+            <TextBox Text="{Binding Clon.Nombre}"></TextBox>
+
+            <Button Command="{Binding EditarCommand}" CommandParameter="{Binding Clon}">Editar</Button>
+            <Button Command="{Binding RechazarCommand}">Cancelar</Button>
+        </StackPanel>
+
+
+
+
+
+
+
+
     </Grid>
 </Window>

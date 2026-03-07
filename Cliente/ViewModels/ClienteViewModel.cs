@@ -15,6 +15,7 @@ using System.Windows.Threading;
 
 namespace Cliente.ViewModels
 {
+    public enum Orden { REGISTROAPROBADO, REGISTRO, CONECTADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT }
     public class ClienteViewModel : INotifyPropertyChanged
     {
 
@@ -28,7 +29,7 @@ namespace Cliente.ViewModels
         public int LatidosEnviados { set; get; } //Esta propiedad no es necesaria, solo es para tener una referencia desde la vista
         public string IpPorValidar { get; set; } //Esta propiedad es para poder aplicar un IsValid para validar la ip
         public string Nombre { set; get; } = null!;
-        public string Info { set; get; } = "Error";
+        public string Info { set; get; }
         public IPAddress Ip { set; get; } // IpServidor
         public Info? Registro { set; get; }
         UdpClient Cliente { get; set; }
@@ -57,21 +58,18 @@ namespace Cliente.ViewModels
             }
         }
 
+        bool escuchando = false;
+
         public void EnviarRegistro()
         {
-            if (IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
+            if (!escuchando && IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
             {
                 try
                 {
                     Ip = IPAddress.Parse(IpPorValidar);
-
-
-                    //IPEndPoint endpoint = new(IPAddress.Any, 60001);
-                    //Cliente = new UdpClient(endpoint);
-
                     IPEndPoint remoto = new IPEndPoint(Ip, puerto);
 
-                    string comando = $"REGISTRO|{Nombre}";
+                    string comando = $"{Orden.REGISTRO}|{Nombre}";
                     byte[] buffer = Encoding.UTF8.GetBytes(comando);
                     Cliente.Send(buffer, buffer.Length, remoto);
                     Info = "Solicitud de registro enviada";
@@ -93,32 +91,34 @@ namespace Cliente.ViewModels
             TimerBeat.Interval = TimeSpan.FromSeconds(5);
             TimerBeat.Tick += TimerBeat_Tick;
             TimerBeat.Start();
-            latiendo = true;
         }
 
         private void TimerBeat_Tick(object? sender, EventArgs e)
         {
-            IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-            string comando = $"HEARTHBEAT|{Registro.NombreAsignado}";
-            byte[] buffer = Encoding.UTF8.GetBytes(comando);
-            Cliente.Send(buffer, buffer.Length, remoto);
-
-            LatidosEnviados++;
-            PropertyChanged?.Invoke(this, new(nameof(LatidosEnviados)));
-
-            if (LatidosEnviados >= 5)
+            if (Registro != null)
             {
-                Info = "Se ha perdido la conexión con el servidor";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                //Se cambia de estado a desconectado
+                IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
+                string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
+                byte[] buffer = Encoding.UTF8.GetBytes(comando);
+                Cliente.Send(buffer, buffer.Length, remoto);
+
+                LatidosEnviados++;
+                PropertyChanged?.Invoke(this, new(nameof(LatidosEnviados)));
+
+                if (LatidosEnviados >= 5)
+                {
+                    Info = "Se ha perdido la conexión con el servidor";
+                    PropertyChanged?.Invoke(this, new(nameof(Info)));
+                    //Se cambia de estado a desconectado
+                }
             }
         }
 
         public void RecibirMensajes()
         {
+            escuchando = true;
             Info = "Escuchando mensajes";
             PropertyChanged?.Invoke(this, new(nameof(Info)));
-            bool escuchando = true;
             while (escuchando)
             {
                 try
@@ -132,20 +132,24 @@ namespace Cliente.ViewModels
                     switch (comandoSeparado[0])
                     {
                         case "CONECTADO":
-                            Info = "CONECTADO!";
-                            LatidosEnviados = 0;
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                Info = "CONECTADO!";
+                                LatidosEnviados = 0;
+                                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            });
                             break;
 
                         case "REGISTROAPROBADO":
-                            Info = "Registro aprobado... ";
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            //Serializar la ip y puerto
-                            GuardarRegistro();
                             if (!latiendo)
                             {
+                                latiendo = true;
+                                GuardarRegistro();
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
+                                    Info = "Registro aprobado... ";
+                                    PropertyChanged?.Invoke(this, new(nameof(Info)));
+                                    //Serializar la ip y puerto
                                     EnviarHearthbeat();
                                 });
                             }
@@ -153,45 +157,56 @@ namespace Cliente.ViewModels
 
                         case "APAGAR":
                             escuchando = false;
-                            Info = "Esta computadora se apagará en unos segundos...";
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                Info = "Esta computadora se apagará en unos segundos...";
+                                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            });
                             Process.Start("shutdown", "/s /t 10");                             //s = Apagar
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
                             Thread.Sleep(10000);
                             break;
 
                         case "REINICIAR":
                             escuchando = false;
-                            Info = "Esta computadora se reiniciará en unos segundos...";
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                Info = "Esta computadora se reiniciará en unos segundos...";
+                                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                            });
                             Process.Start("shutdown", "/r /t 10");                             //r = Reiniciar
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
                             Thread.Sleep(10000);
                             break;
 
                         case "CAMBIARID":
-                            if (comandoSeparado.Length > 0 && Registro != null)
+                            if (comandoSeparado.Length == 2 && Registro != null)
                             {
-                                Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
                                 Registro.NombreAsignado = comandoSeparado[1];
-                                Registro.IpServidor = remoto.Address.ToString();
-                                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                                PropertyChanged?.Invoke(this, new(nameof(Registro)));
-                                GuardarRegistro();
+                                App.Current.Dispatcher.Invoke(() =>
+                                {
+                                    Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
+                                    GuardarRegistro();
+                                    PropertyChanged?.Invoke(this, new(nameof(Info)));
+                                    PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                                });
                             }
                             break;
 
                         case "OLVIDAR":
-                            Info = "Registro eliminado";
-                            latiendo = false;
                             escuchando = false;
-                            TimerBeat.Stop();
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                Info = "Registro eliminado";
+                                latiendo = false;
+                                TimerBeat.Stop();
+                                Registro = null;
+                                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                                PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                            });
                             File.Delete(filename);
-                            Registro = null;
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            PropertyChanged?.Invoke(this, new(nameof(Registro)));
                             break;
                     }
                 }
-                catch { }
+                catch { if (!escuchando) break; }
             }
 
         }
@@ -208,21 +223,9 @@ namespace Cliente.ViewModels
                 };
                 Registro = registro;
             }
-            else
-            {
-                var registro = new Info
-                {
-                    NombreAsignado = Registro.NombreAsignado,
-                    IpServidor = Registro.IpServidor,
-                    PuertoServidor = Registro.PuertoServidor
-                };
-                Registro = registro;
-            }
-
             string jsonString = JsonSerializer.Serialize(Registro);
             File.WriteAllText(filename, jsonString);
             PropertyChanged?.Invoke(this, new(nameof(Registro)));
-
         }
 
         private void AbrirRegistro()
