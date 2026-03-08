@@ -130,7 +130,7 @@ namespace Servidor.ViewModels
                     Nombre = ComputadoraSeleccionada.Nombre,
                     Ip = ComputadoraSeleccionada.Ip,
                     Puerto = ComputadoraSeleccionada.Puerto,
-                    HoraConexion = ComputadoraSeleccionada.HoraConexion,//Estas 3 no estoy seguro
+                    HoraConexion = ComputadoraSeleccionada.HoraConexion,
                     UltimoLatido = ComputadoraSeleccionada.UltimoLatido,
                     EstadoEnlazado = ComputadoraSeleccionada.EstadoEnlazado
 

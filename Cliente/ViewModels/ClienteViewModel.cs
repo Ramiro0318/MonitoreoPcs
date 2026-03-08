@@ -66,7 +66,7 @@ namespace Cliente.ViewModels
 
         public void EnviarRegistro()
         {
-            if (!escuchando && IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
+            if (IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
             {
                 try
                 {
@@ -78,10 +78,13 @@ namespace Cliente.ViewModels
                     Cliente.Send(buffer, buffer.Length, remoto);
                     Info = "Solicitud de registro enviada";
 
-                    //Empieza a escuchar si no está escuchando ya
-                    Thread hiloEscuchar = new(RecibirMensajes);
-                    hiloEscuchar.IsBackground = true;
-                    hiloEscuchar.Start();
+                    if (!escuchando)
+                    {
+                        //Empieza a escuchar si no está escuchando ya
+                        Thread hiloEscuchar = new(RecibirMensajes);
+                        hiloEscuchar.IsBackground = true;
+                        hiloEscuchar.Start();
+                    }
                 }
                 catch { }
             }
@@ -123,6 +126,7 @@ namespace Cliente.ViewModels
         {
             while (true)
             {
+                Thread.Sleep(5000);
                 if (Registro != null)
                 {
                     IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
