@@ -26,16 +26,18 @@ namespace Cliente.ViewModels
 
         private DispatcherTimer TimerBeat;
         private int puerto = 60000; //Puerto de servidor
-        private bool latiendo, internet;
+        private bool latiendo;
+        private bool escuchando = false;
         string filename = "registro.json";
-        private int latidosEnviados, pingsEnviados;
-        public string IpPorValidar { get; set; } //Esta propiedad es para poder aplicar un IsValid para validar la ip
+        private int latidosEnviados;
+        private DateTime ultimoPing = DateTime.Now;
+        public string IpPorValidar { get; set; }
         public string Nombre { set; get; } = null!;
         public string Info { set; get; }
+        public bool Internet { set; get; }
         public IPAddress Ip { set; get; } // IpServidor
         public Info? Registro { set; get; }
         UdpClient Cliente { get; set; }
-
 
 
         public ClienteViewModel()
@@ -61,7 +63,6 @@ namespace Cliente.ViewModels
             }
         }
 
-        bool escuchando = false;
 
         public void EnviarRegistro()
         {
@@ -77,7 +78,7 @@ namespace Cliente.ViewModels
                     Cliente.Send(buffer, buffer.Length, remoto);
                     Info = "Solicitud de registro enviada";
 
-                    //Empieza a escuchar
+                    //Empieza a escuchar si no está escuchando ya
                     Thread hiloEscuchar = new(RecibirMensajes);
                     hiloEscuchar.IsBackground = true;
                     hiloEscuchar.Start();
@@ -124,14 +125,21 @@ namespace Cliente.ViewModels
             {
                 if (Registro != null)
                 {
-
                     IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
                     if (HacerPing())
                     {
-                        pingsEnviados = 0;
                         string comando = $"{Orden.INTERNET}|{Registro.NombreAsignado}";
                         byte[] buffer = Encoding.UTF8.GetBytes(comando);
                         Cliente.Send(buffer, buffer.Length, remoto);
+                        ultimoPing = DateTime.Now;
+                    }
+                    if (DateTime.Now - ultimoPing >= TimeSpan.FromSeconds(30) && Internet)
+                    {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            Internet = false;
+                            PropertyChanged?.Invoke(this, new(nameof(Internet)));
+                        });
                     }
                     Thread.Sleep(5000);
                 }

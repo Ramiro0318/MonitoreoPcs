@@ -39,7 +39,7 @@ namespace Servidor.ViewModels
         private string computadorasFilename = "computadoras.json";
         private string conexionesFilename = "conexiones.json";
         private string comandosFilename = "comandos.json";
-        private IPAddress ip = IPAddress.Parse("192.168.1.64");
+        private IPAddress ip = IPAddress.Any;
         private int puerto = 60000;
         public int LatidosRecibidos { set; get; }
         public string? Info { set; get; }
@@ -214,8 +214,8 @@ namespace Servidor.ViewModels
                                 {   //Guardar el historial en cada nueva conexión
                                     HistorialConexiones.Add(pc);
                                     GuardarOC(HistorialConexiones, conexionesFilename);
+                                    pc.EstadoEnlazado = true;
                                 });
-                                pc.EstadoEnlazado = true;
                             }
                             ComputadoraResponder = pc;
                             EnviarMensajes(Orden.ENLAZADO);
