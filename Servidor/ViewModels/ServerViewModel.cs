@@ -122,7 +122,7 @@ namespace Servidor.ViewModels
         private string? identificador;
         private void IrEditar()
         {
-            if (ComputadoraSeleccionada != null)
+            if (ComputadoraSeleccionada != null && ComputadoraSeleccionada.EstadoEnlazado)
             {
                 identificador = ComputadoraSeleccionada.Identificador;
                 Clon = new PcInfo
@@ -153,8 +153,8 @@ namespace Servidor.ViewModels
                     GuardarOC(HistorialConexiones, conexionesFilename);
 
                     ComputadoraSeleccionada = clon;
-                    PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
                     EnviarMensajes(Orden.CAMBIARID);
+                    PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
 
                 }
                 Clon = null;

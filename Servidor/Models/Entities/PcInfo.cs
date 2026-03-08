@@ -6,11 +6,25 @@ using System.Text;
 
 namespace Servidor.Models.Entities
 {
-    public class PcInfo: INotifyPropertyChanged
+    public class PcInfo : INotifyPropertyChanged
     {
         private bool estadoEnlazado;
         private bool estadoInternet;
-        public string Nombre { get; set; } = null!;
+        private string nombre = null!;
+        public string Nombre
+        {
+            get
+            { return nombre; }
+            set
+            {
+                if (nombre != value)
+                {
+                    nombre = value;
+                    PropertyChanged?.Invoke(this, new(nameof(Nombre)));
+                    PropertyChanged?.Invoke(this, new(nameof(Identificador)));
+                }
+            }
+        }
         public string Ip { get; set; } = null!;
         public int Puerto { get; set; }
         public DateTime? HoraConexion { get; set; }
@@ -21,8 +35,9 @@ namespace Servidor.Models.Entities
         public bool EstadoEnlazado
         {
             get { return estadoEnlazado; }
-            set {
-                if(estadoEnlazado != value)
+            set
+            {
+                if (estadoEnlazado != value)
                 {
                     estadoEnlazado = value;
                     PropertyChanged?.Invoke(this, new(nameof(EstadoEnlazado)));
@@ -38,7 +53,7 @@ namespace Servidor.Models.Entities
                 if (estadoInternet != value)
                 {
                     estadoInternet = value;
-                    PropertyChanged?.Invoke(this, new(nameof(estadoInternet)));
+                    PropertyChanged?.Invoke(this, new(nameof(EstadoInternet)));
                 }
             }
         }
