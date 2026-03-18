@@ -43,9 +43,10 @@
                 
                 <StackPanel Grid.Column="0">
                 <TextBlock FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="18">Nueva Solicitud de Registro</TextBlock>
-                 <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
-            
-                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
+
+                    <TextBox HorizontalAlignment="Center" MinWidth="150" TextAlignment="Center" Text="{Binding ComputadoraSeleccionada.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
  
                 <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
                

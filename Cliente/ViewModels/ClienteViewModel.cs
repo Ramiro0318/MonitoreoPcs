@@ -192,7 +192,8 @@ namespace Cliente.ViewModels
                             if (!latiendo)
                             {
                                 latiendo = true;
-                                GuardarRegistro();
+
+                                GuardarRegistro(comandoSeparado[1]);
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
                                     Info = "Registro aprobado... ";
@@ -231,11 +232,10 @@ namespace Cliente.ViewModels
                         case nameof(Orden.CAMBIARID):
                             if (comandoSeparado.Length == 2 && Registro != null)
                             {
-                                Registro.NombreAsignado = comandoSeparado[1];
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
                                     Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
-                                    GuardarRegistro();
+                                    GuardarRegistro(comandoSeparado[1]);
                                     PropertyChanged?.Invoke(this, new(nameof(Info)));
                                     PropertyChanged?.Invoke(this, new(nameof(Registro)));
                                 });
@@ -262,21 +262,21 @@ namespace Cliente.ViewModels
 
         }
 
-        private void GuardarRegistro()
+        private void GuardarRegistro(string nombre)
         {
-            if (Registro == null)
+            if (nombre != null)
             {
                 var registro = new Info
                 {
-                    NombreAsignado = Nombre,
+                    NombreAsignado = nombre,
                     IpServidor = Ip.ToString(),
                     PuertoServidor = puerto
                 };
                 Registro = registro;
+                string jsonString = JsonSerializer.Serialize(Registro);
+                File.WriteAllText(filename, jsonString);
+                PropertyChanged?.Invoke(this, new(nameof(Registro)));
             }
-            string jsonString = JsonSerializer.Serialize(Registro);
-            File.WriteAllText(filename, jsonString);
-            PropertyChanged?.Invoke(this, new(nameof(Registro)));
         }
 
         private void AbrirRegistro()
