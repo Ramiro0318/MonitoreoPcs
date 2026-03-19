@@ -105,19 +105,23 @@ namespace Cliente.ViewModels
         {
             if (Registro != null)
             {
-                IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-                string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
-                byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                Cliente.Send(buffer, buffer.Length, remoto);
-
-                latidosEnviados++;
-                PropertyChanged?.Invoke(this, new(nameof(latidosEnviados)));
-
-                if (latidosEnviados >= 5)
+                try
                 {
-                    Info = "Se ha perdido la conexión con el servidor";
-                    PropertyChanged?.Invoke(this, new(nameof(Info)));
+                    IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
+                    string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
+                    byte[] buffer = Encoding.UTF8.GetBytes(comando);
+                    Cliente.Send(buffer, buffer.Length, remoto);
+
+                    latidosEnviados++;
+                    PropertyChanged?.Invoke(this, new(nameof(latidosEnviados)));
+
+                    if (latidosEnviados >= 5)
+                    {
+                        Info = "Se ha perdido la conexión con el servidor";
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                    }
                 }
+                catch { }
             }
         }
 
@@ -192,7 +196,8 @@ namespace Cliente.ViewModels
                             if (!latiendo)
                             {
                                 latiendo = true;
-                                GuardarRegistro();
+
+                                GuardarRegistro(comandoSeparado[1]);
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
                                     Info = "Registro aprobado... ";
@@ -231,11 +236,10 @@ namespace Cliente.ViewModels
                         case nameof(Orden.CAMBIARID):
                             if (comandoSeparado.Length == 2 && Registro != null)
                             {
-                                Registro.NombreAsignado = comandoSeparado[1];
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
                                     Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
-                                    GuardarRegistro();
+                                    GuardarRegistro(comandoSeparado[1]);
                                     PropertyChanged?.Invoke(this, new(nameof(Info)));
                                     PropertyChanged?.Invoke(this, new(nameof(Registro)));
                                 });
@@ -262,21 +266,21 @@ namespace Cliente.ViewModels
 
         }
 
-        private void GuardarRegistro()
+        private void GuardarRegistro(string nombre)
         {
-            if (Registro == null)
+            if (nombre != null)
             {
                 var registro = new Info
                 {
-                    NombreAsignado = Nombre,
+                    NombreAsignado = nombre,
                     IpServidor = Ip.ToString(),
                     PuertoServidor = puerto
                 };
                 Registro = registro;
+                string jsonString = JsonSerializer.Serialize(Registro);
+                File.WriteAllText(filename, jsonString);
+                PropertyChanged?.Invoke(this, new(nameof(Registro)));
             }
-            string jsonString = JsonSerializer.Serialize(Registro);
-            File.WriteAllText(filename, jsonString);
-            PropertyChanged?.Invoke(this, new(nameof(Registro)));
         }
 
         private void AbrirRegistro()

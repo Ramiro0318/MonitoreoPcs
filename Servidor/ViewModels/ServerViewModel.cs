@@ -83,6 +83,10 @@ namespace Servidor.ViewModels
 
         public void IrRegistrar(IPEndPoint remoto, string identificador)
         {
+            if (Computadoras.Any(x => x.Nombre == identificador))
+            {
+                Info = "Una computadora se ha intentado registrar con un nombre ya existente.";
+            }
             PcInfo pc = new PcInfo
             {
                 Nombre = identificador,
@@ -93,6 +97,7 @@ namespace Servidor.ViewModels
 
             ComputadoraSeleccionada = pc;
             PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+            PropertyChanged?.Invoke(this, new(nameof(Info)));
         }
 
         private void Registrar(PcInfo pc)
@@ -189,12 +194,9 @@ namespace Servidor.ViewModels
 
                     if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 2)
                     {
-                        //Mostrar solicitud de registro
                         App.Current.Dispatcher.BeginInvoke(() =>
                         {
                             IrRegistrar(remoto, comandoSeparado[1]);
-                            Info = "Mensaje recibido";
-                            PropertyChanged?.Invoke(this, new(nameof(Info)));
                         });
 
                     }
@@ -228,11 +230,6 @@ namespace Servidor.ViewModels
                         {
                             pc.UltimoPing = DateTime.Now;
                             pc.EstadoInternet = true;
-                            App.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                Info = "TieneInternet";
-                                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            });
                         }
                     }
                 }
@@ -257,7 +254,7 @@ namespace Servidor.ViewModels
 
         public void EnviarMensajes(Orden comando)
         {
-            if ((ComputadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT)
+            if ((ComputadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT && comando != Orden.INTERNET)
             {
                 var pc = comando != Orden.ENLAZADO ? ComputadoraSeleccionada : ComputadoraResponder;
                 if (pc != null)
@@ -273,16 +270,21 @@ namespace Servidor.ViewModels
                             NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
                         });
                         GuardarOC(HistorialComandos, comandosFilename);
+                        Info = $"a {comando.ToString()} {pc.Nombre}";
                     }
 
-                    Info = $"a {comando.ToString()} {pc.Nombre}";
+                    string mensaje;
+                    if (comando == Orden.CAMBIARID || comando == Orden.REGISTROAPROBADO)
+                    {
+                        mensaje = $"{comando}|{pc.Nombre}";
+                    }
+                    else mensaje = comando.ToString();
 
-                    string mensaje = comando == Orden.CAMBIARID ? $"{comando}|{pc.Nombre}" : comando.ToString();
                     byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
                     IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
                     Server.Send(buffer, buffer.Length, destino);
-
                     PropertyChanged?.Invoke(this, new(nameof(Info)));
+
                 }
             }
         }
