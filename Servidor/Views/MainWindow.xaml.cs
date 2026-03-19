@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using Servidor.ViewModels;
+using Servidor.Views;
+using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +22,28 @@ namespace Servidor
         public MainWindow()
         {
             InitializeComponent();
+            if (DataContext is ServerViewModel vm)
+            {
+                vm.PropertyChanged += Vm_PropertyChanged;
+            }
+        }
+
+        private void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ServerViewModel.ComputadoraSeleccionada))
+            {
+                var vm = (ServerViewModel)sender!;
+                if (vm.ComputadoraSeleccionada != null)
+                {
+                  
+                    var ventana = new NotificacionRegistro
+                    {
+                        DataContext = vm,
+                        Owner = this
+                    };
+                    ventana.ShowDialog();  
+                }
+            }
         }
     }
 }

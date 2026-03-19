@@ -41,7 +41,7 @@
         </Grid>
 
 
-        <Border  Grid.Row="1" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
+        <!--<Border  Grid.Row="1" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
             <Grid>
                 <Grid.ColumnDefinitions>
                    
@@ -67,7 +67,7 @@
             </Grid>
 
 
-        </Border>
+        </Border>-->
 
 
 
@@ -310,10 +310,10 @@
 
                     </Grid.ColumnDefinitions>
 
-                    <Label FontFamily="Britannic " HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
-                    <Label  Grid.Column="1"  FontFamily="Britannic" HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Comando</Label>
-                    <Label Grid.Column="2" FontFamily="Britannic " HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Nuevo nombre</Label>
-                    <Label Grid.Column="3" FontFamily="Britannic" HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Fecha</Label>
+                    <Label FontFamily="Bold " HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
+                    <Label  Grid.Column="1"  FontFamily="Bold" HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Comando</Label>
+                    <Label Grid.Column="2" FontFamily="Bold " HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Nuevo nombre</Label>
+                    <Label Grid.Column="3" FontFamily="Bold" HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Fecha</Label>
 
 
                 </Grid>
