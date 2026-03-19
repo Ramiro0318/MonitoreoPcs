@@ -9,11 +9,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\aceptar.png" />
+    <None Remove="Images\cliente-servidor.png" />
+    <None Remove="Images\computadora-portatil.png" />
+    <None Remove="Images\delete.png" />
+    <None Remove="Images\limpio.png" />
+    <None Remove="Images\monitor.png" />
+    <None Remove="Images\pen.png" />
+    <None Remove="Images\power-button.png" />
+    <None Remove="Images\power-on.png" />
+    <None Remove="Images\rechazar.png" />
+    <None Remove="Images\refresh-arrow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
+    <Resource Include="Images\aceptar.png" />
+    <Resource Include="Images\cliente-servidor.png" />
+    <Resource Include="Images\computadora-portatil.png" />
+    <Resource Include="Images\delete.png" />
+    <Resource Include="Images\limpio.png" />
+    <Resource Include="Images\monitor.png" />
+    <Resource Include="Images\pen.png" />
+    <Resource Include="Images\power-button.png" />
+    <Resource Include="Images\power-on.png" />
+    <Resource Include="Images\rechazar.png" />
+    <Resource Include="Images\refresh-arrow.png" />
   </ItemGroup>
 
 </Project>

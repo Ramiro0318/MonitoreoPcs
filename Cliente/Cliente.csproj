@@ -9,11 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\crisis.png" />
+    <None Remove="Images\megafono.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
+    <Resource Include="Images\crisis.png" />
+    <Resource Include="Images\megafono.png" />
   </ItemGroup>
 
 </Project>

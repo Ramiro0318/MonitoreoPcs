@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Servidor.ViewModels"
         xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
         mc:Ignorable="d" x:Name="MainWindowServidor"
-        Title="Servidor" Height="800" Width="800">
+        Title="Servidor" Height="800" Width="800"  Background="#EBF2FA">
     <Window.DataContext>
         <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
     </Window.DataContext>
@@ -21,18 +21,27 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
           
 
         </Grid.RowDefinitions>
-        
-        
-        <Label Grid.Row="0" FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="25" > Servidor - Control de Laboratorios </Label>
 
-      
+        <Grid Grid.Row="0" >
 
-        <Border  Grid.Row="1" Padding="10" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Image Source="/Images/cliente-servidor.png" Width="70" Height="75" Margin="40,5,0,5" Grid.Column="0" HorizontalAlignment="Right"/>
+            <Label FontFamily="Bold" HorizontalAlignment="Center" Foreground="#064789 " Margin="15" FontSize="30" FontWeight="SemiBold" Grid.Column="1">Servidor - Control de Laboratorios</Label>
+
+        </Grid>
+
+
+        <Border  Grid.Row="1" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
             <Grid>
                 <Grid.ColumnDefinitions>
                    
@@ -40,46 +49,62 @@
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                
+
                 <StackPanel Grid.Column="0">
-                <TextBlock FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="18">Nueva Solicitud de Registro</TextBlock>
-                 <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
-            
-                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
- 
-                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
-               
-            </StackPanel>
-                <Button Grid.Column="1" FontFamily="Britannic Bold" Foreground="White" Background="#237227" HorizontalAlignment="Center"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
-                <Button Grid.Column="2" FontFamily="Britannic Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Center" Command="{Binding RechazarCommand}">Rechazar</Button>
+                    <TextBlock FontFamily="Bold" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789"   FontSize="20">Nueva Solicitud de Registro</TextBlock>
+                    <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
+
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
+
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
+
+                </StackPanel>
+
+
+                <Button Grid.Column="1"  Margin="20"  Width="100" FontFamily=" Bold" Foreground="White" Background="#679436" HorizontalAlignment="Center"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
+                <Button Grid.Column="2"  Margin="20"  Width="100"  FontFamily="Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Center" Command="{Binding RechazarCommand}">Rechazar</Button>
+
             </Grid>
-            
-            
+
+
         </Border>
 
 
-        <StackPanel Grid.Row="2">
-               <TextBlock Text="{Binding Info}" HorizontalAlignment="Center"></TextBlock>
-        </StackPanel>
 
-        
-        
-        
-        
-        
-        
-        
-        <Border Padding="10" Grid.Row="3">
+        <!--<StackPanel Grid.Row="2">
+               <TextBlock Text="{Binding Info}" HorizontalAlignment="Center"></TextBlock>
+        </StackPanel>-->
+
+
+
+
+
+
+
+
+        <Border Padding="10" Grid.Row="3" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
           <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
-           
-            <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de computadoras</Label>
 
-            <Grid Grid.Row="1">
+                <Grid Grid.Row="0" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Image  Source="/Images/monitor.png" Width="50" Height="50" Margin="150,5,0,5" Grid.Column="0" HorizontalAlignment="Left"/>
+                    <Label FontFamily="Bold" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789"  Margin="15" FontSize="20" >Lista de computadoras</Label>
+
+                </Grid>
+
+
+                <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" ></ColumnDefinition>
                         <ColumnDefinition Width="100" ></ColumnDefinition>
@@ -90,15 +115,15 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
-                <Label Grid.Column="1" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >IP</Label>
-                <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Puerto</Label>
-                <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Estado</Label>
-                <Label Grid.Column="4" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Internet</Label>
-                <Label Grid.Column="5" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comandos</Label>
+                    <Label FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
+                    <Label Grid.Column="1" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >IP</Label>
+                    <Label Grid.Column="2" FontFamily="Bold" HorizontalAlignment="Left"  Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Puerto</Label>
+                    <Label Grid.Column="3" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Estado</Label>
+                    <Label Grid.Column="4" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Internet</Label>
+                    <Label Grid.Column="5" FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
 
 
-            </Grid>
+                </Grid>
 
            <Grid Grid.Row="2">
 
@@ -141,10 +166,25 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
-                                        <Button Background="Red" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" Content="Apagar"></Button><!--apagar-->
-                                        <Button Background="Blue" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.REINICIAR}" Content="Reiniciar"></Button><!--reiniciar-->
-                                        <Button Background="Gray" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}" Content="CambiarId" ></Button><!--editar-->
-                                        <Button Background="Black" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" ></Button><!--eliminar-->
+                                        <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" >
+                                            <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
+                                        </Button>
+                                        <!--apagar-->
+                                        <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
+                                            <Image  Source="/Images/refresh-arrow.png" Width="16" Height="16" ></Image>
+                                        </Button>
+                                        <!--reiniciar-->
+                                        <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}"  CommandParameter="{Binding}" >
+
+                                            <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
+                                        </Button>
+                                        <!--editar-->
+                                        <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" >
+
+                                            <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
+
+                                        </Button>
+                                        <!--eliminar-->
                                         
                                     </Grid>
 
@@ -161,7 +201,7 @@
 
 
 
-        <Border Padding="10" Grid.Row="4">
+        <!--<Border Padding="10" Grid.Row="4"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -169,8 +209,21 @@
                     <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Label FontFamily="Britannic Bold" HorizontalAlignment="Center"  FontSize="20" >Lista de historial de conexiones</Label>
-                <Button Grid.Row="0" Command="{Binding LimpiarCommand}" CommandParameter="conexiones" HorizontalAlignment="Right">limpiar</Button>
+                <Grid Grid.Row="0" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Image  Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="120,5,0,5" Grid.Column="0" HorizontalAlignment="Left"/>
+                    <Label FontFamily="Bold" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="15"  FontSize="20" >Lista de historial de conexiones</Label>
+                    <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="conexiones">
+                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
+                    </Button>
+                </Grid>
+
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" ></ColumnDefinition>
@@ -182,9 +235,10 @@
                     </Grid.ColumnDefinitions>
 
 
-                    <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
-                    <Label  Grid.Column="1"  FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Fecha</Label>
-                    <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >Comando</Label>
+                    <Label FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
+                    <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >Fecha</Label>
+                    <Label Grid.Column="2" FontFamily="Bold" Foreground="#064789" FontWeight="SemiBold" HorizontalAlignment="Left"  FontSize="15" >Comando</Label>
+
 
 
                 </Grid>
@@ -216,14 +270,14 @@
                 </Grid>
             </Grid>
 
-        </Border>
+        </Border>-->
 
-        
-        
-        
-        
 
-        <Border Padding="10" Grid.Row="5">
+
+
+
+
+        <Border Padding="10" Grid.Row="4"  BorderThickness="3" BorderBrush="#427AA1"  Margin="9" CornerRadius="10" Background="White">
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -231,8 +285,22 @@
                     <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Label FontFamily="Britannic Bold" HorizontalAlignment="Center" FontSize="20" >Lista de historial de comandos</Label>
-                <Button Grid.Row="0" Command="{Binding LimpiarCommand}" CommandParameter="comandos" HorizontalAlignment="Right">limpiar</Button>
+                <Grid Grid.Row="0" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Image  Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="120,5,0,5" Grid.Column="0" HorizontalAlignment="Left"/>
+                    <Label FontFamily="Bold" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="15"  FontSize="20" >Lista de historial de comandos</Label>
+                    <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="conexiones">
+                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
+                    </Button>
+                </Grid>
+
+
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" ></ColumnDefinition>
@@ -242,11 +310,10 @@
 
                     </Grid.ColumnDefinitions>
 
-
-                    <Label FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
-                    <Label  Grid.Column="1"  FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15">Comando</Label>
-                    <Label Grid.Column="2" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15">Nuevo nombre</Label>
-                    <Label Grid.Column="3" FontFamily="Britannic Bold" HorizontalAlignment="Left"  FontSize="15">Fecha</Label>
+                    <Label FontFamily="Britannic " HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
+                    <Label  Grid.Column="1"  FontFamily="Britannic" HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Comando</Label>
+                    <Label Grid.Column="2" FontFamily="Britannic " HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Nuevo nombre</Label>
+                    <Label Grid.Column="3" FontFamily="Britannic" HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Fecha</Label>
 
 
                 </Grid>
@@ -282,13 +349,13 @@
 
         </Border>
 
-        <StackPanel Grid.Row="6">
+        <!--<StackPanel Grid.Row="6">
 
             <TextBox Text="{Binding Clon.Nombre}"></TextBox>
 
             <Button Command="{Binding EditarCommand}" CommandParameter="{Binding Clon}">Editar</Button>
             <Button Command="{Binding RechazarCommand}">Cancelar</Button>
-        </StackPanel>
+        </StackPanel>-->
 
 
 
