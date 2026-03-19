@@ -26,6 +26,8 @@ namespace Servidor.Models.Entities
             }
         }
         public string Ip { get; set; } = null!;
+        //Agregar propiedad para la ip que el cliente tiene registrado del servidor.
+        //public string IpServidor { get; set; } = null!;
         public int Puerto { get; set; }
         public DateTime? HoraConexion { get; set; }
         public DateTime? UltimoLatido { get; set; }

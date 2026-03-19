@@ -105,19 +105,23 @@ namespace Cliente.ViewModels
         {
             if (Registro != null)
             {
-                IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-                string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
-                byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                Cliente.Send(buffer, buffer.Length, remoto);
-
-                latidosEnviados++;
-                PropertyChanged?.Invoke(this, new(nameof(latidosEnviados)));
-
-                if (latidosEnviados >= 5)
+                try
                 {
-                    Info = "Se ha perdido la conexión con el servidor";
-                    PropertyChanged?.Invoke(this, new(nameof(Info)));
+                    IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
+                    string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
+                    byte[] buffer = Encoding.UTF8.GetBytes(comando);
+                    Cliente.Send(buffer, buffer.Length, remoto);
+
+                    latidosEnviados++;
+                    PropertyChanged?.Invoke(this, new(nameof(latidosEnviados)));
+
+                    if (latidosEnviados >= 5)
+                    {
+                        Info = "Se ha perdido la conexión con el servidor";
+                        PropertyChanged?.Invoke(this, new(nameof(Info)));
+                    }
                 }
+                catch { }
             }
         }
 
