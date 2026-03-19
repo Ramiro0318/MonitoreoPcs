@@ -74,7 +74,6 @@ namespace Servidor.ViewModels
             hiloEscuchar.IsBackground = true;
             hiloEscuchar.Start();
 
-            //ActualizarIP();
 
             TimerEstado = new DispatcherTimer();
             TimerEstado.Interval = TimeSpan.FromSeconds(1);
@@ -195,12 +194,9 @@ namespace Servidor.ViewModels
 
                     if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 2)
                     {
-                        //Mostrar solicitud de registro
                         App.Current.Dispatcher.BeginInvoke(() =>
                         {
                             IrRegistrar(remoto, comandoSeparado[1]);
-                            //Info = "Mensaje recibido";
-                            //PropertyChanged?.Invoke(this, new(nameof(Info)));
                         });
 
                     }
@@ -255,28 +251,6 @@ namespace Servidor.ViewModels
                 }
             }
         }
-
-        //public void ActualizarIP() 
-        //{
-        //    var ipServidor = Dns.GetHostEntry(Dns.GetHostName())
-        //        .AddressList
-        //        .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork)?
-        //        .ToString();
-
-        //    if (string.IsNullOrEmpty(ipServidor))
-        //    {
-        //        Info = "No se pudo obtener la direccion ip";
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        foreach (var c in Computadoras)
-        //        {
-        //            c.IpServidor = ipServidor;
-
-        //        }
-        //    }
-        //}
 
         public void EnviarMensajes(Orden comando)
         {
