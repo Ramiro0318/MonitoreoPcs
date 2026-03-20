@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cliente.Views"
         mc:Ignorable="d"
-        Title="Advertencia" Height="300" Width="400"  Background="#EBF2FA">
+        Title="Advertencia" Height="300" Width="400" MaxHeight="300" MaxWidth="400"  Background="#EBF2FA">
 
 
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="15" CornerRadius="10" Background="White">

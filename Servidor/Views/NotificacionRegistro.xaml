@@ -32,7 +32,7 @@
 
 
                 <StackPanel  Grid.Column="0">
-                    <Label HorizontalAlignment="Center" Content="{Binding ComputadoraSeleccionada.Identificador}"></Label>
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Identificador}"></TextBlock>
 
                     <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
 

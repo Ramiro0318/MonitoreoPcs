@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cliente.Views"
         mc:Ignorable="d"
-      Title="Conectado" Height="300" Width="400" Background="#EBF2FA">
+      Title="Conectado" Height="300" Width="400" MaxHeight="300" MaxWidth="400" Background="#EBF2FA">
     
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="20" CornerRadius="10" Background="White">
         <Grid Margin="10" Background="White">
@@ -19,7 +19,16 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="23">Cliente de laboratorio</TextBlock>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <Image Source="/Images/usuario-de-computadora-portatil.png" Width="40" Height="40" Margin="0,0,10,0"></Image>
+
+                   <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="23">Cliente de laboratorio</TextBlock>
+
+                </StackPanel>
+
+               
 
             </Grid>
             <Grid Grid.Row="1" Margin="5">

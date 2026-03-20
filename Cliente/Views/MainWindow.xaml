@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Cliente"
         xmlns:viewmodel="clr-namespace:Cliente.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ClienteViewModel}"
         mc:Ignorable="d"
-        Title="Cliente" Height="300" Width="400" Background="#EBF2FA">
+        Title="Cliente" Height="300" Width="400" MaxHeight="300" MaxWidth="400" Background="#EBF2FA">
     <Window.DataContext>
         <viewmodel:ClienteViewModel></viewmodel:ClienteViewModel>
     </Window.DataContext>
