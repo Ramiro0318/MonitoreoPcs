@@ -129,6 +129,8 @@ namespace Servidor.ViewModels
         {
             if (ComputadoraSeleccionada != null && ComputadoraSeleccionada.EstadoEnlazado)
             {
+                Info = "";
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
                 identificador = ComputadoraSeleccionada.Identificador;
                 Clon = new PcInfo
                 {

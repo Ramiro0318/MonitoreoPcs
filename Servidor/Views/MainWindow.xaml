@@ -6,41 +6,39 @@
         xmlns:local="clr-namespace:Servidor.ViewModels"
         xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
         mc:Ignorable="d" x:Name="MainWindowServidor"
-        Title="Servidor" Height="800" Width="800"  Background="#EBF2FA">
+        Title="Servidor" Height="640" Width="780"  Background="#EBF2FA">
     <Window.DataContext>
         <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
     </Window.DataContext>
-    
- 
-    
-    <Grid Margin="20">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-          
-
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0" >
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                <Image Source="/Images/cliente-servidor.png" Width="70" Height="75" Margin="0,0,10,0"></Image>
-
-                <TextBlock  FontWeight="SemiBold" Foreground="#064789" FontFamily="Bold"  FontSize="30" VerticalAlignment="Center">Servidor - Control de Laboratorios</TextBlock>
-
-            </StackPanel>
-
-        </Grid>
 
 
-        <!--<Border  Grid.Row="1" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
+    <ScrollViewer Visibility="Visible" VerticalScrollBarVisibility="Hidden">
+        <Grid Margin="20">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="250"></RowDefinition>
+                <RowDefinition Height="250"></RowDefinition>
+
+
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" >
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <Image Source="/Images/cliente-servidor.png" Width="70" Height="75" Margin="0,0,10,0"></Image>
+
+                    <TextBlock  FontWeight="SemiBold" Foreground="#064789" FontFamily="Bold"  FontSize="30" VerticalAlignment="Center">Servidor - Control de Laboratorios</TextBlock>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!--<Border  Grid.Row="1" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
             <Grid>
                 <Grid.ColumnDefinitions>
                    
@@ -70,7 +68,7 @@
 
 
 
-        <!--<StackPanel Grid.Row="2">
+            <!--<StackPanel Grid.Row="2">
                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center"></TextBlock>
         </StackPanel>-->
 
@@ -81,284 +79,328 @@
 
 
 
-        <Border Padding="10" Grid.Row="3" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
-          <Grid >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
+            <Border Padding="10" Grid.Row="1" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" >
+                    <Grid Grid.Row="0" >
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                        <Image Source="/Images/monitor.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
+                            <Image Source="/Images/monitor.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
 
-                        <TextBlock  FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de computadoras</TextBlock>
-                  
-                    </StackPanel>
+                            <TextBlock  FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de computadoras</TextBlock>
 
-                </Grid>
+                        </StackPanel>
 
-
-                <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100" ></ColumnDefinition>
-                        <ColumnDefinition Width="100" ></ColumnDefinition>
-                        <ColumnDefinition Width="100"></ColumnDefinition>
-                        <ColumnDefinition Width="100"></ColumnDefinition>
-                        <ColumnDefinition Width="100"></ColumnDefinition>
-                        <ColumnDefinition Width="200"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+                    </Grid>
 
 
-                    <Label FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Nombre</Label>
-                    <Label Grid.Column="1" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >IP</Label>
-                    <Label Grid.Column="2" FontFamily="Bold" HorizontalAlignment="Left"  Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Puerto</Label>
-                    <Label Grid.Column="3" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Estado</Label>
-                    <Label Grid.Column="4" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Internet</Label>
-                    <Label Grid.Column="5" FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" ></ColumnDefinition>
+                            <ColumnDefinition Width="100" ></ColumnDefinition>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                            <ColumnDefinition Width="110"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
 
-                </Grid>
+                        <Label FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" Margin="10,0,0,0">Nombre</Label>
+                        <Label Grid.Column="1" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >IP</Label>
+                        <Label Grid.Column="2" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center"  Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Puerto</Label>
+                        <Label Grid.Column="3" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Estado</Label>
+                        <Label Grid.Column="4" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Internet</Label>
+                        <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
 
-           <Grid Grid.Row="2">
 
-            <ListBox ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Style.Triggers>
-                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter Property="IsSelected" Value="True"></Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                
-                         
+                    </Grid>
 
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" ></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoEnlazado}" Grid.Column="3"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding EstadoInternet}" Grid.Column="4"></TextBlock>
+                    <Grid Grid.Row="2" Height="130">
 
-                                    <Grid Grid.Column="5">
+                        <ListBox ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                            <Setter Property="IsSelected" Value="True"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="120" ></ColumnDefinition>
+                                            <ColumnDefinition Width="100" ></ColumnDefinition>
+                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition Width="100"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
 
-                                        <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
-                                        <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" >
-                                            <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
-                                        </Button>
-                                        <!--apagar-->
-                                        <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
-                                            <Image  Source="/Images/refresh-arrow.png" Width="16" Height="16" ></Image>
-                                        </Button>
-                                        <!--reiniciar-->
-                                        <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}"  CommandParameter="{Binding}" >
 
-                                            <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
-                                        </Button>
-                                        <!--editar-->
-                                        <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" >
 
-                                            <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
+                                        <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" ></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
+                                        <!--<TextBlock HorizontalAlignment="Left" Text="{Binding EstadoEnlazado}" Grid.Column="3"></TextBlock>-->
 
-                                        </Button>
-                                        <!--eliminar-->
-                                        
+                                        <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="Desconectado" />
+                                                    <Setter Property="Foreground" Value="#C00707" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EstadoEnlazado}" Value="True">
+                                                            <Setter Property="Text" Value="Enlazado" />
+                                                            <Setter Property="Foreground" Value="#679436" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding EstadoEnlazado}" Value="False">
+                                                            <Setter Property="Text" Value="Sin respuesta" />
+                                                            <Setter Property="Foreground" Value="#C00707" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <!--<TextBlock HorizontalAlignment="Left" Text="{Binding EstadoInternet}" Grid.Column="4"></TextBlock>-->
+                                        <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="Desconectado" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EstadoInternet}" Value="True">
+                                                            <Setter Property="Text" Value="Conectado" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding EstadoInternet}" Value="False">
+                                                            <Setter Property="Text" Value="Sin internet" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <Grid Grid.Column="5" HorizontalAlignment="Right">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
+                                            <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" >
+                                                <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
+                                            </Button>
+                                            <!--apagar-->
+                                            <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
+                                                <Image  Source="/Images/refresh-arrow.png" Width="16" Height="16" ></Image>
+                                            </Button>
+                                            <!--reiniciar-->
+                                            <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}"  CommandParameter="{Binding}" >
+
+                                                <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
+                                            </Button>
+                                            <!--editar-->
+                                            <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" >
+
+                                                <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
+
+                                            </Button>
+                                            <!--eliminar-->
+
+                                        </Grid>
+
+
                                     </Grid>
-
-
-                            </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-         </Grid>   
-        </Grid>
-
-        </Border>
-
-
-
-
-        <Border Padding="10" Grid.Row="4"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" >
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0">
-
-                        <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
-
-                        <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de historial de conexiones</TextBlock>
-
-                    </StackPanel>
-
-                    <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="conexiones">
-                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
-                    </Button>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Grid>
 
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" ></ColumnDefinition>
-                        <ColumnDefinition Width="250" ></ColumnDefinition>
-                        <!--<ColumnDefinition Width="100"></ColumnDefinition>-->
-                        <!--<ColumnDefinition Width="59*"/>-->
-                        <!--<ColumnDefinition Width="11*"/>-->
-
-                    </Grid.ColumnDefinitions>
-
-
-                    <Label FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >ID Computadora</Label>
-                    <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >Fecha</Label>
-                    <!--<Label Grid.Column="2" FontFamily="Bold" Foreground="#064789" FontWeight="SemiBold" HorizontalAlignment="Left"  FontSize="15" >Comando</Label>-->
+            </Border>
 
 
 
+
+            <Border Padding="10" Grid.Row="3"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" >
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0">
+
+                            <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
+
+                            <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de historial de conexiones</TextBlock>
+
+                        </StackPanel>
+
+                        <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="conexiones">
+                            <Image Source="/Images/delete.png" Width="30" Height="36"/>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                            <ColumnDefinition Width="100" ></ColumnDefinition>
+                            <ColumnDefinition Width="120" ></ColumnDefinition>
+                            <ColumnDefinition Width="120" ></ColumnDefinition>
+                            <!--<ColumnDefinition Width="100"></ColumnDefinition>-->
+                            <!--<ColumnDefinition Width="59*"/>-->
+                            <!--<ColumnDefinition Width="11*"/>-->
+
+                        </Grid.ColumnDefinitions>
+
+
+                        <Label  Grid.Column="0" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >Nombre</Label>
+                        <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >IP</Label>
+                        <Label  Grid.Column="2"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Puerto</Label>
+                        <Label  Grid.Column="3"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Fecha</Label>
+                        <!--<Label Grid.Column="2" FontFamily="Bold" Foreground="#064789" FontWeight="SemiBold" HorizontalAlignment="Left"  FontSize="15" >Comando</Label>-->
+
+
+
+                    </Grid>
+
+                    <Grid Grid.Row="2" Height="130">
+                        <ListBox ItemsSource="{Binding HistorialConexiones}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                                            <ColumnDefinition Width="100" ></ColumnDefinition>
+                                            <ColumnDefinition Width="120" ></ColumnDefinition>
+                                            <ColumnDefinition Width="120" ></ColumnDefinition>
+                                            <!--<ColumnDefinition Width="100"></ColumnDefinition>-->
+                                        </Grid.ColumnDefinitions>
+
+
+
+                                        <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding HoraConexion }" Grid.Column="3"></TextBlock>
+                                        <!--<TextBlock HorizontalAlignment="Left" Grid.Column="2"> apagado</TextBlock>-->
+
+
+
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Grid>
 
-                <Grid Grid.Row="2">
-                    <ListBox ItemsSource="{Binding HistorialConexiones}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="250" ></ColumnDefinition>
-                                        <ColumnDefinition Width="250" ></ColumnDefinition>
-                                        <!--<ColumnDefinition Width="100"></ColumnDefinition>-->
-                                    </Grid.ColumnDefinitions>
+            </Border>
 
 
 
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Identificador}" ></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding HoraConexion }" Grid.Column="1"></TextBlock>
-                                    <!--<TextBlock HorizontalAlignment="Left" Grid.Column="2"> apagado</TextBlock>-->
-                                   
 
-                                   
 
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+
+            <Border Padding="10" Grid.Row="4"  BorderThickness="3" BorderBrush="#427AA1"  Margin="9" CornerRadius="10" Background="White">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0">
+
+                            <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
+
+                            <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de historial de comandos</TextBlock>
+
+                        </StackPanel>
+                        <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="comandos">
+                            <Image Source="/Images/delete.png" Width="30" Height="36"/>
+                        </Button>
+                    </Grid>
+
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                            <ColumnDefinition Width="100" ></ColumnDefinition>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
+
+                        </Grid.ColumnDefinitions>
+
+                        <Label FontFamily="Bold " HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
+                        <Label  Grid.Column="1"  FontFamily="Bold" HorizontalAlignment="Center"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Comando</Label>
+                        <Label Grid.Column="2" FontFamily="Bold " HorizontalAlignment="Center"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Nuevo nombre</Label>
+                        <Label Grid.Column="3" FontFamily="Bold" HorizontalAlignment="Center"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Fecha</Label>
+
+
+                    </Grid>
+
+                    <Grid Grid.Row="2" Height="130">
+                        <ListBox ItemsSource="{Binding HistorialComandos}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200" ></ColumnDefinition>
+                                            <ColumnDefinition Width="100" ></ColumnDefinition>
+                                            <ColumnDefinition Width="200"></ColumnDefinition>
+                                            <ColumnDefinition Width="150"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+
+
+                                        <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" ></TextBlock>
+                                        <TextBlock HorizontalAlignment="Left" Text="{Binding Comando }" Grid.Column="1"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding NuevoNombre }" Grid.Column="2"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Fecha }" Grid.Column="3"></TextBlock>
+
+
+
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Grid>
-            </Grid>
 
-        </Border>
+            </Border>
 
-
-
-
-
-
-        <Border Padding="10" Grid.Row="5"  BorderThickness="3" BorderBrush="#427AA1"  Margin="9" CornerRadius="10" Background="White">
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" >
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0">
-
-                        <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
-
-                        <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de historial de comandos</TextBlock>
-
-                    </StackPanel>
-                    <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="comandos">
-                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
-                    </Button>
-                </Grid>
-
-
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" ></ColumnDefinition>
-                        <ColumnDefinition Width="100" ></ColumnDefinition>
-                        <ColumnDefinition Width="200"></ColumnDefinition>
-                        <ColumnDefinition Width="150"></ColumnDefinition>
-
-                    </Grid.ColumnDefinitions>
-
-                    <Label FontFamily="Bold " HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
-                    <Label  Grid.Column="1"  FontFamily="Bold" HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Comando</Label>
-                    <Label Grid.Column="2" FontFamily="Bold " HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Nuevo nombre</Label>
-                    <Label Grid.Column="3" FontFamily="Bold" HorizontalAlignment="Left"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Fecha</Label>
-
-
-                </Grid>
-
-                <Grid Grid.Row="2">
-                    <ListBox ItemsSource="{Binding HistorialComandos}" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200" ></ColumnDefinition>
-                                        <ColumnDefinition Width="100" ></ColumnDefinition>
-                                        <ColumnDefinition Width="200"></ColumnDefinition>
-                                        <ColumnDefinition Width="150"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-
-
-
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" ></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Comando }" Grid.Column="1"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding NuevoNombre }" Grid.Column="2"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Fecha }" Grid.Column="3"></TextBlock>
-
-
-
-
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </Grid>
-
-        </Border>
-
-        <!--<StackPanel Grid.Row="6">
+            <!--<StackPanel Grid.Row="6">
 
             <TextBox Text="{Binding Clon.Nombre}"></TextBox>
 
@@ -373,5 +415,7 @@
 
 
 
-    </Grid>
+        </Grid>
+    </ScrollViewer>
+
 </Window>

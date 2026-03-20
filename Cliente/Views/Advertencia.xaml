@@ -14,9 +14,6 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto" ></RowDefinition>
             <RowDefinition Height="auto"  ></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <!--<RowDefinition Height="50"></RowDefinition>-->
         </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
@@ -56,23 +53,12 @@
             
             <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Right"/>
 
-                <TextBlock Grid.Column="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center" Margin="10" FontSize="15"> Apagado Proximo </TextBlock>
+                <TextBlock Grid.Column="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center" Margin="10" FontSize="15"> Guarde su trabajo. </TextBlock>
                 <Image Source="/Images/crisis.png" Grid.Column="2" Width="40" Height="40" HorizontalAlignment="Left"/>
 
 
             </Grid>
 
-
-        <Grid Grid.Row="3" Margin="15" >
-
-                <TextBlock FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15"> Guarde todo su trabajo antes de que   </TextBlock>
-
-        </Grid>
-        <Grid Grid.Row="4"  >
-
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15"> la computadora se apague.</TextBlock>
-
-        </Grid>
 
     </Grid>
     </Border>
