@@ -1,11 +1,11 @@
-﻿<Window x:Class="Cliente.Views.Advertencia"
+﻿<UserControl x:Class="Cliente.Views.Advertencia"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cliente.Views"
         mc:Ignorable="d"
-        Title="Advertencia" Height="300" Width="400" MaxHeight="300" MaxWidth="400"  Background="#EBF2FA">
+        Background="#EBF2FA">
 
 
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="15" CornerRadius="10" Background="White">
@@ -77,4 +77,4 @@
     </Grid>
     </Border>
    
-</Window>
+</UserControl>

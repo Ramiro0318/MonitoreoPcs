@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Printing;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Controls;
@@ -18,6 +19,7 @@ using System.Windows.Threading;
 namespace Cliente.ViewModels
 {
     public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT, INTERNET }
+    public enum Pagina { Registro, Conectado, Advertencia }
     public class ClienteViewModel : INotifyPropertyChanged
     {
 
@@ -31,6 +33,7 @@ namespace Cliente.ViewModels
         string filename = "registro.json";
         private int latidosEnviados;
         private DateTime ultimoPing = DateTime.Now;
+        public Pagina Pagina { get; set; }
         public string IpPorValidar { get; set; }
         public string Nombre { set; get; } = null!;
         public string Info { set; get; }
@@ -50,6 +53,8 @@ namespace Cliente.ViewModels
             Cliente = new UdpClient(endpoint);
             if (Registro != null)
             {
+                Pagina = Pagina.Conectado;
+                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                 Thread hiloEscuchar = new(RecibirMensajes);
                 hiloEscuchar.IsBackground = true;
                 hiloEscuchar.Start();
@@ -186,6 +191,8 @@ namespace Cliente.ViewModels
                         case nameof(Orden.ENLAZADO):
                             App.Current.Dispatcher.Invoke(() =>
                             {
+                                Pagina = Pagina.Conectado;
+                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                                 Info = "ENLAZADO!";
                                 latidosEnviados = 0;
                                 PropertyChanged?.Invoke(this, new(nameof(Info)));
@@ -200,6 +207,8 @@ namespace Cliente.ViewModels
                                 GuardarRegistro(comandoSeparado[1]);
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
+                                    Pagina = Pagina.Conectado;
+                                    PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                                     Info = "Registro aprobado... ";
                                     PropertyChanged?.Invoke(this, new(nameof(Info)));
                                     //Serializar la ip y puerto
@@ -213,8 +222,12 @@ namespace Cliente.ViewModels
 
                         case nameof(Orden.APAGAR):
                             escuchando = false;
+
+
                             App.Current.Dispatcher.Invoke(() =>
                             {
+                                Pagina = Pagina.Advertencia;
+                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                                 Info = "Esta computadora se apagará en unos segundos...";
                                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                             });
@@ -226,6 +239,8 @@ namespace Cliente.ViewModels
                             escuchando = false;
                             App.Current.Dispatcher.Invoke(() =>
                             {
+                                Pagina = Pagina.Advertencia;
+                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                                 Info = "Esta computadora se reiniciará en unos segundos...";
                                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                             });
@@ -239,6 +254,7 @@ namespace Cliente.ViewModels
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
                                     Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
+                                    Ip = IPAddress.Parse(Registro.IpServidor);
                                     GuardarRegistro(comandoSeparado[1]);
                                     PropertyChanged?.Invoke(this, new(nameof(Info)));
                                     PropertyChanged?.Invoke(this, new(nameof(Registro)));
@@ -250,6 +266,8 @@ namespace Cliente.ViewModels
                             escuchando = false;
                             App.Current.Dispatcher.Invoke(() =>
                             {
+                                Pagina = Pagina.Registro;
+                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                                 Info = "Registro eliminado";
                                 latiendo = false;
                                 TimerBeat.Stop();

@@ -15,7 +15,7 @@ namespace Cliente.Views
     /// <summary>
     /// Lógica de interacción para Advertencia.xaml
     /// </summary>
-    public partial class Advertencia : Window
+    public partial class Advertencia : UserControl
     {
         public Advertencia()
         {

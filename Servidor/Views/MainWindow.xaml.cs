@@ -28,22 +28,40 @@ namespace Servidor
             }
         }
 
+        private bool enEdicion = false;
         private void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            var vm = (ServerViewModel)sender!;
+            if (e.PropertyName == nameof(ServerViewModel.Clon))
+            {
+                if (vm.Clon != null)
+                {
+                    enEdicion = true;
+                    var ventanaEditar = new Servidor.Views.Editar
+                    {
+                        DataContext = vm, // Compartimos el ViewModel
+                        Owner = this,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    };
+                    ventanaEditar.ShowDialog();
+                    enEdicion = false;
+                }
+            }
             if (e.PropertyName == nameof(ServerViewModel.ComputadoraSeleccionada))
             {
-                var vm = (ServerViewModel)sender!;
-                if (vm.ComputadoraSeleccionada != null)
+                if (vm.ComputadoraSeleccionada != null && !enEdicion)
                 {
-                  
+
                     var ventana = new NotificacionRegistro
                     {
                         DataContext = vm,
-                        Owner = this
+                        Owner = this,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
                     };
-                    ventana.ShowDialog();  
+                    ventana.ShowDialog();
                 }
             }
+
         }
     }
 }

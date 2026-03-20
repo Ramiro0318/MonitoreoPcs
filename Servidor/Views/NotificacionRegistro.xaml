@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Servidor.Views"
+        xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ServerViewModel}"
         mc:Ignorable="d"
         Title="NotificacionRegistro" Height="200" Width="350"  Background="#EBF2FA">
     <Border  Padding="10"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
@@ -32,7 +32,7 @@
 
 
                 <StackPanel  Grid.Column="0">
-                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Identificador}"></TextBlock>
+                    <TextBox HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Nombre, Mode=TwoWay}" Width="110" TextAlignment="Center"></TextBox>
 
                     <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
 
@@ -46,8 +46,8 @@
                 <StackPanel Grid.Column="1"  VerticalAlignment="Center" Margin="10,0,0,0">
 
 
-                    <Button   Margin="0,5"  Width="100" FontFamily=" Bold" Foreground="White" Background="#679436" HorizontalAlignment="Left"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
-                    <Button   Margin="0,5"  Width="100"  FontFamily="Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Right" Command="{Binding RechazarCommand}"  >Rechazar</Button>
+                    <Button   Margin="0,5"  Width="100" FontFamily=" Bold" Foreground="White" Background="#679436" HorizontalAlignment="Left"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}" Click="Button_Click">Registrar</Button>
+                    <Button   Margin="0,5"  Width="100"  FontFamily="Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Right" Command="{Binding RechazarCommand}"  Click="Button_Click">Rechazar</Button>
 
 
                 </StackPanel>

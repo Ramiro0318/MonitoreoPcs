@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="Cliente.Views.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Cliente.Views"
+      mc:Ignorable="d">
+
+    <Border BorderThickness="3" BorderBrush="#427AA1" Margin="20" CornerRadius="10" Background="White">
+        <Grid Margin="10" Background="White" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto" ></RowDefinition>
+                <RowDefinition Height="auto"  ></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" >
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="23">Cliente de laboratorio</TextBlock>
+
+            </Grid>
+            <Grid Grid.Row="1" Margin="5">
+                <TextBlock  FontFamily="Bold" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="#064789"  FontSize="15">Configurancion:</TextBlock>
+
+            </Grid>
+
+
+
+            <Grid Grid.Row="2" Margin="5" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Direccion IP del servidor:</TextBlock>
+
+                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+
+                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
+                </Border>
+
+            </Grid>
+
+            <Grid Grid.Row="3" Margin="5" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Nombre del equipo:</TextBlock>
+
+                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+
+                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" ></TextBox>
+                </Border>
+
+            </Grid>
+
+            <Grid Grid.Row="4" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+
+                <Button Grid.Column="1" Padding="6,0,6,0" Margin="6" FontFamily="Bold" FontSize="15"  HorizontalAlignment="Center" Width="100"  Background="#679436 " Foreground="#F0F0DB"   Command="{Binding EnviarRegistroCommand}">Enviar</Button>
+
+
+
+            </Grid>
+
+            <Grid Grid.Row="5">
+                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789"  FontSize="15"></TextBlock>
+            </Grid>
+
+
+
+        </Grid>
+    </Border>
+</UserControl>

@@ -8,16 +8,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Cliente.Views
 {
     /// <summary>
-    /// Lógica de interacción para Conectado.xaml
+    /// Interaction logic for MainPage.xaml
     /// </summary>
-    public partial class Conectado : UserControl
+    public partial class MainPage : UserControl
     {
-        public Conectado()
+        public MainPage()
         {
             InitializeComponent();
         }

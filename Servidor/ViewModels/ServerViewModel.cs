@@ -146,7 +146,7 @@ namespace Servidor.ViewModels
 
         private void Editar(PcInfo clon)
         {
-            if (clon != null && !string.IsNullOrWhiteSpace(identificador))
+            if (clon != null && !string.IsNullOrWhiteSpace(clon.Nombre))
             {
                 var pcOriginal = Computadoras.FirstOrDefault(x => x.Identificador == identificador);
                 if (pcOriginal != null && clon.Nombre != pcOriginal.Nombre)
@@ -163,9 +163,14 @@ namespace Servidor.ViewModels
 
                 }
                 Clon = null;
+                identificador = null;
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));
             }
-            identificador = null;
+            else
+            {
+                Info = "Indique un nombre";
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
+            }
         }
 
         private void Eliminar()
