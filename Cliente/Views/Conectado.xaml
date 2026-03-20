@@ -83,7 +83,7 @@
 
 
             <Grid Grid.Row="5">
-                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" FontSize="30"></TextBlock>
+                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789"  FontSize="15"></TextBlock>
             </Grid>
 
 

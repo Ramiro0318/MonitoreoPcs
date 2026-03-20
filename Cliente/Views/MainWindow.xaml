@@ -46,7 +46,7 @@
 
                 <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
 
-                    <TextBox  TextAlignment="Center"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
+                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
                 </Border>
 
             </Grid>
@@ -63,7 +63,7 @@
 
                 <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
 
-                    <TextBox  TextAlignment="Center"  Foreground="#064789" Text="{Binding Nombre}" ></TextBox>
+                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" ></TextBox>
                 </Border>
 
             </Grid>
@@ -83,7 +83,7 @@
             </Grid>
 
             <Grid Grid.Row="5">
-                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" FontSize="30"></TextBlock>
+                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789"  FontSize="15"></TextBlock>
             </Grid>
 
 
