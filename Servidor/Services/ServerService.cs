@@ -1,0 +1,330 @@
+﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using Servidor.Models.Entities;
+using Servidor.ViewModels;
+using Servidor.Views;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Tracing;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Timers;
+using System.Windows.Input;
+using System.Windows.Threading;
+
+namespace Servidor.Services
+{
+    public class ServerService
+    {
+
+
+        public List<PcInfo> Computadoras { get; set; } = new();
+        public List<PcInfo> HistorialConexiones { get; set; } = new();
+        public List<ComandoInfo> HistorialComandos { get; set; } = new();
+
+
+        private PcInfo? Clon { set; get; }
+        private PcInfo? ComputadoraResponder { set; get; }
+        private System.Timers.Timer TimerEstado;
+
+        private IPAddress ip = IPAddress.Any;
+        private int puerto = 60000;
+
+        public int LatidosRecibidos { set; get; }
+
+        UdpClient Server { set; get; }
+
+        private string computadorasFilename = "computadoras.json";
+        private string conexionesFilename = "conexiones.json";
+        private string comandosFilename = "comandos.json";
+
+
+
+
+
+        public ServerService()
+        {
+            AbrirOC(Computadoras, computadorasFilename);
+            AbrirOC(HistorialConexiones, conexionesFilename);
+            AbrirOC(HistorialComandos, comandosFilename);
+
+
+
+
+            IPEndPoint endpoint = new IPEndPoint(ip, puerto);
+
+            Server = new UdpClient(endpoint);
+            Thread hiloEscuchar = new(RecibirMensajes);
+            hiloEscuchar.IsBackground = true;
+            hiloEscuchar.Start();
+
+
+            TimerEstado = new System.Timers.Timer(TimeSpan.FromSeconds(1));
+                
+            TimerEstado.Elapsed += TimerEstado_Tick;
+            TimerEstado.AutoReset = true;
+            TimerEstado.Enabled = true;
+        }
+
+
+
+        public event Action<string> ErrorAlRegistrar, ComandoEnviado, DatosCargados;
+        //Y si cambio estos 3 eventos por uno llamado actualizar info
+        public event Action<PcInfo> RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada;
+
+
+        private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador)
+        {
+            if (Computadoras.Any(x => x.Nombre == identificador))
+            {
+                ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
+                return;
+            }
+            PcInfo pc = new PcInfo
+            {
+                Nombre = identificador,
+                Ip = remoto.Address.ToString(),
+                Puerto = remoto.Port,
+                EstadoEnlazado = false,
+            };
+            RegistroCreado.Invoke(pc);
+        }
+
+
+        public void RegistrarComputadora(PcInfo pc)
+        {
+            if (pc != null)
+            {
+                EnviarMensajes(Orden.REGISTROAPROBADO, pc);
+                if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
+                {
+                    Computadoras.Add(pc);
+                    GuardarOC(Computadoras, computadorasFilename);
+                }
+                RegistroCompletado.Invoke(pc);
+            }
+
+        }
+
+
+        public void IrEditarComputadora(PcInfo pc, string identificador)
+        {
+
+            identificador = pc.Identificador;
+            Clon = new PcInfo
+            {
+                Nombre = pc.Nombre,
+                Ip = pc.Ip,
+                Puerto = pc.Puerto,
+                HoraConexion = pc.HoraConexion,
+                UltimoLatido = pc.UltimoLatido,
+                EstadoEnlazado = pc.EstadoEnlazado
+
+            };
+
+            ComputadoraClonada.Invoke(Clon);
+
+        }
+
+
+        public void EditarComputadora(PcInfo clon, string identificador)
+        {
+            var pcOriginal = Computadoras.FirstOrDefault(x => x.Identificador == identificador);
+            if (pcOriginal != null && clon.Nombre != pcOriginal.Nombre)
+            {
+                pcOriginal.Nombre = clon.Nombre;
+                var registroHistorial = HistorialConexiones.Where(x => x.Identificador == identificador).ToList();
+                registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
+                GuardarOC(Computadoras, computadorasFilename);
+                GuardarOC(HistorialConexiones, conexionesFilename);
+
+                EnviarMensajes(Orden.CAMBIARID, pcOriginal);
+                ComputadoraEditada.Invoke(clon);
+
+            }
+
+        }
+
+        public void EliminarComputadora(PcInfo pc)
+        {
+            EnviarMensajes(Orden.OLVIDAR, pc);
+            Computadoras.Remove(pc);
+            GuardarOC(Computadoras, computadorasFilename);
+
+            ComputadoraEliminada.Invoke(pc);
+        }
+
+
+        //Antes lo tenía como OC
+        //private void GuardarOC<T>(ObservableCollection<T> oc, string filename)
+        private void GuardarOC<T>(List<T> oc, string filename)
+        {
+            string jsonString = JsonSerializer.Serialize(oc);
+            File.WriteAllText(filename, jsonString);
+        }
+
+        private void AbrirOC<T>(List<T> oc, string filename)
+        {
+            if (File.Exists(filename))
+            {
+                var jsonString = File.ReadAllText(filename);
+                var list = JsonSerializer.Deserialize<List<T>>(jsonString);
+
+                if (list != null)
+                {
+                    foreach (var o in list)
+                    {
+                        oc.Add(o);
+                    }
+                    DatosCargados?.Invoke(filename.Replace(".json", ""));
+                }
+            }
+        }
+
+        public void LimpiarOC(string oc)
+        {
+            if (oc == "conexiones")
+            {
+                HistorialConexiones.Clear();
+                GuardarOC(HistorialConexiones, conexionesFilename);
+            }
+            else if (oc == "comandos")
+            {
+                HistorialComandos.Clear();
+                GuardarOC(HistorialComandos, comandosFilename);
+            }
+            DatosCargados?.Invoke(oc);
+        }
+
+
+
+
+
+
+
+
+
+
+
+        public void RecibirMensajes()
+        {
+            while (true)
+            {
+                try
+                {
+                    IPEndPoint remoto = new IPEndPoint(IPAddress.Any, 0);
+                    byte[] buffer = Server.Receive(ref remoto);
+
+                    string comando = Encoding.UTF8.GetString(buffer);
+                    string[] comandoSeparado = comando.Split('|');
+
+                    if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 2)
+                    {
+                        RecibirSolicitudRegistro(remoto, comandoSeparado[1]);
+                    }
+                    else if (comandoSeparado[0] == nameof(Orden.HEARTHBEAT) && comandoSeparado.Length == 2)
+                    {
+                        LatidosRecibidos++;
+
+                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                        if (pc != null)
+                        {
+                            pc.UltimoLatido = DateTime.Now;
+                            if (!pc.EstadoEnlazado)
+                            {
+                                pc.HoraConexion = DateTime.Now;
+                                
+                                HistorialConexiones.Add(pc);
+                                GuardarOC(HistorialConexiones, conexionesFilename);
+                                ComputadoraResponder = pc;
+
+                                ComputadoraEnlazada.Invoke(pc);
+                            }
+                            EnviarMensajes(Orden.ENLAZADO, pc);
+                        }
+                    }
+                    else if (comandoSeparado[0] == nameof(Orden.INTERNET) && comandoSeparado.Length == 2)
+                    {
+                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                        if (pc != null)
+                        {
+                            pc.UltimoPing = DateTime.Now;
+                            pc.EstadoInternet = true;
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+
+
+
+
+
+
+
+
+        public void EnviarMensajes(Orden comando, PcInfo computadoraSeleccionada)
+        {
+            if ((computadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT && comando != Orden.INTERNET)
+            {
+                var pc = comando != Orden.ENLAZADO ? computadoraSeleccionada : ComputadoraResponder;
+                if (pc != null)
+                {
+
+                    if (comando != Orden.ENLAZADO)
+                    {
+                        HistorialComandos.Add(new ComandoInfo
+                        {
+                            Destino = pc.Identificador,
+                            Comando = comando,
+                            Fecha = DateTime.Now,
+                            NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
+                        });
+                        GuardarOC(HistorialComandos, comandosFilename);
+
+                        ComandoEnviado.Invoke($"a {comando.ToString()} {pc.Nombre}");
+                        
+                    }
+
+                    string mensaje;
+                    if (comando == Orden.CAMBIARID || comando == Orden.REGISTROAPROBADO)
+                    {
+                        mensaje = $"{comando}|{pc.Nombre}";
+                    }
+                    else mensaje = comando.ToString();
+
+                    byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
+                    IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
+                    Server.Send(buffer, buffer.Length, destino);
+                }
+            }
+        }
+
+
+
+        private void TimerEstado_Tick(object? sender, EventArgs e)
+        {
+            foreach (var pc in Computadoras.ToList())
+            {
+                if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
+                {
+                    pc.EstadoEnlazado = false;
+                    ComputadoraEnlazada.Invoke(pc);
+                }
+                if (DateTime.Now - pc.UltimoPing >= TimeSpan.FromSeconds(30) && pc.EstadoInternet)
+                {
+                    pc.EstadoInternet = false;
+                    ComputadoraEnlazada.Invoke(pc);
+                }
+            }
+        }
+
+    }
+}
