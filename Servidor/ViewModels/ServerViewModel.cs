@@ -51,7 +51,7 @@ namespace Servidor.ViewModels
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
 
 
-        public ServerService Service { set; get; } = null!;
+        public ServerService Service { set; get; } = new();
 
 
 

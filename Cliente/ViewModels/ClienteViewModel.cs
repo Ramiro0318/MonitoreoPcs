@@ -1,4 +1,5 @@
 ﻿using Cliente.Models.Entities;
+using Cliente.Services;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System;
@@ -14,6 +15,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace Cliente.ViewModels
@@ -25,294 +27,113 @@ namespace Cliente.ViewModels
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public ICommand EnviarRegistroCommand { get; set; }
-
-        private DispatcherTimer TimerBeat;
-        private int puerto = 60000; //Puerto de servidor
-        private bool latiendo;
-        private bool escuchando = false;
-        string filename = "registro.json";
-        private int latidosEnviados;
-        private DateTime ultimoPing = DateTime.Now;
+     
         public Pagina Pagina { get; set; }
         public string IpPorValidar { get; set; }
         public string Nombre { set; get; } = null!;
         public string Info { set; get; }
         public bool Internet { set; get; }
-        public IPAddress Ip { set; get; } // IpServidor
-        public Info? Registro { set; get; }
-        UdpClient Cliente { get; set; }
 
+        public Info? Registro { set; get; }
+
+
+        public ClienteService Service { get; set; } = new();
 
         public ClienteViewModel()
         {
-            EnviarRegistroCommand = new RelayCommand(EnviarRegistro);
-            //Deserializar el registro
-            AbrirRegistro();
+            Service.RegistroEnviado += Service_RegistroEnviado;
+            Service.InformacionActualizada += Service_InformacionActualizada;
+            Service.PaginaCambiada += Service_PaginaCambiada;
+            Service.RegistroGuardado += Service_RegistroGuardado;
+            Service.RegistroActualizado += Service_RegistroActualizado;
+            Service.RegistroEliminado += Service_RegistroEliminado;
+            Service.EstadoInternetCambiado += Service_EstadoInternetCambiado;
 
-            IPEndPoint endpoint = new(IPAddress.Any, 60001);
-            Cliente = new UdpClient(endpoint);
-            if (Registro != null)
+            EnviarRegistroCommand = new RelayCommand(Enviar);
+
+            Service.Iniciar();
+        }
+
+
+        private void Service_RegistroEliminado(string info)
+        {
+            App.Current.Dispatcher.Invoke(() =>
             {
-                Pagina = Pagina.Conectado;
+                Pagina = Pagina.Registro;
+                Info = info;
+                Registro = null;
                 PropertyChanged?.Invoke(this, new(nameof(Pagina)));
-                Thread hiloEscuchar = new(RecibirMensajes);
-                hiloEscuchar.IsBackground = true;
-                hiloEscuchar.Start();
-
-                Thread hiloInternet = new(RevisarInternet);
-                hiloInternet.IsBackground = true;
-                hiloInternet.Start();
-
-                EnviarHearthbeat();
-
-            }
-        }
-
-
-        public void EnviarRegistro()
-        {
-            if (IPAddress.IsValid(IpPorValidar) && !string.IsNullOrEmpty(Nombre))
-            {
-                try
-                {
-                    Ip = IPAddress.Parse(IpPorValidar);
-                    IPEndPoint remoto = new IPEndPoint(Ip, puerto);
-
-                    string comando = $"{Orden.REGISTRO}|{Nombre}";
-                    byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                    Cliente.Send(buffer, buffer.Length, remoto);
-                    Info = "Solicitud de registro enviada";
-
-                    if (!escuchando)
-                    {
-                        //Empieza a escuchar si no está escuchando ya
-                        Thread hiloEscuchar = new(RecibirMensajes);
-                        hiloEscuchar.IsBackground = true;
-                        hiloEscuchar.Start();
-                    }
-                }
-                catch { }
-            }
-            PropertyChanged?.Invoke(this, new(nameof(Info)));
-        }
-
-
-        public void EnviarHearthbeat()
-        {
-
-            TimerBeat = new DispatcherTimer();
-            TimerBeat.Interval = TimeSpan.FromSeconds(5);
-            TimerBeat.Tick += TimerBeat_Tick;
-            TimerBeat.Start();
-        }
-
-        private void TimerBeat_Tick(object? sender, EventArgs e)
-        {
-            if (Registro != null)
-            {
-                try
-                {
-                    IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-                    string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
-                    byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                    Cliente.Send(buffer, buffer.Length, remoto);
-
-                    latidosEnviados++;
-                    PropertyChanged?.Invoke(this, new(nameof(latidosEnviados)));
-
-                    if (latidosEnviados >= 5)
-                    {
-                        Info = "Se ha perdido la conexión con el servidor";
-                        PropertyChanged?.Invoke(this, new(nameof(Info)));
-                    }
-                }
-                catch { }
-            }
-        }
-
-
-        private void RevisarInternet()
-        {
-            while (true)
-            {
-                Thread.Sleep(5000);
-                if (Registro != null)
-                {
-                    IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-                    if (HacerPing())
-                    {
-                        string comando = $"{Orden.INTERNET}|{Registro.NombreAsignado}";
-                        byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                        Cliente.Send(buffer, buffer.Length, remoto);
-                        ultimoPing = DateTime.Now;
-                    }
-                    if (DateTime.Now - ultimoPing >= TimeSpan.FromSeconds(30) && Internet)
-                    {
-                        App.Current.Dispatcher.Invoke(() =>
-                        {
-                            Internet = false;
-                            PropertyChanged?.Invoke(this, new(nameof(Internet)));
-                        });
-                    }
-                    Thread.Sleep(5000);
-                }
-                else return;
-            }
-        }
-
-        private bool HacerPing()
-        {
-            try
-            {
-                using Ping ping = new();
-                PingReply respuesta = ping.Send("8.8.8.8", 1000);
-                return respuesta.Status == IPStatus.Success;
-            }
-            catch { return false; }
-        }
-
-        public void RecibirMensajes()
-        {
-            escuchando = true;
-            Info = "Escuchando mensajes";
-            PropertyChanged?.Invoke(this, new(nameof(Info)));
-            while (escuchando)
-            {
-                try
-                {
-                    IPEndPoint remoto = new(IPAddress.Any, 0);
-                    byte[] buffer = Cliente.Receive(ref remoto);
-
-                    string comando = Encoding.UTF8.GetString(buffer);
-                    string[] comandoSeparado = comando.Split('|');
-
-                    switch (comandoSeparado[0])
-                    {
-                        case nameof(Orden.ENLAZADO):
-                            App.Current.Dispatcher.Invoke(() =>
-                            {
-                                Pagina = Pagina.Conectado;
-                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
-                                Info = "ENLAZADO!";
-                                latidosEnviados = 0;
-                                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            });
-                            break;
-
-                        case nameof(Orden.REGISTROAPROBADO):
-                            if (!latiendo)
-                            {
-                                latiendo = true;
-
-                                GuardarRegistro(comandoSeparado[1]);
-                                App.Current.Dispatcher.Invoke(() =>
-                                {
-                                    Pagina = Pagina.Conectado;
-                                    PropertyChanged?.Invoke(this, new(nameof(Pagina)));
-                                    Info = "Registro aprobado... ";
-                                    PropertyChanged?.Invoke(this, new(nameof(Info)));
-                                    //Serializar la ip y puerto
-                                    EnviarHearthbeat();
-                                });
-                                Thread hiloInternet = new(RevisarInternet);
-                                hiloInternet.IsBackground = true;
-                                hiloInternet.Start();
-                            }
-                            break;
-
-                        case nameof(Orden.APAGAR):
-                            escuchando = false;
-
-
-                            App.Current.Dispatcher.Invoke(() =>
-                            {
-                                Pagina = Pagina.Advertencia;
-                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
-                                Info = "Esta computadora se apagará en unos segundos...";
-                                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            });
-                            Process.Start("shutdown", "/s /t 10");                             //s = Apagar
-                            Thread.Sleep(10000);
-                            break;
-
-                        case nameof(Orden.REINICIAR):
-                            escuchando = false;
-                            App.Current.Dispatcher.Invoke(() =>
-                            {
-                                Pagina = Pagina.Advertencia;
-                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
-                                Info = "Esta computadora se reiniciará en unos segundos...";
-                                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                            });
-                            Process.Start("shutdown", "/r /t 10");                             //r = Reiniciar
-                            Thread.Sleep(10000);
-                            break;
-
-                        case nameof(Orden.CAMBIARID):
-                            if (comandoSeparado.Length == 2 && Registro != null)
-                            {
-                                App.Current.Dispatcher.Invoke(() =>
-                                {
-                                    Info = $"Se indico un cambio de id a {comandoSeparado[1]}";
-                                    Ip = IPAddress.Parse(Registro.IpServidor);
-                                    GuardarRegistro(comandoSeparado[1]);
-                                    PropertyChanged?.Invoke(this, new(nameof(Info)));
-                                    PropertyChanged?.Invoke(this, new(nameof(Registro)));
-                                });
-                            }
-                            break;
-
-                        case nameof(Orden.OLVIDAR):
-                            escuchando = false;
-                            App.Current.Dispatcher.Invoke(() =>
-                            {
-                                Pagina = Pagina.Registro;
-                                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
-                                Info = "Registro eliminado";
-                                latiendo = false;
-                                TimerBeat.Stop();
-                                Registro = null;
-                                PropertyChanged?.Invoke(this, new(nameof(Info)));
-                                PropertyChanged?.Invoke(this, new(nameof(Registro)));
-                            });
-                            File.Delete(filename);
-                            break;
-                    }
-                }
-                catch { if (!escuchando) break; }
-            }
-
-        }
-
-        private void GuardarRegistro(string nombre)
-        {
-            if (nombre != null)
-            {
-                var registro = new Info
-                {
-                    NombreAsignado = nombre,
-                    IpServidor = Ip.ToString(),
-                    PuertoServidor = puerto
-                };
-                Registro = registro;
-                string jsonString = JsonSerializer.Serialize(Registro);
-                File.WriteAllText(filename, jsonString);
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
-            }
+            });
         }
 
-        private void AbrirRegistro()
+        public void Enviar()
         {
-            if (File.Exists(filename))
-            {
-                var jsonString = File.ReadAllText(filename);
-                var registro = JsonSerializer.Deserialize<Info>(jsonString);
-                if (registro != null)
-                {
-                    Registro = registro;
-                    PropertyChanged?.Invoke(this, new(nameof(Registro)));
-                }
-            }
+            Service.EnviarRegistro(IpPorValidar, Nombre);
         }
+        private void Service_RegistroEnviado(Info registro)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Registro = registro;
+                Pagina = Pagina.Conectado;
+                PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
+            });
+        }
+
+        private void Service_RegistroActualizado(Info registro, string info)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Registro = registro;
+                Pagina = Pagina.Conectado;
+                Info = info;
+                PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
+            });
+        }
+
+
+        private void Service_InformacionActualizada(string info)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Info = info;
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
+            });
+        }
+
+        private void Service_RegistroGuardado(Info registro)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Registro = registro;
+                PropertyChanged?.Invoke(this, new(nameof(Registro)));
+            });
+        }
+
+
+        private void Service_PaginaCambiada(Pagina pagina)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Pagina = pagina;
+                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
+            });
+        }
+
+
+        private void Service_EstadoInternetCambiado(bool internet)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Internet = internet;
+                PropertyChanged?.Invoke(this, new(nameof(Internet)));
+            });
+        }
+
     }
 }
