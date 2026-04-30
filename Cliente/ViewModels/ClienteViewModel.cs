@@ -72,6 +72,7 @@ namespace Cliente.ViewModels
         {
             Service.EnviarRegistro(IpPorValidar, Nombre);
         }
+
         private void Service_RegistroEnviado(Info registro)
         {
             App.Current.Dispatcher.Invoke(() =>

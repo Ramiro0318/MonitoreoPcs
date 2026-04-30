@@ -45,7 +45,6 @@ namespace Servidor.ViewModels
         public PcInfo? Clon { set; get; }
 
 
-
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
@@ -68,7 +67,8 @@ namespace Servidor.ViewModels
             Service.ComputadoraEliminada += Service_ComputadoraEliminada;
             Service.ComputadoraEnlazada += Service_ComputadoraEnlazada;
             Service.ComandoEnviado += Service_ComandoEnviado;
-            Service.DatosCargados += Service_DatosCargados;
+            Service.ListaActualizada += Service_ListaActualizada;
+            Service.EstadoPcActualizado += Service_EstadoPcActualizado;
 
 
 
@@ -77,11 +77,26 @@ namespace Servidor.ViewModels
             IrEditarCommand = new RelayCommand<PcInfo>(IrEditar);
             EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand(Eliminar);
-            LimpiarCommand = new RelayCommand<string>(Service.LimpiarOC);
+            LimpiarCommand = new RelayCommand<string>(LimpiarOC);
 
-
+            Service.Iniciar();
         }
 
+        private void Service_EstadoPcActualizado(PcInfo obj)
+        {
+            // Como PcInfo ya notifica PropertyChanged, 
+            // lo único que necesitamos es asegurar que el Dispatcher lo procese
+            // para que la UI se refresque si el cambio vino de un hilo de socket.
+            App.Current.Dispatcher.BeginInvoke(() =>
+            {
+                // No hace falta hacer nada más. Al actualizarse la propiedad 
+                // dentro del objeto 'pc', y estar ese objeto dentro de la 
+                // ObservableCollection, el icono cambiará solo.
+
+                // Opcional: Si quieres ser ultra precavido de que la UI refresque la fila:
+                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
+            });
+        }
 
         private void Service_ComandoEnviado(string mensaje)
         {
@@ -107,6 +122,7 @@ namespace Servidor.ViewModels
             {
                 Info = error;
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
+                PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
             });
         }
 
@@ -116,12 +132,13 @@ namespace Servidor.ViewModels
             Service.RegistrarComputadora(ComputadoraSeleccionada);
         }
 
-        private void Service_RegistroCompletado(PcInfo obj)
+        private void Service_RegistroCompletado(PcInfo pc)
         {
             App.Current.Dispatcher.BeginInvoke(() =>
             {
                 ComputadoraSeleccionada = null;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+                //Computadoras.Clear();
             });
         }
 
@@ -138,13 +155,13 @@ namespace Servidor.ViewModels
 
         public void IrEditar(PcInfo pc)
         {
-            ComputadoraSeleccionada = pc;
-            if (ComputadoraSeleccionada != null && ComputadoraSeleccionada.EstadoEnlazado)
+            if (pc != null && pc.EstadoEnlazado)
             {
+                ComputadoraSeleccionada = pc;
                 identificador = pc.Identificador;
                 Info = "";
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
-                Service.IrEditarComputadora(ComputadoraSeleccionada, identificador);
+                Service.IrEditarComputadora(pc);
             }
         }
 
@@ -160,13 +177,13 @@ namespace Servidor.ViewModels
         private void Editar(PcInfo clon)
         {
 
-            if (clon == null || string.IsNullOrWhiteSpace(clon?.Nombre))
+            if (clon == null || string.IsNullOrWhiteSpace(clon.Nombre))
             {
                 Info = "Indique un nombre";
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                 return;
             }
-            if (identificador != null)
+            if (!string.IsNullOrEmpty(identificador))
             {
                 Service.EditarComputadora(clon, identificador);
             }
@@ -202,6 +219,11 @@ namespace Servidor.ViewModels
             });
         }
 
+        private void LimpiarOC(string oc)
+        {
+            Service.LimpiarOC(oc);
+        }
+
         private void Service_ComputadoraEnlazada(PcInfo pc)
         {
             App.Current.Dispatcher.Invoke(() =>
@@ -210,7 +232,7 @@ namespace Servidor.ViewModels
             });
         }
 
-        private void Service_DatosCargados(string oc)
+        private void Service_ListaActualizada(string oc)
         {
             App.Current.Dispatcher.Invoke(() =>
             {

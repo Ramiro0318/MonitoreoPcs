@@ -50,12 +50,20 @@ namespace Servidor.Services
 
         public ServerService()
         {
+            
+        }
+
+
+
+        public event Action<string> ErrorAlRegistrar, ComandoEnviado, ListaActualizada;
+        //Y si cambio estos 3 eventos por uno llamado actualizar info
+        public event Action<PcInfo> RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada;
+        public event Action<PcInfo>? EstadoPcActualizado;
+        public void Iniciar()
+        {
             AbrirOC(Computadoras, computadorasFilename);
             AbrirOC(HistorialConexiones, conexionesFilename);
             AbrirOC(HistorialComandos, comandosFilename);
-
-
-
 
             IPEndPoint endpoint = new IPEndPoint(ip, puerto);
 
@@ -66,18 +74,11 @@ namespace Servidor.Services
 
 
             TimerEstado = new System.Timers.Timer(TimeSpan.FromSeconds(1));
-                
+
             TimerEstado.Elapsed += TimerEstado_Tick;
             TimerEstado.AutoReset = true;
             TimerEstado.Enabled = true;
         }
-
-
-
-        public event Action<string> ErrorAlRegistrar, ComandoEnviado, DatosCargados;
-        //Y si cambio estos 3 eventos por uno llamado actualizar info
-        public event Action<PcInfo> RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada;
-
 
         private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador)
         {
@@ -96,7 +97,7 @@ namespace Servidor.Services
             RegistroCreado.Invoke(pc);
         }
 
-
+        
         public void RegistrarComputadora(PcInfo pc)
         {
             if (pc != null)
@@ -113,10 +114,8 @@ namespace Servidor.Services
         }
 
 
-        public void IrEditarComputadora(PcInfo pc, string identificador)
+        public void IrEditarComputadora(PcInfo pc)
         {
-
-            identificador = pc.Identificador;
             Clon = new PcInfo
             {
                 Nombre = pc.Nombre,
@@ -145,7 +144,7 @@ namespace Servidor.Services
                 GuardarOC(HistorialConexiones, conexionesFilename);
 
                 EnviarMensajes(Orden.CAMBIARID, pcOriginal);
-                ComputadoraEditada.Invoke(clon);
+                ComputadoraEditada.Invoke(pcOriginal);
 
             }
 
@@ -167,6 +166,7 @@ namespace Servidor.Services
         {
             string jsonString = JsonSerializer.Serialize(oc);
             File.WriteAllText(filename, jsonString);
+            ListaActualizada?.Invoke(filename.Replace(".json", ""));
         }
 
         private void AbrirOC<T>(List<T> oc, string filename)
@@ -182,7 +182,7 @@ namespace Servidor.Services
                     {
                         oc.Add(o);
                     }
-                    DatosCargados?.Invoke(filename.Replace(".json", ""));
+                    ListaActualizada?.Invoke(filename.Replace(".json", ""));
                 }
             }
         }
@@ -199,17 +199,8 @@ namespace Servidor.Services
                 HistorialComandos.Clear();
                 GuardarOC(HistorialComandos, comandosFilename);
             }
-            DatosCargados?.Invoke(oc);
+            ListaActualizada?.Invoke(oc);
         }
-
-
-
-
-
-
-
-
-
 
 
         public void RecibirMensajes()
@@ -236,15 +227,18 @@ namespace Servidor.Services
                         if (pc != null)
                         {
                             pc.UltimoLatido = DateTime.Now;
-                            if (!pc.EstadoEnlazado)
+                            if (pc.EstadoEnlazado == false)
                             {
                                 pc.HoraConexion = DateTime.Now;
-                                
+                                pc.EstadoEnlazado = true;
+                                LatidosRecibidos = 0;
+
                                 HistorialConexiones.Add(pc);
                                 GuardarOC(HistorialConexiones, conexionesFilename);
                                 ComputadoraResponder = pc;
 
-                                ComputadoraEnlazada.Invoke(pc);
+                                EstadoPcActualizado?.Invoke(pc);
+                                //Invoke(ComputadoraResponder);
                             }
                             EnviarMensajes(Orden.ENLAZADO, pc);
                         }
