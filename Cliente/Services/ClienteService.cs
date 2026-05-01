@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Timers;
+using System.Windows.Documents.DocumentStructures;
 using System.Windows.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -20,7 +21,7 @@ namespace Cliente.Services
     {
         string filename = "registro.json";
         private int puerto = 60000; //Puerto de servidor
-        public IPAddress Ip { set; get; } // IpServidor
+        public IPAddress? Ip { set; get; } // IpServidor
 
         private bool escuchando = false;
         private bool latiendo = false;
@@ -28,18 +29,15 @@ namespace Cliente.Services
         private bool internet;
         private DateTime ultimoPing = DateTime.Now;
         private System.Timers.Timer TimerBeat;
-        private Info Registro { set; get; }
+        private Info? Registro { set; get; }
         UdpClient Cliente { get; set; }
-        public ClienteService()
-        {
 
-        }
 
-        public event Action<string> InformacionActualizada, RegistroEliminado;
-        public event Action<Info> RegistroEnviado, RegistroGuardado;
-        public event Action<Info, string> RegistroActualizado;
-        public event Action<bool> EstadoInternetCambiado;
-        public event Action<Pagina> PaginaCambiada;
+        public event Action<string>? InformacionActualizada, RegistroEliminado;
+        public event Action<Info>? RegistroAbierto, RegistroGuardado;
+        public event Action<Info, string>? RegistroActualizado;
+        public event Action<bool>? EstadoInternetCambiado;
+        public event Action<Pagina>? PaginaCambiada;
 
 
         public void Iniciar()
@@ -83,7 +81,8 @@ namespace Cliente.Services
                 if (registro != null)
                 {
                     Registro = registro;
-                    RegistroEnviado.Invoke(Registro);
+                    RegistroAbierto?.Invoke(Registro);
+                    PaginaCambiada?.Invoke(Pagina.Conectado);
                 }
             }
         }
@@ -91,15 +90,15 @@ namespace Cliente.Services
 
         public void EnviarRegistro(string ip, string nombre, string laboratorio)
         {
-            
-            if (string.IsNullOrWhiteSpace(ip) && string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(laboratorio) ) 
+
+            if (string.IsNullOrWhiteSpace(ip) && string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(laboratorio))
             {
-                InformacionActualizada.Invoke("No deje en blanco ningun dato.");
+                InformacionActualizada?.Invoke("No deje en blanco ningun dato.");
                 return;
             }
-            if (!IPAddress.IsValid(ip)) 
+            if (!IPAddress.IsValid(ip))
             {
-                InformacionActualizada.Invoke("Introduzca una dirección IPv4 válida.");
+                InformacionActualizada?.Invoke("Introduzca una dirección IPv4 válida.");
                 return;
             }
             else
@@ -113,7 +112,7 @@ namespace Cliente.Services
                     byte[] buffer = Encoding.UTF8.GetBytes(comando);
                     Cliente.Send(buffer, buffer.Length, remoto);
 
-                    InformacionActualizada.Invoke("Solicitud de registro enviada.");
+                    InformacionActualizada?.Invoke("Solicitud de registro enviada.");
 
                     if (!escuchando)
                     {
@@ -127,7 +126,7 @@ namespace Cliente.Services
             }
         }
 
-        public void GuardarRegistro(string nombre)
+        public void GuardarRegistro(string nombre, string laboratorio)
         {
             if (nombre != null)
             {
@@ -135,10 +134,12 @@ namespace Cliente.Services
                 {
                     NombreAsignado = nombre,
                     IpServidor = Ip.ToString(),
-                    PuertoServidor = puerto
+                    PuertoServidor = puerto,
+                    Laboratorio = laboratorio
                 };
 
-                RegistroGuardado.Invoke(registro);
+                Registro = registro;
+                RegistroGuardado?.Invoke(registro);
                 string jsonString = JsonSerializer.Serialize(registro);
                 File.WriteAllText(filename, jsonString);
 
@@ -149,7 +150,7 @@ namespace Cliente.Services
         public void RecibirMensajes()
         {
             escuchando = true;
-            InformacionActualizada.Invoke("Escuchando mensajes");
+            InformacionActualizada?.Invoke("Escuchando mensajes");
 
             while (escuchando)
             {
@@ -165,8 +166,8 @@ namespace Cliente.Services
                     {
                         case nameof(Orden.ENLAZADO):
                             latidosEnviados = 0;
-                            PaginaCambiada.Invoke(Pagina.Conectado);
-                            InformacionActualizada.Invoke("ENLAZADO!");
+                            PaginaCambiada?.Invoke(Pagina.Conectado);
+                            InformacionActualizada?.Invoke("ENLAZADO!");
                             break;
 
                         case nameof(Orden.REGISTROAPROBADO):
@@ -174,10 +175,10 @@ namespace Cliente.Services
                             {
                                 latiendo = true;
 
-                                GuardarRegistro(comandoSeparado[1]);
+                                GuardarRegistro(comandoSeparado[1], comandoSeparado[2]);
 
-                                PaginaCambiada.Invoke(Pagina.Conectado);
-                                InformacionActualizada.Invoke("Registro aprobado... ");
+                                PaginaCambiada?.Invoke(Pagina.Conectado);
+                                InformacionActualizada?.Invoke("Registro aprobado... ");
                                 EnviarHearthbeat();
 
                                 Thread hiloInternet = new(RevisarInternet);
@@ -188,25 +189,26 @@ namespace Cliente.Services
 
                         case nameof(Orden.APAGAR):
                             escuchando = false;
-                            InformacionActualizada.Invoke("Esta computadora se apagará en unos segundos...");
+                            InformacionActualizada?.Invoke("Esta computadora se apagará en unos segundos...");
                             Process.Start("shutdown", "/s /t 10");                             //s = Apagar
                             Thread.Sleep(10000);
                             break;
 
                         case nameof(Orden.REINICIAR):
                             escuchando = false;
-                            PaginaCambiada.Invoke(Pagina.Advertencia);
-                            InformacionActualizada.Invoke("Esta computadora se reiniciará en unos segundos...");
+                            PaginaCambiada?.Invoke(Pagina.Advertencia);
+                            InformacionActualizada?.Invoke("Esta computadora se reiniciará en unos segundos...");
                             Process.Start("shutdown", "/r /t 10");                             //r = Reiniciar
                             Thread.Sleep(10000);
                             break;
 
-                        case nameof(Orden.CAMBIARID):
-                            if (comandoSeparado.Length == 2 && Registro != null)
+                        case nameof(Orden.EDITARINFO):
+                            if (comandoSeparado.Length == 3 && Registro != null)
                             {
-                                RegistroActualizado.Invoke(Registro, $"Se indico un cambio de id a {comandoSeparado[1]}");
+                                PaginaCambiada?.Invoke(Pagina.Conectado);
                                 Ip = IPAddress.Parse(Registro.IpServidor);
-                                GuardarRegistro(comandoSeparado[1]);
+                                GuardarRegistro(comandoSeparado[1], comandoSeparado[2]);
+                                //RegistroActualizado?.Invoke(Registro, $"Se indico un cambio de id a {comandoSeparado[1]}"); ////////
                             }
                             break;
 
@@ -214,7 +216,8 @@ namespace Cliente.Services
                             escuchando = false;
                             latiendo = false;
                             TimerBeat.Stop();
-                            RegistroEliminado.Invoke("Registro eliminado");
+                            RegistroEliminado?.Invoke("Registro eliminado");
+                            PaginaCambiada?.Invoke(Pagina.Registro);
                             File.Delete(filename);
                             break;
                     }
@@ -273,11 +276,14 @@ namespace Cliente.Services
 
         public void EnviarHearthbeat()
         {
-            TimerBeat = new System.Timers.Timer(TimeSpan.FromSeconds(5));
+            if (TimerBeat == null)
+            {
+                TimerBeat = new System.Timers.Timer(TimeSpan.FromSeconds(5));
 
-            TimerBeat.Elapsed += TimerBeat_Tick;
-            TimerBeat.AutoReset = true;
-            TimerBeat.Enabled = true;
+                TimerBeat.Elapsed += TimerBeat_Tick;
+                TimerBeat.AutoReset = true;
+            }
+            TimerBeat.Start();
         }
 
 
@@ -296,7 +302,7 @@ namespace Cliente.Services
 
                     if (latidosEnviados >= 5)
                     {
-                        InformacionActualizada.Invoke("Se ha perdido la conexión con el servidor");
+                        InformacionActualizada?.Invoke("Se ha perdido la conexión con el servidor");
                     }
                 }
                 catch { }

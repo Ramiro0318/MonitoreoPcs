@@ -24,7 +24,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.ViewModels
 {
-    public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT, INTERNET }
+    public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, EDITARINFO, OLVIDAR, HEARTHBEAT, INTERNET }
     public class ServerViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -84,16 +84,8 @@ namespace Servidor.ViewModels
 
         private void Service_EstadoPcActualizado(PcInfo obj)
         {
-            // Como PcInfo ya notifica PropertyChanged, 
-            // lo único que necesitamos es asegurar que el Dispatcher lo procese
-            // para que la UI se refresque si el cambio vino de un hilo de socket.
             App.Current.Dispatcher.BeginInvoke(() =>
             {
-                // No hace falta hacer nada más. Al actualizarse la propiedad 
-                // dentro del objeto 'pc', y estar ese objeto dentro de la 
-                // ObservableCollection, el icono cambiará solo.
-
-                // Opcional: Si quieres ser ultra precavido de que la UI refresque la fila:
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
             });
         }
@@ -148,7 +140,7 @@ namespace Servidor.ViewModels
                 ComputadoraSeleccionada = null;
                 Clon = null;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                PropertyChanged?.Invoke(this, new(nameof(Clon)));
+                PropertyChanged?.Invoke(this, new(nameof(Clon)));   //???
             });
         }
 

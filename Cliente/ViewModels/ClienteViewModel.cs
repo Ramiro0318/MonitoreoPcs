@@ -21,22 +21,17 @@ using System.Windows.Threading;
 
 namespace Cliente.ViewModels
 {
-    public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, CAMBIARID, OLVIDAR, HEARTHBEAT, INTERNET }
+    public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, EDITARINFO, OLVIDAR, HEARTHBEAT, INTERNET }
     public enum Pagina { Registro, Conectado, Advertencia }
     public class ClienteViewModel : INotifyPropertyChanged
     {
-
-        public event PropertyChangedEventHandler? PropertyChanged;
         public ICommand EnviarRegistroCommand { get; set; }
-     
         public Pagina Pagina { get; set; }
         public string IpPorValidar { get; set; }
         public string Nombre { set; get; } = null!;
         public string Laboratorio { set; get; } = null!;
-
         public string Info { set; get; }
         public bool Internet { set; get; }
-
         public Info? Registro { set; get; }
 
         public ObservableCollection<string> Laboratorios { get; set; } = new ObservableCollection<string> { "Laboratorio 1", "Laboratorio 2", "Laboratorio 3", "Laboratorio 4", "Laboratorio 5" };
@@ -44,7 +39,7 @@ namespace Cliente.ViewModels
 
         public ClienteViewModel()
         {
-            Service.RegistroEnviado += Service_RegistroEnviado;
+            Service.RegistroAbierto += Service_RegistroAbierto;
             Service.InformacionActualizada += Service_InformacionActualizada;
             Service.PaginaCambiada += Service_PaginaCambiada;
             Service.RegistroGuardado += Service_RegistroGuardado;
@@ -65,19 +60,14 @@ namespace Cliente.ViewModels
             Service.EnviarRegistro(IpPorValidar, Nombre, Laboratorio);
         }
 
-        private void Service_RegistroEnviado(Info registro)
+        private void Service_RegistroAbierto(Info registro)
         {
             App.Current.Dispatcher.Invoke(() =>
             {
                 Registro = registro;
-                Pagina = Pagina.Conectado;
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
-                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
             });
         }
-
-
-
 
         private void Service_InformacionActualizada(string info)
         {
@@ -96,15 +86,14 @@ namespace Cliente.ViewModels
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
             });
         }
+
         private void Service_RegistroActualizado(Info registro, string info)
         {
             App.Current.Dispatcher.Invoke(() =>
             {
                 Registro = registro;
-                Pagina = Pagina.Conectado;
                 Info = info;
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
-                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
             });
         }
@@ -113,10 +102,8 @@ namespace Cliente.ViewModels
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                Pagina = Pagina.Registro;
                 Info = info;
                 Registro = null;
-                PropertyChanged?.Invoke(this, new(nameof(Pagina)));
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
             });
@@ -131,7 +118,6 @@ namespace Cliente.ViewModels
             });
         }
 
-
         private void Service_EstadoInternetCambiado(bool internet)
         {
             App.Current.Dispatcher.Invoke(() =>
@@ -140,6 +126,8 @@ namespace Cliente.ViewModels
                 PropertyChanged?.Invoke(this, new(nameof(Internet)));
             });
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
     }
 }

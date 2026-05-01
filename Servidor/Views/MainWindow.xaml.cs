@@ -46,6 +46,7 @@ namespace Servidor
                     ventanaEditar.ShowDialog();
                     enEdicion = false;
                 }
+                return;
             }
             if (e.PropertyName == nameof(ServerViewModel.ComputadoraSeleccionada))
             {

@@ -5,20 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ServerViewModel}"
         mc:Ignorable="d"
-         Title="Editar" Height="350" Width="600" Background="#EBF2FA">
+         Title="Editar" Height="390" Width="600" Background="#EBF2FA">
     <Grid Margin="20" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" >
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
-
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
@@ -36,7 +34,7 @@
                 </Grid.RowDefinitions>
 
 
-                <Label FontFamily="Bold"  HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="10,5" FontSize="18">Escriba el nuevo nombre para la computadora</Label>
+                <Label FontFamily="Bold"  HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="10,5" FontSize="18">Escriba los nuevos datos para la computadora</Label>
 
 
 
@@ -44,10 +42,12 @@
                 <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,0">
 
                     <Border Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="250">
-
-                        <TextBox TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Clon.Nombre, Mode=TwoWay}" FontSize="26"></TextBox>
+                        <TextBox TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Clon.Nombre, Mode=TwoWay}" FontSize="22"></TextBox>
                     </Border>
-                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Info}"  FontSize="18" ></TextBlock>
+                    <Border Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="250">
+                        <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding Clon.Laboratorio, Mode=TwoWay}" FontSize="22" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                    </Border>
+                    <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Info}"  FontSize="18" ></TextBlock>
 
                 </StackPanel>
 

@@ -23,7 +23,6 @@ namespace Servidor.Services
     public class ServerService
     {
 
-
         public List<PcInfo> Computadoras { get; set; } = new();
         public List<PcInfo> HistorialConexiones { get; set; } = new();
         public List<ComandoInfo> HistorialComandos { get; set; } = new();
@@ -45,19 +44,9 @@ namespace Servidor.Services
         private string comandosFilename = "comandos.json";
 
 
-
-
-
-        public ServerService()
-        {
-            
-        }
-
-
-
-        public event Action<string> ErrorAlRegistrar, ComandoEnviado, ListaActualizada;
+        public event Action<string>? ErrorAlRegistrar, ComandoEnviado, ListaActualizada;
         //Y si cambio estos 3 eventos por uno llamado actualizar info
-        public event Action<PcInfo> RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada;
+        public event Action<PcInfo>? RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada;
         public event Action<PcInfo>? EstadoPcActualizado;
         public void Iniciar()
         {
@@ -95,10 +84,10 @@ namespace Servidor.Services
                 Laboratorio = laboratorio,
                 EstadoEnlazado = false,
             };
-            RegistroCreado.Invoke(pc);
+            RegistroCreado?.Invoke(pc);//
         }
 
-        
+
         public void RegistrarComputadora(PcInfo pc)
         {
             if (pc != null)
@@ -109,7 +98,7 @@ namespace Servidor.Services
                     Computadoras.Add(pc);
                     GuardarOC(Computadoras, computadorasFilename);
                 }
-                RegistroCompletado.Invoke(pc);
+                RegistroCompletado?.Invoke(pc);
             }
 
         }
@@ -122,13 +111,15 @@ namespace Servidor.Services
                 Nombre = pc.Nombre,
                 Ip = pc.Ip,
                 Puerto = pc.Puerto,
+                Laboratorio = pc.Laboratorio,
+                //Colocar la mac
                 HoraConexion = pc.HoraConexion,
                 UltimoLatido = pc.UltimoLatido,
                 EstadoEnlazado = pc.EstadoEnlazado
 
             };
 
-            ComputadoraClonada.Invoke(Clon);
+            ComputadoraClonada?.Invoke(Clon);
 
         }
 
@@ -136,16 +127,18 @@ namespace Servidor.Services
         public void EditarComputadora(PcInfo clon, string identificador)
         {
             var pcOriginal = Computadoras.FirstOrDefault(x => x.Identificador == identificador);
-            if (pcOriginal != null && clon.Nombre != pcOriginal.Nombre)
+            if (pcOriginal != null)
             {
                 pcOriginal.Nombre = clon.Nombre;
+                pcOriginal.Laboratorio = clon.Laboratorio;
+                //MAC
                 var registroHistorial = HistorialConexiones.Where(x => x.Identificador == identificador).ToList();
                 registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
                 GuardarOC(Computadoras, computadorasFilename);
                 GuardarOC(HistorialConexiones, conexionesFilename);
 
-                EnviarMensajes(Orden.CAMBIARID, pcOriginal);
-                ComputadoraEditada.Invoke(pcOriginal);
+                EnviarMensajes(Orden.EDITARINFO, pcOriginal);
+                ComputadoraEditada?.Invoke(pcOriginal);
 
             }
 
@@ -157,12 +150,9 @@ namespace Servidor.Services
             Computadoras.Remove(pc);
             GuardarOC(Computadoras, computadorasFilename);
 
-            ComputadoraEliminada.Invoke(pc);
+            ComputadoraEliminada?.Invoke(pc);
         }
 
-
-        //Antes lo tenía como OC
-        //private void GuardarOC<T>(ObservableCollection<T> oc, string filename)
         private void GuardarOC<T>(List<T> oc, string filename)
         {
             string jsonString = JsonSerializer.Serialize(oc);
@@ -260,16 +250,11 @@ namespace Servidor.Services
 
 
 
-
-
-
-
-
         public void EnviarMensajes(Orden comando, PcInfo computadoraSeleccionada)
         {
-            if ((computadoraSeleccionada != null || ComputadoraResponder != null) && comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT && comando != Orden.INTERNET)
+            if (comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT && comando != Orden.INTERNET)
             {
-                var pc = comando != Orden.ENLAZADO ? computadoraSeleccionada : ComputadoraResponder;
+                var pc = comando == Orden.ENLAZADO ? ComputadoraResponder : computadoraSeleccionada;
                 if (pc != null)
                 {
 
@@ -280,24 +265,23 @@ namespace Servidor.Services
                             Destino = pc.Identificador,
                             Comando = comando,
                             Fecha = DateTime.Now,
-                            NuevoNombre = comando == Orden.CAMBIARID ? pc.Nombre : ""
+                            NuevoNombre = comando == Orden.EDITARINFO ? pc.Nombre : "",
+                            Laboratorio = comando == Orden.EDITARINFO ? pc.Laboratorio : ""
                         });
                         GuardarOC(HistorialComandos, comandosFilename);
-
-                        ComandoEnviado.Invoke($"a {comando.ToString()} {pc.Nombre}");
-                        
                     }
 
                     string mensaje;
-                    if (comando == Orden.CAMBIARID || comando == Orden.REGISTROAPROBADO)
+                    if (comando == Orden.EDITARINFO ||comando == Orden.REGISTROAPROBADO)
                     {
-                        mensaje = $"{comando}|{pc.Nombre}";
+                        mensaje = $"{comando}|{pc.Nombre}|{pc.Laboratorio}";
                     }
                     else mensaje = comando.ToString();
 
                     byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
                     IPEndPoint destino = new IPEndPoint(IPAddress.Parse(pc.Ip), pc.Puerto);
                     Server.Send(buffer, buffer.Length, destino);
+                    ComandoEnviado?.Invoke($"a {comando.ToString()} {pc.Nombre}");
                 }
             }
         }
@@ -311,12 +295,15 @@ namespace Servidor.Services
                 if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
                 {
                     pc.EstadoEnlazado = false;
-                    ComputadoraEnlazada.Invoke(pc);
+                    ComputadoraEnlazada?.Invoke(pc);
                 }
                 if (DateTime.Now - pc.UltimoPing >= TimeSpan.FromSeconds(30) && pc.EstadoInternet)
                 {
                     pc.EstadoInternet = false;
-                    ComputadoraEnlazada.Invoke(pc);
+                    ComputadoraEnlazada?.Invoke(pc);
+                    
+                    //Creo que este es el evento
+                    //EstadoPcActualizado?.Invoke(pc);
                 }
             }
         }

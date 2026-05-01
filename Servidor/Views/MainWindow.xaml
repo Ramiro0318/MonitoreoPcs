@@ -212,14 +212,11 @@
                                             </Button>
                                             <!--reiniciar-->
                                             <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}"  CommandParameter="{Binding}" >
-
                                                 <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
                                             </Button>
                                             <!--editar-->
                                             <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" >
-
                                                 <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
-
                                             </Button>
                                             <!--eliminar-->
 
