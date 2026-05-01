@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ServerViewModel}"
         mc:Ignorable="d"
-        Title="NotificacionRegistro" Height="200" Width="350"  Background="#EBF2FA">
+        Title="NotificacionRegistro" Height="230" Width="370"  Background="#EBF2FA">
     <Border  Padding="10"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
         <Grid Margin="20">
             <Grid.RowDefinitions>
@@ -37,6 +37,9 @@
                     <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
 
                     <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
+
+                    <ComboBox HorizontalAlignment="Center"  ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding ComputadoraSeleccionada.Laboratorio}" Width="110" FontSize="14" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.MAC}"></TextBlock>
 
                 </StackPanel>
 

@@ -3,18 +3,19 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Cliente.Views"
-      mc:Ignorable="d">
+      xmlns:local="clr-namespace:Cliente.Views" xmlns:viewmodels="clr-namespace:Cliente.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ClienteViewModel}"
+             mc:Ignorable="d">
 
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="20" CornerRadius="10" Background="White">
         <Grid Margin="10" Background="White" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto" ></RowDefinition>
-                <RowDefinition Height="auto"  ></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
@@ -39,7 +40,6 @@
                 <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Direccion IP del servidor:</TextBlock>
 
                 <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-
                     <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
                 </Border>
 
@@ -62,7 +62,25 @@
 
             </Grid>
 
-            <Grid Grid.Row="4" >
+            <Grid Grid.Row="4" Margin="5" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Laboratorio:</TextBlock>
+
+                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+
+                    <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding Laboratorio}" FontSize="14" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                </Border>
+                    <!--<TextBox TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Laboratorio}" ></TextBox>-->
+
+            </Grid>
+
+            <Grid Grid.Row="5" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
@@ -71,12 +89,9 @@
 
 
                 <Button Grid.Column="1" Padding="6,0,6,0" Margin="6" FontFamily="Bold" FontSize="15"  HorizontalAlignment="Center" Width="100"  Background="#679436 " Foreground="#F0F0DB"   Command="{Binding EnviarRegistroCommand}">Enviar</Button>
-
-
-
             </Grid>
 
-            <Grid Grid.Row="5">
+            <Grid Grid.Row="6">
                 <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789"  FontSize="15"></TextBlock>
             </Grid>
 

@@ -11,5 +11,6 @@ namespace Servidor.Models.Entities
         public Orden Comando { get; set; }
         public DateTime Fecha { get; set; }
         public string? NuevoNombre { get; set; }
+        
     }
 }

@@ -80,7 +80,7 @@ namespace Servidor.Services
             TimerEstado.Enabled = true;
         }
 
-        private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador)
+        private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador, string laboratorio)
         {
             if (Computadoras.Any(x => x.Nombre == identificador))
             {
@@ -92,6 +92,7 @@ namespace Servidor.Services
                 Nombre = identificador,
                 Ip = remoto.Address.ToString(),
                 Puerto = remoto.Port,
+                Laboratorio = laboratorio,
                 EstadoEnlazado = false,
             };
             RegistroCreado.Invoke(pc);
@@ -215,9 +216,9 @@ namespace Servidor.Services
                     string comando = Encoding.UTF8.GetString(buffer);
                     string[] comandoSeparado = comando.Split('|');
 
-                    if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 2)
+                    if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 3)
                     {
-                        RecibirSolicitudRegistro(remoto, comandoSeparado[1]);
+                        RecibirSolicitudRegistro(remoto, comandoSeparado[1], comandoSeparado[2]);
                     }
                     else if (comandoSeparado[0] == nameof(Orden.HEARTHBEAT) && comandoSeparado.Length == 2)
                     {

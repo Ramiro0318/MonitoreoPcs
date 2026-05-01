@@ -60,6 +60,9 @@ namespace Servidor.Models.Entities
             }
         }
 
+        public string Laboratorio { set; get; } = null!;
+        public string? MAC { set; get; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

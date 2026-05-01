@@ -89,20 +89,31 @@ namespace Cliente.Services
         }
 
 
-        public void EnviarRegistro(string ip, string nombre)
+        public void EnviarRegistro(string ip, string nombre, string laboratorio)
         {
-            if (IPAddress.IsValid(ip) && !string.IsNullOrEmpty(nombre))
+            
+            if (string.IsNullOrWhiteSpace(ip) && string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(laboratorio) ) 
+            {
+                InformacionActualizada.Invoke("No deje en blanco ningun dato.");
+                return;
+            }
+            if (!IPAddress.IsValid(ip)) 
+            {
+                InformacionActualizada.Invoke("Introduzca una dirección IPv4 válida.");
+                return;
+            }
+            else
             {
                 try
                 {
                     Ip = IPAddress.Parse(ip);
                     IPEndPoint remoto = new IPEndPoint(Ip, puerto);
 
-                    string comando = $"{Orden.REGISTRO}|{nombre}";
+                    string comando = $"{Orden.REGISTRO}|{nombre}|{laboratorio}";
                     byte[] buffer = Encoding.UTF8.GetBytes(comando);
                     Cliente.Send(buffer, buffer.Length, remoto);
 
-                    InformacionActualizada.Invoke("Solicitud de registro enviada");
+                    InformacionActualizada.Invoke("Solicitud de registro enviada.");
 
                     if (!escuchando)
                     {

@@ -44,7 +44,7 @@ namespace Servidor.ViewModels
 
         public PcInfo? Clon { set; get; }
 
-
+        public ObservableCollection<string> Laboratorios { get; set; } = new ObservableCollection<string> { "Laboratorio 1", "Laboratorio 2", "Laboratorio 3", "Laboratorio 4", "Laboratorio 5" };
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
@@ -138,7 +138,6 @@ namespace Servidor.ViewModels
             {
                 ComputadoraSeleccionada = null;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                //Computadoras.Clear();
             });
         }
 
