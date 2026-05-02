@@ -27,16 +27,13 @@
                         <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
                         <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Computadoras sin conexión reciente</TextBlock>
                     </StackPanel>
-
-                    <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="conexiones">
-                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
-                    </Button>
                 </Grid>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" ></ColumnDefinition>
                         <ColumnDefinition Width="100" ></ColumnDefinition>
+                        <ColumnDefinition Width="120" ></ColumnDefinition>
                         <ColumnDefinition Width="120" ></ColumnDefinition>
                         <ColumnDefinition Width="120" ></ColumnDefinition>
 
@@ -47,7 +44,7 @@
                     <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >IP</Label>
                     <Label  Grid.Column="2"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Puerto</Label>
                     <Label  Grid.Column="3"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Fecha</Label>
-
+                    <Label Grid.Column="4" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
 
 
                 </Grid>
@@ -62,6 +59,7 @@
                                         <ColumnDefinition Width="100" ></ColumnDefinition>
                                         <ColumnDefinition Width="120" ></ColumnDefinition>
                                         <ColumnDefinition Width="120" ></ColumnDefinition>
+                                        <ColumnDefinition Width="120" ></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
 
 
@@ -70,7 +68,9 @@
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding HoraConexion }" Grid.Column="3"></TextBlock>
-
+                                    <Button Background="White" BorderBrush="White" Grid.Column="4" Width="20" Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}">
+                                        <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
+                                    </Button>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

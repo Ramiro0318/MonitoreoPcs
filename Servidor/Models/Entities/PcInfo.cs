@@ -60,6 +60,8 @@ namespace Servidor.Models.Entities
             }
         }
 
+        public bool EstadoHistorico { set; get; }
+
         public string Laboratorio { set; get; } = null!;
         public string? MAC { set; get; }
 

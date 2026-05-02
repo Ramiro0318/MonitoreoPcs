@@ -267,10 +267,16 @@ namespace Servidor.ViewModels
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                if (oc == "computadoras" && Pagina != Pagina.Historial)
+                if (oc == "computadoras" && Pagina == Pagina.Computadoras || Pagina == Pagina.Laboratorios)
                 {
                     Computadoras.Clear();
-                    foreach (var pc in Service.Computadoras)
+                    foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false))
+                        Computadoras.Add(pc);
+                }
+                if (oc == "computadoras" && Pagina == Pagina.Historico)
+                {
+                    Computadoras.Clear();
+                    foreach (var pc in Service.Computadoras.Where(x=> x.EstadoHistorico == true))
                         Computadoras.Add(pc);
                 }
                 else if (oc == "conexiones" && Pagina == Pagina.Historial)

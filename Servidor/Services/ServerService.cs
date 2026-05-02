@@ -232,6 +232,7 @@ namespace Servidor.Services
                                 pc.EstadoEnlazado = true;
                                 LatidosRecibidos = 0;
 
+                                
                                 HistorialConexiones.Add(pc);
                                 GuardarOC(HistorialConexiones, conexionesFilename);
                                 ComputadoraResponder = pc;
@@ -303,7 +304,7 @@ namespace Servidor.Services
 
         private void TimerEstado_Tick(object? sender, EventArgs e)
         {
-            foreach (var pc in Computadoras.ToList())
+            foreach (var pc in Computadoras.ToList())   //ElToList ya no es necesario
             {
                 if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
                 {
@@ -317,6 +318,11 @@ namespace Servidor.Services
 
                     //Creo que este es el evento
                     //EstadoPcActualizado?.Invoke(pc);
+                }
+                if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromHours(1) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromHours(1) && !pc.EstadoHistorico))
+                {
+                    pc.EstadoHistorico = true;
+
                 }
             }
         }
