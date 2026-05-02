@@ -70,10 +70,14 @@ namespace Servidor.Services
 
         private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador, string laboratorio, string mac)
         {
-            //Pensar en cambiarla a mac
             if (Computadoras.Any(x => x.Nombre == identificador))
             {
                 ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
+                return;
+            }
+            if (Computadoras.Any(x => x.MAC == mac))
+            {
+                ErrorAlRegistrar?.Invoke("Una computadora se ha vuelto a intentar registrar.");
                 return;
             }
             PcInfo pc = new PcInfo

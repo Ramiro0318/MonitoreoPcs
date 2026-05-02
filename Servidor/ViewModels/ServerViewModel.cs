@@ -43,6 +43,7 @@ namespace Servidor.ViewModels
         public ICommand FiltrarCommand {  set; get; }
 
         public string? Info { set; get; }
+        public string? Error { set; get; }
         public PcInfo? ComputadoraSeleccionada { set; get; }
         public string LaboratorioSeleccionado { set; get; } = null!;
 
@@ -156,8 +157,8 @@ namespace Servidor.ViewModels
             {
                 ComputadoraSeleccionada = pc;
                 identificador = pc.Identificador;
-                Info = "";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                Error = "";
+                PropertyChanged?.Invoke(this, new(nameof(Error)));
                 Service.IrEditarComputadora(pc);
             }
         }
@@ -176,8 +177,8 @@ namespace Servidor.ViewModels
 
             if (clon == null || string.IsNullOrWhiteSpace(clon.Nombre))
             {
-                Info = "Indique un nombre";
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                Error = "Indique un nombre";
+                PropertyChanged?.Invoke(this, new(nameof(Error)));
                 return;
             }
             if (!string.IsNullOrEmpty(identificador))
