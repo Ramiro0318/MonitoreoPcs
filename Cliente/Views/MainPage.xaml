@@ -29,65 +29,34 @@
 
 
 
-            <Grid Grid.Row="2" Margin="5" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-
-
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Direccion IP del servidor:</TextBlock>
-
-                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
-                </Border>
-
-            </Grid>
-
-            <Grid Grid.Row="3" Margin="5" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-
+            <Grid Grid.Row="2" Margin="5" ColumnDefinitions="*,*">
 
                 <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Nombre del equipo:</TextBlock>
-
                 <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-
                     <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" ></TextBox>
                 </Border>
 
+
             </Grid>
 
-            <Grid Grid.Row="4" Margin="5" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-
-
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Laboratorio:</TextBlock>
-
+            <Grid Grid.Row="3" Margin="5" ColumnDefinitions="*,*">
+                
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Direccion IP del servidor:</TextBlock>
                 <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
+                </Border>
+            </Grid>
 
+            <Grid Grid.Row="4" Margin="5" ColumnDefinitions="*,*">
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Laboratorio:</TextBlock>
+                
+                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
                     <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding Laboratorio}" FontSize="14" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
                 </Border>
-                    <!--<TextBox TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Laboratorio}" ></TextBox>-->
-
+                
             </Grid>
 
-            <Grid Grid.Row="5" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-
-
+            <Grid Grid.Row="5" ColumnDefinitions="*,*">
                 <Button Grid.Column="1" Padding="6,0,6,0" Margin="6" FontFamily="Bold" FontSize="15"  HorizontalAlignment="Center" Width="100"  Background="#679436 " Foreground="#F0F0DB"   Command="{Binding EnviarRegistroCommand}">Enviar</Button>
             </Grid>
 

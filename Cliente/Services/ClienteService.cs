@@ -5,9 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Timers;
@@ -88,6 +91,32 @@ namespace Cliente.Services
         }
 
 
+
+        public string ObtenerDireccionMac()
+        {
+            // 1. Obtener todas las interfaces de red (Ethernet, Wi-Fi, etc.)
+            var interfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+            // 2. Filtrar para encontrar la más adecuada
+            var tarjetaActiva = interfaces.FirstOrDefault(nic =>
+                nic.OperationalStatus == OperationalStatus.Up && // Que esté encendida
+                nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && // Que no sea software interno
+                nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel); // Que no sea una VPN o Túnel
+
+            if (tarjetaActiva != null)
+            {
+                // 3. Obtener la dirección física
+                PhysicalAddress mac = tarjetaActiva.GetPhysicalAddress();
+                byte[] bytes = mac.GetAddressBytes();
+
+                // 4. Formatear los bytes a Hexadecimal (Ej: 00-1A-2B-3C-4D-5E)
+                return string.Join("-", bytes.Select(b => b.ToString("X2")));
+            }
+
+            return "";
+        }
+
+
         public void EnviarRegistro(string ip, string nombre, string laboratorio)
         {
 
@@ -95,10 +124,16 @@ namespace Cliente.Services
             {
                 InformacionActualizada?.Invoke("No deje en blanco ningun dato.");
                 return;
-            }
+            }       
             if (!IPAddress.IsValid(ip))
             {
                 InformacionActualizada?.Invoke("Introduzca una dirección IPv4 válida.");
+                return;
+            }
+            var mac = ObtenerDireccionMac();
+            if (mac == "")
+            {
+                InformacionActualizada?.Invoke("Existe un problema con su direccion MAC.");
                 return;
             }
             else
@@ -106,13 +141,14 @@ namespace Cliente.Services
                 try
                 {
                     Ip = IPAddress.Parse(ip);
+
                     IPEndPoint remoto = new IPEndPoint(Ip, puerto);
 
-                    string comando = $"{Orden.REGISTRO}|{nombre}|{laboratorio}";
+                    string comando = $"{Orden.REGISTRO}|{nombre}|{laboratorio}|{mac}";
                     byte[] buffer = Encoding.UTF8.GetBytes(comando);
                     Cliente.Send(buffer, buffer.Length, remoto);
 
-                    InformacionActualizada?.Invoke("Solicitud de registro enviada.");
+                    InformacionActualizada?.Invoke($"Solicitud de registro enviada.");
 
                     if (!escuchando)
                     {
@@ -126,7 +162,7 @@ namespace Cliente.Services
             }
         }
 
-        public void GuardarRegistro(string nombre, string laboratorio)
+        public void GuardarRegistro(string nombre, string laboratorio, string? mac)
         {
             if (nombre != null)
             {
@@ -135,7 +171,8 @@ namespace Cliente.Services
                     NombreAsignado = nombre,
                     IpServidor = Ip.ToString(),
                     PuertoServidor = puerto,
-                    Laboratorio = laboratorio
+                    Laboratorio = laboratorio,
+                    MAC = mac
                 };
 
                 Registro = registro;
@@ -175,7 +212,7 @@ namespace Cliente.Services
                             {
                                 latiendo = true;
 
-                                GuardarRegistro(comandoSeparado[1], comandoSeparado[2]);
+                                GuardarRegistro(comandoSeparado[1], comandoSeparado[2], comandoSeparado[3]);
 
                                 PaginaCambiada?.Invoke(Pagina.Conectado);
                                 InformacionActualizada?.Invoke("Registro aprobado... ");
@@ -207,7 +244,7 @@ namespace Cliente.Services
                             {
                                 PaginaCambiada?.Invoke(Pagina.Conectado);
                                 Ip = IPAddress.Parse(Registro.IpServidor);
-                                GuardarRegistro(comandoSeparado[1], comandoSeparado[2]);
+                                GuardarRegistro(comandoSeparado[1], comandoSeparado[2], Registro.MAC);
                                 //RegistroActualizado?.Invoke(Registro, $"Se indico un cambio de id a {comandoSeparado[1]}"); ////////
                             }
                             break;

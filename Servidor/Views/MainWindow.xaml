@@ -102,20 +102,20 @@
 
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition Width="105"></ColumnDefinition>
                             <ColumnDefinition Width="70" ></ColumnDefinition>
                             <ColumnDefinition Width="100"></ColumnDefinition>
-                            <ColumnDefinition Width="100"></ColumnDefinition>
-                            <ColumnDefinition Width="100"></ColumnDefinition>
-                            <ColumnDefinition Width="100"></ColumnDefinition>
+                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition Width="85"></ColumnDefinition>
+                            <ColumnDefinition Width="85"></ColumnDefinition>
                             <ColumnDefinition Width="110"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
 
-                        <Label Grid.Column="0" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" Margin="10,0,0,0">Nombre</Label>
-                        <Label Grid.Column="1" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >IP</Label>
-                        <Label Grid.Column="2" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center"  Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Laboratorio</Label>
-                        <Label Grid.Column="3" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center"  Foreground="#064789" FontWeight="SemiBold" FontSize="15" >MAC</Label>
+                        <Label Grid.Column="0" FontFamily=" Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" FontSize="15" Margin="10,0,0,0"  >Nombre</Label>
+                        <Label Grid.Column="1" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789"  FontWeight="SemiBold" FontSize="15">IP</Label>
+                        <Label Grid.Column="2" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center"  Foreground="#064789" FontWeight="SemiBold" FontSize="15">Laboratorio</Label>
+                        <Label Grid.Column="3" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center"  Foreground="#064789" FontWeight="SemiBold" FontSize="15">MAC</Label>
                         <Label Grid.Column="4" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Estado</Label>
                         <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15" >Internet</Label>
                         <Label Grid.Column="6" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
@@ -139,12 +139,12 @@
                                 <DataTemplate>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="110"></ColumnDefinition>
+                                            <ColumnDefinition Width="105"></ColumnDefinition>
                                             <ColumnDefinition Width="70" ></ColumnDefinition>
                                             <ColumnDefinition Width="100"></ColumnDefinition>
-                                            <ColumnDefinition Width="100"></ColumnDefinition>
-                                            <ColumnDefinition Width="100"></ColumnDefinition>
-                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition Width="110"></ColumnDefinition>
+                                            <ColumnDefinition Width="85"></ColumnDefinition>
+                                            <ColumnDefinition Width="85"></ColumnDefinition>
                                             <ColumnDefinition Width="110"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
 
@@ -152,12 +152,11 @@
 
                                         <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
                                         <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
-                                        <!--<TextBlock HorizontalAlignment="Center" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>-->
                                         <TextBlock HorizontalAlignment="Center" Text="{Binding Laboratorio}" Grid.Column="2"></TextBlock>
-                                        <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="2"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="3"></TextBlock>
 
 
-                                        <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                                        <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Text" Value="Desconectado" />
@@ -176,8 +175,8 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                        <!--<TextBlock HorizontalAlignment="Left" Text="{Binding EstadoInternet}" Grid.Column="4"></TextBlock>-->
-                                        <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+
+                                        <TextBlock Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Text" Value="Desconectado" />
@@ -194,7 +193,7 @@
                                             </TextBlock.Style>
                                         </TextBlock>
 
-                                        <Grid Grid.Column="5" HorizontalAlignment="Right">
+                                        <Grid Grid.Column="6" HorizontalAlignment="Right">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition></ColumnDefinition>
                                                 <ColumnDefinition></ColumnDefinition>
@@ -202,7 +201,6 @@
                                                 <ColumnDefinition></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
 
-                                            <!--los botones llevaran iconos pero aun no me decido por la paleta de colores-->
                                             <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" >
                                                 <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
                                             </Button>
@@ -219,9 +217,7 @@
                                                 <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
                                             </Button>
                                             <!--eliminar-->
-
                                         </Grid>
-
 
                                     </Grid>
                                 </DataTemplate>

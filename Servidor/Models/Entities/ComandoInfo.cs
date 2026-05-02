@@ -13,6 +13,7 @@ namespace Servidor.Models.Entities
         public DateTime Fecha { get; set; }
         public string? NuevoNombre { get; set; }
         public string? Laboratorio { get; set; }
+        public string? MAC { get; set; }
         
     }
 }

@@ -69,8 +69,9 @@ namespace Servidor.Services
             TimerEstado.Enabled = true;
         }
 
-        private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador, string laboratorio)
+        private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador, string laboratorio, string mac)
         {
+            //Pensar en cambiarla a mac
             if (Computadoras.Any(x => x.Nombre == identificador))
             {
                 ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
@@ -82,6 +83,7 @@ namespace Servidor.Services
                 Ip = remoto.Address.ToString(),
                 Puerto = remoto.Port,
                 Laboratorio = laboratorio,
+                MAC = mac,
                 EstadoEnlazado = false,
             };
             RegistroCreado?.Invoke(pc);//
@@ -93,6 +95,9 @@ namespace Servidor.Services
             if (pc != null)
             {
                 EnviarMensajes(Orden.REGISTROAPROBADO, pc);
+
+    //cambiar por mac
+    //              !Computadoras.Any(x => x.MAC == pc.MAC)
                 if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
                 {
                     Computadoras.Add(pc);
@@ -112,7 +117,7 @@ namespace Servidor.Services
                 Ip = pc.Ip,
                 Puerto = pc.Puerto,
                 Laboratorio = pc.Laboratorio,
-                //Colocar la mac
+                MAC=pc.MAC,
                 HoraConexion = pc.HoraConexion,
                 UltimoLatido = pc.UltimoLatido,
                 EstadoEnlazado = pc.EstadoEnlazado
@@ -124,15 +129,17 @@ namespace Servidor.Services
         }
 
 
-        public void EditarComputadora(PcInfo clon, string identificador)
+        public void EditarComputadora(PcInfo clon)
         {
-            var pcOriginal = Computadoras.FirstOrDefault(x => x.Identificador == identificador);
+            //aplicar la mac
+            var pcOriginal = Computadoras.FirstOrDefault(x => x.MAC == clon.MAC);
             if (pcOriginal != null)
             {
                 pcOriginal.Nombre = clon.Nombre;
                 pcOriginal.Laboratorio = clon.Laboratorio;
-                //MAC
-                var registroHistorial = HistorialConexiones.Where(x => x.Identificador == identificador).ToList();
+                
+                //Cambiarlo por la mac
+                var registroHistorial = HistorialConexiones.Where(x => x.MAC == pcOriginal.MAC).ToList();
                 registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
                 GuardarOC(Computadoras, computadorasFilename);
                 GuardarOC(HistorialConexiones, conexionesFilename);
@@ -206,9 +213,9 @@ namespace Servidor.Services
                     string comando = Encoding.UTF8.GetString(buffer);
                     string[] comandoSeparado = comando.Split('|');
 
-                    if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 3)
+                    if (comandoSeparado[0] == nameof(Orden.REGISTRO) && comandoSeparado.Length == 4)
                     {
-                        RecibirSolicitudRegistro(remoto, comandoSeparado[1], comandoSeparado[2]);
+                        RecibirSolicitudRegistro(remoto, comandoSeparado[1], comandoSeparado[2], comandoSeparado[3]);
                     }
                     else if (comandoSeparado[0] == nameof(Orden.HEARTHBEAT) && comandoSeparado.Length == 2)
                     {
@@ -266,15 +273,20 @@ namespace Servidor.Services
                             Comando = comando,
                             Fecha = DateTime.Now,
                             NuevoNombre = comando == Orden.EDITARINFO ? pc.Nombre : "",
-                            Laboratorio = comando == Orden.EDITARINFO ? pc.Laboratorio : ""
+                            Laboratorio = comando == Orden.EDITARINFO || comando == Orden.REGISTROAPROBADO ? pc.Laboratorio : "",
+                            MAC = pc.MAC
                         });
                         GuardarOC(HistorialComandos, comandosFilename);
                     }
 
                     string mensaje;
-                    if (comando == Orden.EDITARINFO ||comando == Orden.REGISTROAPROBADO)
+                    if (comando == Orden.EDITARINFO)
                     {
                         mensaje = $"{comando}|{pc.Nombre}|{pc.Laboratorio}";
+                    }
+                    else if (comando == Orden.REGISTROAPROBADO)
+                    {
+                        mensaje = $"{comando}|{pc.Nombre}|{pc.Laboratorio}|{pc.MAC}";
                     }
                     else mensaje = comando.ToString();
 

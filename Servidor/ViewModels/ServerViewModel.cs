@@ -176,10 +176,9 @@ namespace Servidor.ViewModels
             }
             if (!string.IsNullOrEmpty(identificador))
             {
-                Service.EditarComputadora(clon, identificador);
+                Service.EditarComputadora(clon);
             }
             Clon = null;
-            identificador = null;
             PropertyChanged?.Invoke(this, new(nameof(Clon)));
         }
 
@@ -187,6 +186,7 @@ namespace Servidor.ViewModels
         {
             App.Current.Dispatcher.BeginInvoke(() =>
             {
+                //ver si quitar
                 ComputadoraSeleccionada = clon;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
             });
