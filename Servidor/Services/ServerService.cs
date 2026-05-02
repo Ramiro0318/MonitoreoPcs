@@ -307,17 +307,19 @@ namespace Servidor.Services
                 if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
                 {
                     pc.EstadoEnlazado = false;
+                    GuardarOC(Computadoras, computadorasFilename);
                     ComputadoraEnlazada?.Invoke(pc);
                 }
                 if (DateTime.Now - pc.UltimoPing >= TimeSpan.FromSeconds(30) && pc.EstadoInternet)
                 {
                     pc.EstadoInternet = false;
+                    GuardarOC(Computadoras, computadorasFilename);
                     ComputadoraEnlazada?.Invoke(pc);
                 }
-                if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromHours(1) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromHours(1) && !pc.EstadoHistorico))
+                if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromHours(1) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromHours(1)) && !pc.EstadoHistorico)
                 {
                     pc.EstadoHistorico = true;
-
+                    GuardarOC(Computadoras, computadorasFilename);
                 }
             }
         }
