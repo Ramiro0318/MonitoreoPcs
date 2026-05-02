@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
 using System.Runtime.InteropServices;
+using Cliente.Helpers;
 
 namespace Cliente.Services
 {
@@ -44,8 +45,7 @@ namespace Cliente.Services
         public event Action<bool>? EstadoInternetCambiado;
         public event Action<Pagina>? PaginaCambiada;
 
-
-
+       
         // Función para iniciar el apagado
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool InitiateSystemShutdown(string lpMachineName, string lpMessage, uint dwTimeout, bool bForceAppsClosed, bool bRebootAfterShutdown);
@@ -252,6 +252,8 @@ namespace Cliente.Services
                             break;
 
                         case nameof(Orden.APAGAR):
+                            WindowsSystemHelper.EnableShutdownPrivilege();
+
                             escuchando = false;
                             PaginaCambiada?.Invoke(Pagina.Advertencia);
                             InformacionActualizada?.Invoke("Esta computadora se apagará en unos segundos...");
@@ -260,6 +262,8 @@ namespace Cliente.Services
                             break;
 
                         case nameof(Orden.REINICIAR):
+                            WindowsSystemHelper.EnableShutdownPrivilege();
+
                             escuchando = false;
                             PaginaCambiada?.Invoke(Pagina.Advertencia);
                             InformacionActualizada?.Invoke("Esta computadora se reiniciará en unos segundos...");

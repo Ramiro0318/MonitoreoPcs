@@ -44,9 +44,7 @@ namespace Servidor.Services
 
 
         public event Action<string>? ErrorAlRegistrar, ComandoEnviado, ListaActualizada;
-        //Y si cambio estos 3 eventos por uno llamado actualizar info
-        public event Action<PcInfo>? RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada;
-        public event Action<PcInfo>? EstadoPcActualizado;
+        public event Action<PcInfo>? RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada, EstadoPcActualizado;
         public void Iniciar()
         {
             AbrirOC(Computadoras, computadorasFilename);
@@ -315,9 +313,6 @@ namespace Servidor.Services
                 {
                     pc.EstadoInternet = false;
                     ComputadoraEnlazada?.Invoke(pc);
-
-                    //Creo que este es el evento
-                    //EstadoPcActualizado?.Invoke(pc);
                 }
                 if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromHours(1) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromHours(1) && !pc.EstadoHistorico))
                 {

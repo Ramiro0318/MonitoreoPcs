@@ -40,7 +40,7 @@ namespace Servidor.ViewModels
         public ICommand EliminarCommand { set; get; }
         public ICommand LimpiarCommand { set; get; }
         public ICommand NavegarCommand { set; get; }
-        public ICommand FiltrarCommand {  set; get; }
+        public ICommand FiltrarCommand { set; get; }
 
         public string? Info { set; get; }
         public string? Error { set; get; }
@@ -76,7 +76,7 @@ namespace Servidor.ViewModels
             Service.EstadoPcActualizado += Service_EstadoPcActualizado;
 
 
-
+            EnviarComandoCommand = new RelayCommand<Orden>(EnviarComando);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
             RechazarCommand = new RelayCommand(Rechazar);
             IrEditarCommand = new RelayCommand<PcInfo>(IrEditar);
@@ -88,6 +88,7 @@ namespace Servidor.ViewModels
 
             Service.Iniciar();
         }
+
 
         private void Service_EstadoPcActualizado(PcInfo obj)
         {
@@ -200,6 +201,14 @@ namespace Servidor.ViewModels
         }
 
 
+        private void EnviarComando(Orden orden)
+        {
+            if (ComputadoraSeleccionada != null)
+            {
+                Service.EnviarMensajes(orden, ComputadoraSeleccionada);
+            }
+        }
+
         private void Eliminar()
         {
             if (ComputadoraSeleccionada != null)
@@ -251,7 +260,7 @@ namespace Servidor.ViewModels
             {
                 CargarObservableCollections("");
             }
-            
+
             PropertyChanged?.Invoke(this, new(nameof(Pagina)));
         }
 
@@ -263,7 +272,7 @@ namespace Servidor.ViewModels
             CargarObservableCollections(oc);
         }
 
-        private void CargarObservableCollections(string oc) 
+        private void CargarObservableCollections(string oc)
         {
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -276,7 +285,7 @@ namespace Servidor.ViewModels
                 if (oc == "computadoras" && Pagina == Pagina.Historico)
                 {
                     Computadoras.Clear();
-                    foreach (var pc in Service.Computadoras.Where(x=> x.EstadoHistorico == true))
+                    foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == true))
                         Computadoras.Add(pc);
                 }
                 else if (oc == "conexiones" && Pagina == Pagina.Historial)
@@ -302,7 +311,7 @@ namespace Servidor.ViewModels
             {
                 Computadoras.Add(pc);
             }
-            
+
         }
     }
 }
