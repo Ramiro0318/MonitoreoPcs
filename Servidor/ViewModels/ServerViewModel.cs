@@ -45,7 +45,7 @@ namespace Servidor.ViewModels
         public string? Info { set; get; }
         public string? Error { set; get; }
         public PcInfo? ComputadoraSeleccionada { set; get; }
-        public string LaboratorioSeleccionado { set; get; } = null!;
+        public string LaboratorioSeleccionado { set; get; } = "Laboratorio 1";
 
         public PcInfo? Clon { set; get; }
 
@@ -248,7 +248,7 @@ namespace Servidor.ViewModels
             }
             else if (pagina == Pagina.Laboratorios)
             {
-                CargarObservableCollections("");
+                CargarObservableCollections("computadoras");
             }
             else if (pagina == Pagina.Historial)
             {
@@ -258,7 +258,7 @@ namespace Servidor.ViewModels
             }
             else if (pagina == Pagina.Historico)
             {
-                CargarObservableCollections("");
+                CargarObservableCollections("computadoras");
             }
 
             PropertyChanged?.Invoke(this, new(nameof(Pagina)));
@@ -282,7 +282,13 @@ namespace Servidor.ViewModels
                     foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false))
                         Computadoras.Add(pc);
                 }
-                if (oc == "computadoras" && Pagina == Pagina.Historico)
+                if (oc == "computadoras" && Pagina == Pagina.Laboratorios)
+                {
+                    Computadoras.Clear();
+                    foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false && x.Laboratorio == LaboratorioSeleccionado))
+                        Computadoras.Add(pc);
+                }
+                else if (oc == "computadoras" && Pagina == Pagina.Historico)
                 {
                     Computadoras.Clear();
                     foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == true))
