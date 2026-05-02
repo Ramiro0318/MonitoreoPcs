@@ -4,17 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cliente.Views"
+        xmlns:viewmodel="clr-namespace:Cliente.ViewModels"
         mc:Ignorable="d"
         Background="#EBF2FA">
 
 
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="15" CornerRadius="10" Background="White">
-         <Grid Margin="10" Background="White" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto" ></RowDefinition>
-            <RowDefinition Height="auto"  ></RowDefinition>
-        </Grid.RowDefinitions>
+        <Grid Margin="10" Background="White" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
 
@@ -28,21 +30,21 @@
                 <Label FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789 " FontWeight="SemiBold" Margin="0" FontSize="25"  Grid.Column="1">¡Atencion!</Label>
 
             </Grid>
-             
-             
-             
-             
-             
+
+
+
+
+
             <Grid Grid.Row="1" Margin="15">
                 <Grid.RowDefinitions>
                     <RowDefinition  Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">Esta computadora va a APAGARSE  en un </TextBlock>
+                <TextBlock  FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">Esta computadora va a APAGARSE  en un</TextBlock>
                 <TextBlock Grid.Row="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">momento.</TextBlock>
             </Grid>
 
-        <Grid Grid.Row="2" Margin="5" >
+            <Grid Grid.Row="2" Margin="5" >
 
 
                 <Grid.ColumnDefinitions>
@@ -50,17 +52,14 @@
                     <ColumnDefinition  Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-            
-            <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Right"/>
 
-                <TextBlock Grid.Column="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center" Margin="10" FontSize="15"> Guarde su trabajo. </TextBlock>
+                <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center" Margin="10" FontSize="15"> Guarde su trabajo o cancele la tarea.</TextBlock>
                 <Image Source="/Images/crisis.png" Grid.Column="2" Width="40" Height="40" HorizontalAlignment="Left"/>
-
-
             </Grid>
 
-
-    </Grid>
+            <Button Grid.Row="3" Width="200" FontSize="15" Command="{Binding CancelarComandoCommand}">CANCELAR</Button>
+        </Grid>
     </Border>
-   
+
 </UserControl>

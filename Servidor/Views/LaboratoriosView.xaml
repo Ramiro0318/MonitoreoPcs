@@ -31,7 +31,7 @@
 
                 <Border Grid.Row="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="250">
                     <WrapPanel>
-                        <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding LaboratorioSeleccionado}" SelectedIndex="0" FontSize="22" Width="180" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                        <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding LaboratorioSeleccionado}"  FontSize="22" Width="180" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
                         <Button Command="{Binding FiltrarCommand}" Width="58" Content="Filtrar"></Button>
                     </WrapPanel>
                 </Border>

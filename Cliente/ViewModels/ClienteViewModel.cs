@@ -25,7 +25,8 @@ namespace Cliente.ViewModels
     public enum Pagina { Registro, Conectado, Advertencia }
     public class ClienteViewModel : INotifyPropertyChanged
     {
-        public ICommand EnviarRegistroCommand { get; set; }
+        public ICommand EnviarRegistroCommand { set; get; }
+        public ICommand CancelarComandoCommand { set; get; }
         public Pagina Pagina { get; set; }
         public string IpPorValidar { get; set; }
         public string Nombre { set; get; } = null!;
@@ -48,11 +49,10 @@ namespace Cliente.ViewModels
             Service.EstadoInternetCambiado += Service_EstadoInternetCambiado;
 
             EnviarRegistroCommand = new RelayCommand(Enviar);
+            CancelarComandoCommand = new RelayCommand(Cancelar);
 
             Service.Iniciar();
         }
-
-
 
 
         public void Enviar()
@@ -126,6 +126,13 @@ namespace Cliente.ViewModels
                 PropertyChanged?.Invoke(this, new(nameof(Internet)));
             });
         }
+
+        private void Cancelar()
+        {
+            Service.CancelarComando();
+        }
+
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

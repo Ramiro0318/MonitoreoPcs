@@ -17,6 +17,8 @@ using System.Timers;
 using System.Windows.Documents.DocumentStructures;
 using System.Windows.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Cliente.Services
 {
@@ -41,6 +43,18 @@ namespace Cliente.Services
         public event Action<Info, string>? RegistroActualizado;
         public event Action<bool>? EstadoInternetCambiado;
         public event Action<Pagina>? PaginaCambiada;
+
+
+
+        // Función para iniciar el apagado
+        [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool InitiateSystemShutdown(string lpMachineName, string lpMessage, uint dwTimeout, bool bForceAppsClosed, bool bRebootAfterShutdown);
+
+        // Función para cancelar el apagado
+        [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool AbortSystemShutdown(string lpMachineName);
+
+
 
 
         public void Iniciar()
@@ -124,7 +138,7 @@ namespace Cliente.Services
             {
                 InformacionActualizada?.Invoke("No deje en blanco ningun dato.");
                 return;
-            }       
+            }
             if (!IPAddress.IsValid(ip))
             {
                 InformacionActualizada?.Invoke("Introduzca una dirección IPv4 válida.");
@@ -183,6 +197,19 @@ namespace Cliente.Services
             }
         }
 
+        public void CancelarComando()
+        {
+            if (Registro != null)
+            {
+                try
+                {
+                    AbortSystemShutdown(null);
+                    escuchando = true;
+                    PaginaCambiada?.Invoke(Pagina.Conectado);
+                }
+                catch { }
+            }
+        }
 
         public void RecibirMensajes()
         {
@@ -226,17 +253,17 @@ namespace Cliente.Services
 
                         case nameof(Orden.APAGAR):
                             escuchando = false;
+                            PaginaCambiada?.Invoke(Pagina.Advertencia);
                             InformacionActualizada?.Invoke("Esta computadora se apagará en unos segundos...");
-                            Process.Start("shutdown", "/s /t 10");                             //s = Apagar
-                            Thread.Sleep(10000);
+                            // null significa la computadora local
+                            InitiateSystemShutdown(null, "Esta computadora se apagará en 1 minuto", 10, true, false);
                             break;
 
                         case nameof(Orden.REINICIAR):
                             escuchando = false;
                             PaginaCambiada?.Invoke(Pagina.Advertencia);
                             InformacionActualizada?.Invoke("Esta computadora se reiniciará en unos segundos...");
-                            Process.Start("shutdown", "/r /t 10");                             //r = Reiniciar
-                            Thread.Sleep(10000);
+                            InitiateSystemShutdown(null, "Esta computadora se reiniciará en 1 minuto", 10, true, true);
                             break;
 
                         case nameof(Orden.EDITARINFO):
@@ -263,6 +290,8 @@ namespace Cliente.Services
             }
 
         }
+
+
 
         private void RevisarInternet()
         {
