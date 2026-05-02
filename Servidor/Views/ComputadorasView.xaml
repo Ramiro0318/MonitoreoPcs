@@ -7,8 +7,8 @@
       xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
       mc:Ignorable="d" >
 
-    <Grid>
-        <Border Grid.Row="2" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
+    <Grid Margin="20">
+        <Border Grid.Row="0" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -130,22 +130,21 @@
                                             <ColumnDefinition></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
 
-                                        <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.APAGAR}" >
+                                        <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static local:Orden.APAGAR}" >
                                             <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
                                         </Button>
-                                        <!--apagar-->
-                                        <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, ElementName=MainWindowServidor}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
+
+                                        <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
                                             <Image  Source="/Images/refresh-arrow.png" Width="16" Height="16" ></Image>
                                         </Button>
-                                        <!--reiniciar-->
-                                        <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, ElementName=MainWindowServidor}"  CommandParameter="{Binding}" >
+
+                                        <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"  CommandParameter="{Binding}" >
                                             <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
                                         </Button>
-                                        <!--editar-->
-                                        <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, ElementName=MainWindowServidor}" >
+
+                                        <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}">
                                             <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
                                         </Button>
-                                        <!--eliminar-->
                                     </Grid>
 
                                 </Grid>

@@ -34,7 +34,6 @@ namespace Servidor.Services
 
         private IPAddress ip = IPAddress.Any;
         private int puerto = 60000;
-
         public int LatidosRecibidos { set; get; }
 
         UdpClient Server { set; get; }
@@ -96,9 +95,7 @@ namespace Servidor.Services
             {
                 EnviarMensajes(Orden.REGISTROAPROBADO, pc);
 
-    //cambiar por mac
-    //              !Computadoras.Any(x => x.MAC == pc.MAC)
-                if (!Computadoras.Any(x => x.Identificador == pc.Identificador))
+                if (!Computadoras.Any(x => x.MAC == pc.MAC))
                 {
                     Computadoras.Add(pc);
                     GuardarOC(Computadoras, computadorasFilename);
@@ -117,7 +114,7 @@ namespace Servidor.Services
                 Ip = pc.Ip,
                 Puerto = pc.Puerto,
                 Laboratorio = pc.Laboratorio,
-                MAC=pc.MAC,
+                MAC = pc.MAC,
                 HoraConexion = pc.HoraConexion,
                 UltimoLatido = pc.UltimoLatido,
                 EstadoEnlazado = pc.EstadoEnlazado
@@ -137,7 +134,7 @@ namespace Servidor.Services
             {
                 pcOriginal.Nombre = clon.Nombre;
                 pcOriginal.Laboratorio = clon.Laboratorio;
-                
+
                 //Cambiarlo por la mac
                 var registroHistorial = HistorialConexiones.Where(x => x.MAC == pcOriginal.MAC).ToList();
                 registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
@@ -164,7 +161,7 @@ namespace Servidor.Services
         {
             string jsonString = JsonSerializer.Serialize(oc);
             File.WriteAllText(filename, jsonString);
-            ListaActualizada?.Invoke(filename.Replace(".json", ""));
+                ListaActualizada?.Invoke(filename.Replace(".json", ""));
         }
 
         private void AbrirOC<T>(List<T> oc, string filename)
@@ -313,7 +310,7 @@ namespace Servidor.Services
                 {
                     pc.EstadoInternet = false;
                     ComputadoraEnlazada?.Invoke(pc);
-                    
+
                     //Creo que este es el evento
                     //EstadoPcActualizado?.Invoke(pc);
                 }

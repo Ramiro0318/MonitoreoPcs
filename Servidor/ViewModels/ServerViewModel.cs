@@ -40,9 +40,11 @@ namespace Servidor.ViewModels
         public ICommand EliminarCommand { set; get; }
         public ICommand LimpiarCommand { set; get; }
         public ICommand NavegarCommand { set; get; }
+        public ICommand FiltrarCommand {  set; get; }
 
         public string? Info { set; get; }
         public PcInfo? ComputadoraSeleccionada { set; get; }
+        public string LaboratorioSeleccionado { set; get; } = null!;
 
         public PcInfo? Clon { set; get; }
 
@@ -81,6 +83,7 @@ namespace Servidor.ViewModels
             EliminarCommand = new RelayCommand(Eliminar);
             LimpiarCommand = new RelayCommand<string>(LimpiarOC);
             NavegarCommand = new RelayCommand<Pagina>(Navegar);
+            FiltrarCommand = new RelayCommand(Filtrar);
 
             Service.Iniciar();
         }
@@ -228,55 +231,71 @@ namespace Servidor.ViewModels
 
         private void Navegar(Pagina pagina)
         {
+            Pagina = pagina;
             if (pagina == Pagina.Computadoras)
             {
-                Service_ListaActualizada("computadoras");
+                CargarObservableCollections("computadoras");
             }
             else if (pagina == Pagina.Laboratorios)
             {
-                Service_ListaActualizada("");
+                CargarObservableCollections("");
             }
             else if (pagina == Pagina.Historial)
             {
-                Service_ListaActualizada("conexiones");
-                Service_ListaActualizada("comandos");
+                CargarObservableCollections("conexiones");
+                CargarObservableCollections("comandos");
 
             }
             else if (pagina == Pagina.Historico)
             {
-                Service_ListaActualizada("");
+                CargarObservableCollections("");
             }
-            Pagina = pagina;
+            
             PropertyChanged?.Invoke(this, new(nameof(Pagina)));
         }
 
+
+
+
         private void Service_ListaActualizada(string oc)
+        {
+            CargarObservableCollections(oc);
+        }
+
+        private void CargarObservableCollections(string oc) 
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                if (oc == "computadoras")
+                if (oc == "computadoras" && Pagina != Pagina.Historial)
                 {
                     Computadoras.Clear();
                     foreach (var pc in Service.Computadoras)
                         Computadoras.Add(pc);
-                    PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
                 }
-                else if (oc == "conexiones")
+                else if (oc == "conexiones" && Pagina == Pagina.Historial)
                 {
                     HistorialConexiones.Clear();
                     foreach (var h in Service.HistorialConexiones)
                         HistorialConexiones.Add(h);
-                    PropertyChanged?.Invoke(this, new(nameof(HistorialConexiones)));
                 }
-                else if (oc == "comandos")
+                else if (oc == "comandos" && Pagina == Pagina.Historial)
                 {
                     HistorialComandos.Clear();
                     foreach (var c in Service.HistorialComandos)
                         HistorialComandos.Add(c);
-                    PropertyChanged?.Invoke(this, new(nameof(HistorialComandos)));
                 }
 
             });
+        }
+
+        private void Filtrar()
+        {
+            Computadoras.Clear();
+            foreach (var pc in Service.Computadoras.Where(x => x.Laboratorio == LaboratorioSeleccionado))
+            {
+                Computadoras.Add(pc);
+            }
+            
         }
     }
 }
