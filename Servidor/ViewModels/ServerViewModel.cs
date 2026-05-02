@@ -25,12 +25,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Servidor.ViewModels
 {
     public enum Orden { REGISTROAPROBADO, REGISTRO, ENLAZADO, APAGAR, REINICIAR, EDITARINFO, OLVIDAR, HEARTHBEAT, INTERNET }
+    public enum Pagina { Computadoras, Laboratorios, Historial, Historico }
     public class ServerViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
 
-
+        public Pagina Pagina { get; set; }
         public ICommand RegistrarCommand { set; get; }
         public ICommand RechazarCommand { set; get; }
         public ICommand EnviarComandoCommand { set; get; }
@@ -38,6 +39,7 @@ namespace Servidor.ViewModels
         public ICommand EditarCommand { set; get; }
         public ICommand EliminarCommand { set; get; }
         public ICommand LimpiarCommand { set; get; }
+        public ICommand NavegarCommand { set; get; }
 
         public string? Info { set; get; }
         public PcInfo? ComputadoraSeleccionada { set; get; }
@@ -78,6 +80,7 @@ namespace Servidor.ViewModels
             EditarCommand = new RelayCommand<PcInfo>(Editar);
             EliminarCommand = new RelayCommand(Eliminar);
             LimpiarCommand = new RelayCommand<string>(LimpiarOC);
+            NavegarCommand = new RelayCommand<Pagina>(Navegar);
 
             Service.Iniciar();
         }
@@ -221,6 +224,30 @@ namespace Servidor.ViewModels
             {
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
             });
+        }
+
+        private void Navegar(Pagina pagina)
+        {
+            if (pagina == Pagina.Computadoras)
+            {
+                Service_ListaActualizada("computadoras");
+            }
+            else if (pagina == Pagina.Laboratorios)
+            {
+                Service_ListaActualizada("");
+            }
+            else if (pagina == Pagina.Historial)
+            {
+                Service_ListaActualizada("conexiones");
+                Service_ListaActualizada("comandos");
+
+            }
+            else if (pagina == Pagina.Historico)
+            {
+                Service_ListaActualizada("");
+            }
+            Pagina = pagina;
+            PropertyChanged?.Invoke(this, new(nameof(Pagina)));
         }
 
         private void Service_ListaActualizada(string oc)
