@@ -31,7 +31,7 @@ namespace Servidor.ViewModels
         private readonly ServerService Service;
         private readonly IWindowService WindowsService;
 
-        
+
 
 
         public Pagina Pagina { get; set; }
@@ -73,7 +73,7 @@ namespace Servidor.ViewModels
             Service.ListaActualizada += Service_ListaActualizada;
             Service.EstadoPcActualizado += Service_EstadoPcActualizado;
             Service.ErrorAlEditar += Service_ErrorAlEditar;
-                
+
 
             EnviarComandoCommand = new RelayCommand<Orden>(EnviarComando);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
@@ -86,7 +86,7 @@ namespace Servidor.ViewModels
             FiltrarCommand = new RelayCommand(Filtrar);
 
             Service.Iniciar();
-            
+
         }
 
         private void Service_EstadoPcActualizado(PcInfo obj)
@@ -296,7 +296,10 @@ namespace Servidor.ViewModels
                 {
                     Computadoras.Clear();
                     foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == true))
+                    {
+                        pc.TiempoDesconectada = CalcularTiempoDesconectada(pc.UltimoLatido);
                         Computadoras.Add(pc);
+                    }
                 }
                 else if (oc == "conexiones" && Pagina == Pagina.Historial)
                 {
@@ -321,7 +324,22 @@ namespace Servidor.ViewModels
             {
                 Computadoras.Add(pc);
             }
+        }
 
+        private string CalcularTiempoDesconectada(DateTime? fecha)
+        {
+            if (fecha == null) return "";
+            int dias = (int)(DateTime.Now - fecha.Value).TotalDays;
+
+            switch (dias)
+            {
+                case >= 365: return "Hace más de 1 año";
+                case >= 30: return "Hace más de 1 mes";
+                case >= 21: return "Hace 3 semanas";
+                case >= 14: return "Hace 2 semanas";
+                case >= 7: return "Hace 1 semana";
+                default: return "Menos de 1 semana";
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

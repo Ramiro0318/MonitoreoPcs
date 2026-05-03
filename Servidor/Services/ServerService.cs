@@ -32,7 +32,7 @@ namespace Servidor.Services
         private PcInfo? Clon { set; get; }
         private PcInfo? ComputadoraResponder { set; get; }
         private System.Timers.Timer TimerEstado;
-
+        private readonly object _lock = new();
         private IPAddress ip = IPAddress.Any;
         private int puerto = 60000;
         public int LatidosRecibidos { set; get; }
@@ -98,10 +98,13 @@ namespace Servidor.Services
             {
                 EnviarMensajes(Orden.REGISTROAPROBADO, pc);
 
-                if (!Computadoras.Any(x => x.MAC == pc.MAC))
+                lock (_lock)
                 {
-                    Computadoras.Add(pc);
-                    GuardarOC(Computadoras, computadorasFilename);
+                    if (!Computadoras.Any(x => x.MAC == pc.MAC))
+                    {
+                        Computadoras.Add(pc);
+                        GuardarOC(Computadoras, computadorasFilename);
+                    }
                 }
                 RegistroCompletado?.Invoke(pc);
             }
@@ -146,31 +149,34 @@ namespace Servidor.Services
                 ErrorAlEditar?.Invoke("No introduzca caracteres invalidos.");
                 return;
             }
-            var pcOriginal = Computadoras.FirstOrDefault(x => x.MAC == clon.MAC);
-            if (pcOriginal != null)
+            PcInfo? pcOriginal = null;
+            lock (_lock)
             {
-                pcOriginal.Nombre = clon.Nombre;
-                pcOriginal.Laboratorio = clon.Laboratorio;
+                pcOriginal = Computadoras.FirstOrDefault(x => x.MAC == clon.MAC);
+                if (pcOriginal == null) return;
+                else
+                {
+                    pcOriginal.Nombre = clon.Nombre;
+                    pcOriginal.Laboratorio = clon.Laboratorio;
 
-                //Cambiarlo por la mac
-                var registroHistorial = HistorialConexiones.Where(x => x.MAC == pcOriginal.MAC).ToList();
-                registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
-                GuardarOC(Computadoras, computadorasFilename);
-                GuardarOC(HistorialConexiones, conexionesFilename);
-
-                EnviarMensajes(Orden.EDITARINFO, pcOriginal);
-                ComputadoraEditada?.Invoke(pcOriginal);
-
+                    var registroHistorial = HistorialConexiones.Where(x => x.MAC == pcOriginal.MAC).ToList();
+                    registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
+                    GuardarOC(Computadoras, computadorasFilename);
+                    GuardarOC(HistorialConexiones, conexionesFilename);
+                }
             }
-
+            EnviarMensajes(Orden.EDITARINFO, pcOriginal);
+            ComputadoraEditada?.Invoke(pcOriginal);
         }
 
         public void EliminarComputadora(PcInfo pc)
         {
-            EnviarMensajes(Orden.OLVIDAR, pc);
-            Computadoras.Remove(pc);
-            GuardarOC(Computadoras, computadorasFilename);
-
+            lock (_lock)
+            {
+                EnviarMensajes(Orden.OLVIDAR, pc);
+                Computadoras.Remove(pc);
+                GuardarOC(Computadoras, computadorasFilename);
+            }
             ComputadoraEliminada?.Invoke(pc);
         }
 
@@ -178,7 +184,7 @@ namespace Servidor.Services
         {
             string jsonString = JsonSerializer.Serialize(oc);
             File.WriteAllText(filename, jsonString);
-                ListaActualizada?.Invoke(filename.Replace(".json", ""));
+            ListaActualizada?.Invoke(filename.Replace(".json", ""));
         }
 
         private void AbrirOC<T>(List<T> oc, string filename)
@@ -201,15 +207,18 @@ namespace Servidor.Services
 
         public void LimpiarOC(string oc)
         {
-            if (oc == "conexiones")
+            lock (_lock)
             {
-                HistorialConexiones.Clear();
-                GuardarOC(HistorialConexiones, conexionesFilename);
-            }
-            else if (oc == "comandos")
-            {
-                HistorialComandos.Clear();
-                GuardarOC(HistorialComandos, comandosFilename);
+                if (oc == "conexiones")
+                {
+                    HistorialConexiones.Clear();
+                    GuardarOC(HistorialConexiones, conexionesFilename);
+                }
+                else if (oc == "comandos")
+                {
+                    HistorialComandos.Clear();
+                    GuardarOC(HistorialComandos, comandosFilename);
+                }
             }
             ListaActualizada?.Invoke(oc);
         }
@@ -234,26 +243,29 @@ namespace Servidor.Services
                     else if (comandoSeparado[0] == nameof(Orden.HEARTHBEAT) && comandoSeparado.Length == 2)
                     {
                         LatidosRecibidos++;
-
-                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
-                        if (pc != null)
+                        lock (_lock)
                         {
-                            pc.UltimoLatido = DateTime.Now;
-                            if (pc.EstadoEnlazado == false)
+                            var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                            if (pc != null)
                             {
-                                pc.HoraConexion = DateTime.Now;
-                                pc.EstadoEnlazado = true;
-                                LatidosRecibidos = 0;
+                                pc.UltimoLatido = DateTime.Now;
+                                if (pc.EstadoEnlazado == false)
+                                {
+                                    pc.HoraConexion = DateTime.Now;
+                                    pc.EstadoEnlazado = true;
+                                    pc.EstadoHistorico = false;
+                                    LatidosRecibidos = 0;
 
-                                
-                                HistorialConexiones.Add(pc);
-                                GuardarOC(HistorialConexiones, conexionesFilename);
-                                ComputadoraResponder = pc;
 
-                                EstadoPcActualizado?.Invoke(pc);
-                                //Invoke(ComputadoraResponder);
+                                    HistorialConexiones.Add(pc);
+                                    GuardarOC(HistorialConexiones, conexionesFilename);
+                                    ComputadoraResponder = pc;
+
+                                    EstadoPcActualizado?.Invoke(pc);
+                                    //Invoke(ComputadoraResponder);
+                                }
+                                EnviarMensajes(Orden.ENLAZADO, pc);
                             }
-                            EnviarMensajes(Orden.ENLAZADO, pc);
                         }
                     }
                     else if (comandoSeparado[0] == nameof(Orden.INTERNET) && comandoSeparado.Length == 2)
@@ -317,25 +329,33 @@ namespace Servidor.Services
 
         private void TimerEstado_Tick(object? sender, EventArgs e)
         {
-            foreach (var pc in Computadoras.ToList())   //ElToList ya no es necesario
+            bool cambios = false;
+            lock (_lock)
             {
-                if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
+                foreach (var pc in Computadoras.ToList())   //ElToList ya no es necesario
                 {
-                    pc.EstadoEnlazado = false;
-                    pc.EstadoHistorico = false;
-                    GuardarOC(Computadoras, computadorasFilename);
-                    ComputadoraEnlazada?.Invoke(pc);
+                    if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
+                    {
+                        pc.EstadoEnlazado = false;
+                        pc.EstadoHistorico = false;
+                        cambios = true;
+                        ComputadoraEnlazada?.Invoke(pc);
+                    }
+                    if (DateTime.Now - pc.UltimoPing >= TimeSpan.FromSeconds(30) && pc.EstadoInternet)
+                    {
+                        pc.EstadoInternet = false;
+                        pc.EstadoHistorico = false;
+                        cambios = true;
+                        ComputadoraEnlazada?.Invoke(pc);
+                    }
+                    if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromMinutes(5) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromMinutes(5)) && !pc.EstadoHistorico)
+                    {
+                        pc.EstadoHistorico = true;
+                        cambios = true;
+                    }
                 }
-                if (DateTime.Now - pc.UltimoPing >= TimeSpan.FromSeconds(30) && pc.EstadoInternet)
+                if (cambios)
                 {
-                    pc.EstadoInternet = false;
-                    pc.EstadoHistorico = false;
-                    GuardarOC(Computadoras, computadorasFilename);
-                    ComputadoraEnlazada?.Invoke(pc);
-                }
-                if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromMinutes(5) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromMinutes(5)) && !pc.EstadoHistorico)
-                {
-                    pc.EstadoHistorico = true;
                     GuardarOC(Computadoras, computadorasFilename);
                 }
             }
