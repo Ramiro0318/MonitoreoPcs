@@ -17,6 +17,7 @@ using System.Text.Json;
 using System.Timers;
 using System.Windows.Input;
 using System.Windows.Threading;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Servidor.Services
 {
@@ -43,7 +44,7 @@ namespace Servidor.Services
         private string comandosFilename = "comandos.json";
 
 
-        public event Action<string>? ErrorAlRegistrar, ComandoEnviado, ListaActualizada;
+        public event Action<string>? ErrorAlRegistrar, ErrorAlEditar, ComandoEnviado, ListaActualizada;
         public event Action<PcInfo>? RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada, EstadoPcActualizado;
         public void Iniciar()
         {
@@ -130,7 +131,21 @@ namespace Servidor.Services
 
         public void EditarComputadora(PcInfo clon)
         {
-            //aplicar la mac
+            if (string.IsNullOrWhiteSpace(clon.Nombre))
+            {
+                ErrorAlEditar?.Invoke("Indique un nombre.");
+                return;
+            }
+            if (clon.Nombre.Length >= 30)
+            {
+                ErrorAlEditar?.Invoke("Introduzca un máximo de 30 caracteres.");
+                return;
+            }
+            if (clon.Nombre.Contains("|"))
+            {
+                ErrorAlEditar?.Invoke("No introduzca caracteres invalidos.");
+                return;
+            }
             var pcOriginal = Computadoras.FirstOrDefault(x => x.MAC == clon.MAC);
             if (pcOriginal != null)
             {

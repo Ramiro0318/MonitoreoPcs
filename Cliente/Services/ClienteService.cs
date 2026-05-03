@@ -130,13 +130,23 @@ namespace Cliente.Services
             return "";
         }
 
-
+        
         public void EnviarRegistro(string ip, string nombre, string laboratorio)
         {
 
             if (string.IsNullOrWhiteSpace(ip) && string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(laboratorio))
             {
                 InformacionActualizada?.Invoke("No deje en blanco ningun dato.");
+                return;
+            }
+            if (nombre.Length >= 30)
+            {
+                InformacionActualizada?.Invoke("Introduzca un máximo de 30 caracteres.");
+                return;
+            }
+            if (nombre.Contains("|"))
+            {
+                InformacionActualizada?.Invoke("No introduzca caracteres invalidos.");
                 return;
             }
             if (!IPAddress.IsValid(ip))

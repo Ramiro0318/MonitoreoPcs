@@ -56,9 +56,6 @@ namespace Servidor.ViewModels
 
 
         public ServerService Service { set; get; } = new();
-
-
-
         private string? identificador;
 
         public ServerViewModel()
@@ -74,7 +71,8 @@ namespace Servidor.ViewModels
             Service.ComandoEnviado += Service_ComandoEnviado;
             Service.ListaActualizada += Service_ListaActualizada;
             Service.EstadoPcActualizado += Service_EstadoPcActualizado;
-
+            Service.ErrorAlEditar += Service_ErrorAlEditar;
+                
 
             EnviarComandoCommand = new RelayCommand<Orden>(EnviarComando);
             RegistrarCommand = new RelayCommand<PcInfo>(Registrar);
@@ -172,17 +170,18 @@ namespace Servidor.ViewModels
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));
             });
         }
+        private void Service_ErrorAlEditar(string error)
+        {
+            App.Current.Dispatcher.BeginInvoke(() =>
+            {
+                Info = error;
+                PropertyChanged?.Invoke(this, new(nameof(Info)));
+            });
+        }
 
         private void Editar(PcInfo clon)
         {
-
-            if (clon == null || string.IsNullOrWhiteSpace(clon.Nombre))
-            {
-                Error = "Indique un nombre";
-                PropertyChanged?.Invoke(this, new(nameof(Error)));
-                return;
-            }
-            if (!string.IsNullOrEmpty(identificador))
+            if (clon != null)
             {
                 Service.EditarComputadora(clon);
             }
