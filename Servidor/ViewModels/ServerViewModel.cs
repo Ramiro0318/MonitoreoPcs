@@ -280,25 +280,27 @@ namespace Servidor.ViewModels
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                if (oc == "computadoras" && Pagina == Pagina.Computadoras || Pagina == Pagina.Laboratorios)
+                if (oc == "computadoras")
                 {
                     Computadoras.Clear();
-                    foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false))
-                        Computadoras.Add(pc);
-                }
-                if (oc == "computadoras" && Pagina == Pagina.Laboratorios)
-                {
-                    Computadoras.Clear();
-                    foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false && x.Laboratorio == LaboratorioSeleccionado))
-                        Computadoras.Add(pc);
-                }
-                else if (oc == "computadoras" && Pagina == Pagina.Historico)
-                {
-                    Computadoras.Clear();
-                    foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == true))
+
+                    if (Pagina == Pagina.Computadoras)
                     {
-                        pc.TiempoDesconectada = CalcularTiempoDesconectada(pc.UltimoLatido);
-                        Computadoras.Add(pc);
+                        foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false))
+                            Computadoras.Add(pc);
+                    }
+                    else if (Pagina == Pagina.Laboratorios)
+                    {
+                        foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false && x.Laboratorio == LaboratorioSeleccionado))
+                            Computadoras.Add(pc);
+                    }
+                    else if (Pagina == Pagina.Historico)
+                    {
+                        foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == true))
+                        {
+                            pc.TiempoDesconectada = CalcularTiempoDesconectada(pc.UltimoLatido);
+                            Computadoras.Add(pc);
+                        }
                     }
                 }
                 else if (oc == "conexiones" && Pagina == Pagina.Historial)

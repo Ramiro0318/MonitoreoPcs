@@ -261,13 +261,13 @@ namespace Servidor.Services
                                     pc.EstadoHistorico = false;
                                     LatidosRecibidos = 0;
 
+                                    GuardarOC(Computadoras, computadorasFilename);
 
                                     HistorialConexiones.Add(pc);
                                     GuardarOC(HistorialConexiones, conexionesFilename);
                                     ComputadoraResponder = pc;
 
                                     EstadoPcActualizado?.Invoke(pc);
-                                    //Invoke(ComputadoraResponder);
                                 }
                                 EnviarMensajes(Orden.ENLAZADO, pc);
                             }
@@ -362,6 +362,7 @@ namespace Servidor.Services
                 if (cambios)
                 {
                     GuardarOC(Computadoras, computadorasFilename);
+                    ListaActualizada?.Invoke("computadoras");
                 }
             }
         }
