@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -21,13 +20,14 @@ using System;
 using System.Runtime.InteropServices;
 using Cliente.Helpers;
 
+
 namespace Cliente.Services
 {
     public class ClienteService
     {
         string filename = "registro.json";
         private int puerto = 60000; //Puerto de servidor
-        public IPAddress? Ip { set; get; } // IpServidor
+        public IPAddress Ip { set; get; } // IpServidor
 
         private bool escuchando = false;
         private bool latiendo = false;
@@ -36,6 +36,7 @@ namespace Cliente.Services
         private DateTime ultimoPing = DateTime.Now;
         private System.Timers.Timer TimerBeat;
         private Thread? hiloEscuchar, hiloInternet;
+        private Ping ping;
         private Info? Registro { set; get; }
         UdpClient Cliente { get; set; }
 
@@ -90,8 +91,7 @@ namespace Cliente.Services
             }
             catch (Exception)
             {
-
-                throw;
+                InformacionActualizada?.Invoke("Error al iniciar red: puerto ocupado");
             }
         }
         private void AbrirRegistro()
@@ -315,8 +315,8 @@ namespace Cliente.Services
                             break;
                     }
                 }
-                //catch (SocketException) { }
-                //catch (ObjectDisposedException) { break; }
+                catch (SocketException) { }
+                catch (ObjectDisposedException) { break; }
                 catch (Exception) { if (!escuchando) break; }
             }
 
@@ -348,7 +348,7 @@ namespace Cliente.Services
                         IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
                         string comando = $"{Orden.INTERNET}|{Registro.NombreAsignado}";
                         byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                        Cliente.Send(buffer, buffer.Length, remoto);
+                        Cliente?.Send(buffer, buffer.Length, remoto);
 
                     }
                     if (DateTime.Now - ultimoPing >= TimeSpan.FromSeconds(30) && internet)
@@ -367,7 +367,7 @@ namespace Cliente.Services
             {
                 if (latiendo)
                 {
-                    using Ping ping = new();
+                    ping = new();
                     PingReply respuesta = ping.Send("8.8.8.8", 1000);
                     return respuesta.Status == IPStatus.Success;
                 }
@@ -398,7 +398,7 @@ namespace Cliente.Services
                     IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
                     string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
                     byte[] buffer = Encoding.UTF8.GetBytes(comando);
-                    Cliente.Send(buffer, buffer.Length, remoto);
+                    Cliente?.Send(buffer, buffer.Length, remoto);
 
                     latidosEnviados++;
 

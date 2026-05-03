@@ -28,9 +28,9 @@ namespace Cliente.ViewModels
         public ICommand EnviarRegistroCommand { set; get; }
         public ICommand CancelarComandoCommand { set; get; }
         public Pagina Pagina { get; set; }
-        public string IpPorValidar { get; set; }
+        public string IpPorValidar { get; set; } = null!;
         public string Nombre { set; get; } = null!;
-        public string Laboratorio { set; get; } = null!;
+        public string Laboratorio { set; get; } = "Laboratorio 1";
         public string Info { set; get; }
         public string? Accion { set; get; }
         public bool Internet { set; get; }
@@ -116,6 +116,10 @@ namespace Cliente.ViewModels
                 Registro = null;
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
+                PropertyChanged?.Invoke(this, new(nameof(Nombre)));
+                PropertyChanged?.Invoke(this, new(nameof(Laboratorio)));
+                PropertyChanged?.Invoke(this, new(nameof(IpPorValidar)));
+                
             });
         }
 
