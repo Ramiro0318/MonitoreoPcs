@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cliente.Views"
-        xmlns:viewmodel="clr-namespace:Cliente.ViewModels"
-        mc:Ignorable="d"
+        xmlns:viewmodel="clr-namespace:Cliente.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ClienteViewModel}"
+             mc:Ignorable="d"
         Background="#EBF2FA">
 
 
@@ -22,7 +22,6 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
-
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
@@ -35,13 +34,17 @@
 
 
 
-            <Grid Grid.Row="1" Margin="15">
+            <Grid Grid.Row="1" Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition  Height="auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">Esta computadora va a APAGARSE  en un</TextBlock>
-                <TextBlock Grid.Row="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">momento.</TextBlock>
+                <TextBlock Grid.Row="0" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" LineStackingStrategy="BlockLineHeight" Width="240" FontSize="15">
+                    <Run Text="Esta computadora se va a " />
+                    <Run Text="{Binding Accion}" FontWeight="SemiBold" />
+                    <Run Text=" en un momento." />
+                </TextBlock>
+                <TextBlock Grid.Row="1" Text="{Binding Segundos}" FontFamily="Bold" FontWeight="Bold" Margin="0,8,0,0" Foreground="#064789" HorizontalAlignment="Center" FontSize="30"></TextBlock>
             </Grid>
 
             <Grid Grid.Row="2" Margin="5" >

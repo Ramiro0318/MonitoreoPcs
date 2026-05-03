@@ -37,7 +37,7 @@ namespace Servidor.Services
         private int puerto = 60000;
         public int LatidosRecibidos { set; get; }
 
-        UdpClient Server { set; get; }
+        UdpClient? Server { set; get; }
 
         private string computadorasFilename = "computadoras.json";
         private string conexionesFilename = "conexiones.json";
@@ -46,6 +46,11 @@ namespace Servidor.Services
 
         public event Action<string>? ErrorAlRegistrar, ErrorAlEditar, ComandoEnviado, ListaActualizada;
         public event Action<PcInfo>? RegistroCreado, RegistroCompletado, ComputadoraClonada, ComputadoraEditada, ComputadoraEliminada, ComputadoraEnlazada, EstadoPcActualizado;
+
+        public ServerService()
+        {
+            TimerEstado = new System.Timers.Timer(TimeSpan.FromSeconds(1));
+        }
         public void Iniciar()
         {
             AbrirOC(Computadoras, computadorasFilename);
@@ -60,7 +65,7 @@ namespace Servidor.Services
             hiloEscuchar.Start();
 
 
-            TimerEstado = new System.Timers.Timer(TimeSpan.FromSeconds(1));
+            
 
             TimerEstado.Elapsed += TimerEstado_Tick;
             TimerEstado.AutoReset = true;

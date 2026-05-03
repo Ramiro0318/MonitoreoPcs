@@ -32,8 +32,13 @@ namespace Cliente.ViewModels
         public string Nombre { set; get; } = null!;
         public string Laboratorio { set; get; } = null!;
         public string Info { set; get; }
+        public string? Accion { set; get; }
         public bool Internet { set; get; }
         public Info? Registro { set; get; }
+        public sbyte Segundos { set; get; }
+        private bool reinicio = false;
+
+        DispatcherTimer UITimer { get; set; }
 
         public ObservableCollection<string> Laboratorios { get; set; } = new ObservableCollection<string> { "Laboratorio 1", "Laboratorio 2", "Laboratorio 3", "Laboratorio 4", "Laboratorio 5" };
         public ClienteService Service { get; set; } = new();
@@ -47,9 +52,14 @@ namespace Cliente.ViewModels
             Service.RegistroActualizado += Service_RegistroActualizado;
             Service.RegistroEliminado += Service_RegistroEliminado;
             Service.EstadoInternetCambiado += Service_EstadoInternetCambiado;
+            Service.ShutdownIniciado += Service_ShutdownIniciado;
 
             EnviarRegistroCommand = new RelayCommand(Enviar);
             CancelarComandoCommand = new RelayCommand(Cancelar);
+
+            UITimer = new();
+            UITimer.Tick += UITimer_Tick;
+            UITimer.Interval = TimeSpan.FromSeconds(1);
 
             Service.Iniciar();
         }
@@ -126,9 +136,34 @@ namespace Cliente.ViewModels
                 PropertyChanged?.Invoke(this, new(nameof(Internet)));
             });
         }
+        private void Service_ShutdownIniciado(string accion, bool reinicio)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Accion = accion;
+                this.reinicio = reinicio;
+                Segundos = 60;
+                PropertyChanged?.Invoke(this, new(nameof(Accion)));
+
+                UITimer.Start();
+            });
+        }
+        private void UITimer_Tick(object? sender, EventArgs e)
+        {
+            Segundos--;
+
+            PropertyChanged?.Invoke(this, new(nameof(Segundos)));
+            if (Segundos <= 0)
+            {
+                UITimer.Stop();
+                Service.Apagar(reinicio);
+                Segundos = 60;
+            }
+        }
 
         private void Cancelar()
         {
+            UITimer.Stop();
             Service.CancelarComando();
         }
 

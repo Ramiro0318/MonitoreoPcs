@@ -35,48 +35,53 @@ namespace Cliente.Services
         private bool internet;
         private DateTime ultimoPing = DateTime.Now;
         private System.Timers.Timer TimerBeat;
+        private Thread? hiloEscuchar, hiloInternet;
         private Info? Registro { set; get; }
         UdpClient Cliente { get; set; }
-
 
         public event Action<string>? InformacionActualizada, RegistroEliminado;
         public event Action<Info>? RegistroAbierto, RegistroGuardado;
         public event Action<Info, string>? RegistroActualizado;
+        public event Action<string, bool> ShutdownIniciado;
         public event Action<bool>? EstadoInternetCambiado;
         public event Action<Pagina>? PaginaCambiada;
 
-       
+
         // Función para iniciar el apagado
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool InitiateSystemShutdown(string lpMachineName, string lpMessage, uint dwTimeout, bool bForceAppsClosed, bool bRebootAfterShutdown);
+        private static extern bool InitiateSystemShutdown(string? lpMachineName, string lpMessage, uint dwTimeout, bool bForceAppsClosed, bool bRebootAfterShutdown);
 
         // Función para cancelar el apagado
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool AbortSystemShutdown(string lpMachineName);
 
 
+        public ClienteService()
+        {
 
+        }
 
         public void Iniciar()
         {
             try
             {
-
                 AbrirRegistro();
 
 
                 IPEndPoint endpoint = new(IPAddress.Any, 60001);
-                Cliente = new UdpClient(endpoint);
+                Cliente = new UdpClient();
+                Cliente.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                Cliente.Client.Bind(endpoint);
 
                 if (Registro != null)
                 {
                     latiendo = true;
 
-                    Thread hiloEscuchar = new(RecibirMensajes);
+                    hiloEscuchar = new(RecibirMensajes);
                     hiloEscuchar.IsBackground = true;
                     hiloEscuchar.Start();
 
-                    Thread hiloInternet = new(RevisarInternet);
+                    hiloInternet = new(RevisarInternet);
                     hiloInternet.IsBackground = true;
                     hiloInternet.Start();
 
@@ -130,7 +135,7 @@ namespace Cliente.Services
             return "";
         }
 
-        
+
         public void EnviarRegistro(string ip, string nombre, string laboratorio)
         {
 
@@ -174,10 +179,11 @@ namespace Cliente.Services
 
                     InformacionActualizada?.Invoke($"Solicitud de registro enviada.");
 
-                    if (!escuchando)
+                    if (!escuchando || hiloEscuchar == null)
                     {
+
                         //Empieza a escuchar si no está escuchando ya
-                        Thread hiloEscuchar = new(RecibirMensajes);
+                        hiloEscuchar = new(RecibirMensajes);
                         hiloEscuchar.IsBackground = true;
                         hiloEscuchar.Start();
                     }
@@ -214,8 +220,19 @@ namespace Cliente.Services
                 try
                 {
                     AbortSystemShutdown(null);
+                    latiendo = true;
+                    latidosEnviados = 0;
                     escuchando = true;
+
+                    if (hiloEscuchar == null || !hiloEscuchar.IsAlive)
+                    {
+                        hiloEscuchar = new Thread(RecibirMensajes) { IsBackground = true };
+                        hiloEscuchar.Start();
+                    }
+
+                    EnviarHearthbeat();
                     PaginaCambiada?.Invoke(Pagina.Conectado);
+
                 }
                 catch { }
             }
@@ -254,30 +271,29 @@ namespace Cliente.Services
                                 PaginaCambiada?.Invoke(Pagina.Conectado);
                                 InformacionActualizada?.Invoke("Registro aprobado... ");
                                 EnviarHearthbeat();
-
-                                Thread hiloInternet = new(RevisarInternet);
-                                hiloInternet.IsBackground = true;
-                                hiloInternet.Start();
+                                if (hiloInternet == null || !hiloInternet.IsAlive)
+                                {
+                                    hiloInternet = new(RevisarInternet);
+                                    hiloInternet.IsBackground = true;
+                                    hiloInternet.Start();
+                                }
                             }
                             break;
 
                         case nameof(Orden.APAGAR):
-                            WindowsSystemHelper.EnableShutdownPrivilege();
-
                             escuchando = false;
+                            latiendo = false;
+                            TimerBeat.Stop();
                             PaginaCambiada?.Invoke(Pagina.Advertencia);
-                            InformacionActualizada?.Invoke("Esta computadora se apagará en unos segundos...");
-                            // null significa la computadora local
-                            InitiateSystemShutdown(null, "Esta computadora se apagará en 1 minuto", 10, true, false);
+                            ShutdownIniciado?.Invoke("APAGAR", false);
                             break;
 
                         case nameof(Orden.REINICIAR):
-                            WindowsSystemHelper.EnableShutdownPrivilege();
-
                             escuchando = false;
+                            latiendo = false;
+                            TimerBeat.Stop();
                             PaginaCambiada?.Invoke(Pagina.Advertencia);
-                            InformacionActualizada?.Invoke("Esta computadora se reiniciará en unos segundos...");
-                            InitiateSystemShutdown(null, "Esta computadora se reiniciará en 1 minuto", 10, true, true);
+                            ShutdownIniciado?.Invoke("REINICIAR", true);
                             break;
 
                         case nameof(Orden.EDITARINFO):
@@ -286,7 +302,6 @@ namespace Cliente.Services
                                 PaginaCambiada?.Invoke(Pagina.Conectado);
                                 Ip = IPAddress.Parse(Registro.IpServidor);
                                 GuardarRegistro(comandoSeparado[1], comandoSeparado[2], Registro.MAC);
-                                //RegistroActualizado?.Invoke(Registro, $"Se indico un cambio de id a {comandoSeparado[1]}"); ////////
                             }
                             break;
 
@@ -300,16 +315,23 @@ namespace Cliente.Services
                             break;
                     }
                 }
-                catch { if (!escuchando) break; }
+                //catch (SocketException) { }
+                //catch (ObjectDisposedException) { break; }
+                catch (Exception) { if (!escuchando) break; }
             }
 
         }
 
-
+        public void Apagar(bool reinicio)
+        {
+            WindowsSystemHelper.EnableShutdownPrivilege();
+            // null significa la computadora local
+            InitiateSystemShutdown(null, $"Esta computadora será {(reinicio ? "reiniciada" : "apagada")}.", 1, true, reinicio);
+        }
 
         private void RevisarInternet()
         {
-            while (true)
+            while (latiendo)
             {
                 Thread.Sleep(5000);
                 if (Registro != null)
