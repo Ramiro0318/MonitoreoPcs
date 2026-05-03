@@ -21,14 +21,5 @@ namespace Servidor.Views
         {
             InitializeComponent();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button boton)
-            {
-                var ventana = Window.GetWindow(boton);
-                ventana.Close();
-            }
-        }
     }
 }

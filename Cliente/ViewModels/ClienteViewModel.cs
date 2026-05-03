@@ -133,7 +133,6 @@ namespace Cliente.ViewModels
         }
 
 
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
     }

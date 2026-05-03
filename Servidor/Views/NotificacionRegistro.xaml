@@ -3,23 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ServerViewModel}"
-        mc:Ignorable="d"
+        xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels"
+        mc:Ignorable="d" x:Name="VentanaRegistro"
         Title="NotificacionRegistro" Height="230" Width="370"  Background="#EBF2FA">
-    <Border  Padding="10"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
+    <Border  Padding="10"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
         <Grid Margin="20">
             <Grid.RowDefinitions>
-
                 <RowDefinition Height="auto"></RowDefinition>
-
                 <RowDefinition Height="*"></RowDefinition>
-
-
-
             </Grid.RowDefinitions>
 
             <TextBlock  Grid.Row="0" FontFamily="Bold" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789"   FontSize="15">Nueva Solicitud de Registro</TextBlock>
-
 
 
             <Grid Grid.Row="1">
@@ -28,7 +22,6 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-
 
 
                 <StackPanel  Grid.Column="0">
@@ -44,27 +37,16 @@
                 </StackPanel>
 
 
-
-
                 <StackPanel Grid.Column="1"  VerticalAlignment="Center" Margin="10,0,0,0">
-
-
-                    <Button   Margin="0,5"  Width="100" FontFamily=" Bold" Foreground="White" Background="#679436" HorizontalAlignment="Left"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}" Click="Button_Click">Registrar</Button>
-                    <Button   Margin="0,5"  Width="100"  FontFamily="Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Right" Command="{Binding RechazarCommand}"  Click="Button_Click">Rechazar</Button>
-
-
+                    <Button Margin="0,5" Width="100" FontFamily="Bold" Foreground="White" Background="#679436" HorizontalAlignment="Left"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}">Registrar</Button>
+                    <Button Margin="0,5" Width="100" FontFamily="Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Right" Command="{Binding RechazarCommand}">Rechazar</Button>
+                
                 </StackPanel>
 
             </Grid>
 
 
-
-
-
         </Grid>
-
-
-
 
     </Border>
 

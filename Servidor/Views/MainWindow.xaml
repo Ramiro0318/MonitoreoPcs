@@ -9,11 +9,8 @@
         mc:Ignorable="d"
         Height="640" Width="780" ResizeMode="CanMinimize"  
         Title="Servidor" Background="#EBF2FA">
-    <Window.DataContext>
-        <viewmodel:ServerViewModel></viewmodel:ServerViewModel>
-    </Window.DataContext>
-    
-    
+
+
     <Window.Resources>
         <Style x:Key="contenedorPagina" TargetType="ContentControl">
             <Setter Property="Content">

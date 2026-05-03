@@ -28,6 +28,9 @@ namespace Servidor.ViewModels
     public enum Pagina { Computadoras, Laboratorios, Historial, Historico }
     public class ServerViewModel : INotifyPropertyChanged
     {
+        private readonly ServerService Service;
+        private readonly IWindowService WindowsService;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
 
@@ -48,15 +51,17 @@ namespace Servidor.ViewModels
         public string LaboratorioSeleccionado { set; get; } = "Laboratorio 1";
 
         public PcInfo? Clon { set; get; }
-
+        public Action? VentanaCerrada { get; set; }
         public ObservableCollection<string> Laboratorios { get; set; } = new ObservableCollection<string> { "Laboratorio 1", "Laboratorio 2", "Laboratorio 3", "Laboratorio 4", "Laboratorio 5" };
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
-        public ServerService Service { set; get; } = new();
+        //public ServerService Service { set; get; } = new();
 
-        public ServerViewModel()
+        public ServerViewModel(ServerService service, IWindowService windowsService)
         {
+            Service = service;
+            WindowsService = windowsService;
 
             Service.ErrorAlRegistrar += Service_ErrorAlRegistrar;
             Service.RegistroCreado += Service_RegistroCreado;
@@ -82,8 +87,8 @@ namespace Servidor.ViewModels
             FiltrarCommand = new RelayCommand(Filtrar);
 
             Service.Iniciar();
+            
         }
-
 
         private void Service_EstadoPcActualizado(PcInfo obj)
         {
@@ -108,6 +113,7 @@ namespace Servidor.ViewModels
             {
                 ComputadoraSeleccionada = pc;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+                WindowsService.MostrarNotificacionRegistro(this);
             });
         }
 
@@ -125,6 +131,7 @@ namespace Servidor.ViewModels
         {
             ComputadoraSeleccionada = pc;
             Service.RegistrarComputadora(ComputadoraSeleccionada);
+            VentanaCerrada?.Invoke();
         }
 
         private void Service_RegistroCompletado(PcInfo pc)
@@ -142,6 +149,7 @@ namespace Servidor.ViewModels
             {
                 ComputadoraSeleccionada = null;
                 Clon = null;
+                VentanaCerrada?.Invoke();
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));   //???
             });
@@ -163,6 +171,7 @@ namespace Servidor.ViewModels
             App.Current.Dispatcher.BeginInvoke(() =>
             {
                 Clon = clon;
+                WindowsService.MostrarVentanaEditar(clon);
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));
             });
         }
