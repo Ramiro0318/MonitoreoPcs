@@ -21,31 +21,6 @@ namespace Servidor.Views
         public Editar()
         {
             InitializeComponent();
-            this.DataContextChanged += Editar_DataContextChanged;
         }
-
-        private void Editar_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (DataContext is ServerViewModel vm)
-            {
-                vm.PropertyChanged += (s, args) =>
-                {
-                    if (args.PropertyName == nameof(ServerViewModel.Clon) && vm.Clon == null)
-                    {
-                        this.Close();
-                    }
-                };
-            }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button boton)
-            {
-                var ventana = Window.GetWindow(boton);
-                ventana.Close();
-            }
-        }
-
     }
 }

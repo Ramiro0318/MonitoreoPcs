@@ -55,8 +55,8 @@
 
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-                    <Button  Padding="5" Margin="5" HorizontalAlignment="Right" Background="#679436 " Foreground="#F0F0DB" Width="100" FontSize="18" FontFamily="bold" Command="{Binding EditarCommand}" CommandParameter="{Binding Clon}">Editar</Button>
-                    <Button   Padding="5" Margin="5" HorizontalAlignment="Left" Background="#30364F" Foreground="#F0F0DB" Width="100"  FontSize="18" FontFamily="bold" Click="Button_Click">Cancelar</Button>
+                    <Button Padding="5" Margin="5" HorizontalAlignment="Right" Background="#679436" Foreground="#F0F0DB" Width="100" FontSize="18" FontFamily="bold" Command="{Binding EditarCommand}" CommandParameter="{Binding Clon}">Editar</Button>
+                    <Button Padding="5" Margin="5" HorizontalAlignment="Left" Background="#30364F" Foreground="#F0F0DB" Width="100"  FontSize="18" FontFamily="bold" Command="{Binding RechazarCommand}">Cancelar</Button>
                 </StackPanel>
 
             </Grid>

@@ -31,7 +31,7 @@ namespace Servidor.ViewModels
         private readonly ServerService Service;
         private readonly IWindowService WindowsService;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        
 
 
         public Pagina Pagina { get; set; }
@@ -56,7 +56,6 @@ namespace Servidor.ViewModels
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
-        //public ServerService Service { set; get; } = new();
 
         public ServerViewModel(ServerService service, IWindowService windowsService)
         {
@@ -171,7 +170,7 @@ namespace Servidor.ViewModels
             App.Current.Dispatcher.BeginInvoke(() =>
             {
                 Clon = clon;
-                WindowsService.MostrarVentanaEditar(clon);
+                WindowsService.MostrarVentanaEditar(this);
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));
             });
         }
@@ -201,6 +200,7 @@ namespace Servidor.ViewModels
                 //ver si quitar
                 ComputadoraSeleccionada = clon;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+                VentanaCerrada?.Invoke();
             });
         }
 
@@ -323,5 +323,7 @@ namespace Servidor.ViewModels
             }
 
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

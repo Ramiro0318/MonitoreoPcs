@@ -25,7 +25,15 @@ namespace Servidor.Services
 
         public void MostrarVentanaEditar(object viewModel)
         {
-            var ventana = new Editar { DataContext = viewModel };
+            var ventana = new Editar
+            {
+                DataContext = viewModel,
+                Owner = Application.Current.MainWindow
+            };
+            if (viewModel is ServerViewModel vm)
+            {
+                vm.VentanaCerrada = new Action(ventana.Close);
+            }
             ventana.ShowDialog();
         }
     }
