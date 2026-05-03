@@ -53,10 +53,7 @@ namespace Servidor.ViewModels
         public ObservableCollection<PcInfo> Computadoras { set; get; } = new();
         public ObservableCollection<PcInfo> HistorialConexiones { set; get; } = new();
         public ObservableCollection<ComandoInfo> HistorialComandos { set; get; } = new();
-
-
         public ServerService Service { set; get; } = new();
-        private string? identificador;
 
         public ServerViewModel()
         {
@@ -155,7 +152,6 @@ namespace Servidor.ViewModels
             if (pc != null && pc.EstadoEnlazado)
             {
                 ComputadoraSeleccionada = pc;
-                identificador = pc.Identificador;
                 Error = "";
                 PropertyChanged?.Invoke(this, new(nameof(Error)));
                 Service.IrEditarComputadora(pc);

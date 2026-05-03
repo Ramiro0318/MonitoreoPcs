@@ -67,9 +67,9 @@ namespace Servidor.Services
             TimerEstado.Enabled = true;
         }
 
-        private void RecibirSolicitudRegistro(IPEndPoint remoto, string identificador, string laboratorio, string mac)
+        private void RecibirSolicitudRegistro(IPEndPoint remoto, string nombre, string laboratorio, string mac)
         {
-            if (Computadoras.Any(x => x.Nombre == identificador))
+            if (Computadoras.Any(x => x.Nombre == nombre))
             {
                 ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
                 return;
@@ -81,7 +81,7 @@ namespace Servidor.Services
             }
             PcInfo pc = new PcInfo
             {
-                Nombre = identificador,
+                Nombre = nombre,
                 Ip = remoto.Address.ToString(),
                 Puerto = remoto.Port,
                 Laboratorio = laboratorio,
