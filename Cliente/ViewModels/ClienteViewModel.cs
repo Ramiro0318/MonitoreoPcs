@@ -35,7 +35,7 @@ namespace Cliente.ViewModels
         public string? Accion { set; get; }
         public bool Internet { set; get; }
         public Info? Registro { set; get; }
-        public sbyte Segundos { set; get; }
+        public sbyte Segundos { set; get; } 
         private bool reinicio = false;
 
         DispatcherTimer UITimer { get; set; }
@@ -144,6 +144,7 @@ namespace Cliente.ViewModels
                 this.reinicio = reinicio;
                 Segundos = 60;
                 PropertyChanged?.Invoke(this, new(nameof(Accion)));
+                PropertyChanged?.Invoke(this, new(nameof(Segundos)));
 
                 UITimer.Start();
             });
