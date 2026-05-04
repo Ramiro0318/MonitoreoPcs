@@ -74,11 +74,11 @@ namespace Servidor.Services
 
         private void RecibirSolicitudRegistro(IPEndPoint remoto, string nombre, string laboratorio, string mac)
         {
-            if (Computadoras.Any(x => x.Nombre == nombre))
-            {
-                ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
-                return;
-            }
+            //if (Computadoras.Any(x => x.Nombre == nombre))
+            //{
+            //    ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
+            //    return;
+            //}
             if (Computadoras.Any(x => x.MAC == mac))
             {
                 ErrorAlRegistrar?.Invoke("Una computadora se ha vuelto a intentar registrar.");
@@ -165,7 +165,7 @@ namespace Servidor.Services
                     pcOriginal.Laboratorio = clon.Laboratorio;
 
                     var registroHistorial = HistorialConexiones.Where(x => x.MAC == pcOriginal.MAC).ToList();
-                    registroHistorial.ForEach(x => x.Nombre = clon.Nombre);
+                    registroHistorial.ForEach(x => x.MAC = clon.MAC);
                     GuardarOC(Computadoras, computadorasFilename);
                     GuardarOC(HistorialConexiones, conexionesFilename);
                 }
@@ -250,7 +250,7 @@ namespace Servidor.Services
                         LatidosRecibidos++;
                         lock (_lock)
                         {
-                            var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                            var pc = Computadoras.FirstOrDefault(x => x.MAC == comandoSeparado[1]);
                             if (pc != null)
                             {
                                 pc.UltimoLatido = DateTime.Now;
@@ -275,7 +275,7 @@ namespace Servidor.Services
                     }
                     else if (comandoSeparado[0] == nameof(Orden.INTERNET) && comandoSeparado.Length == 2)
                     {
-                        var pc = Computadoras.FirstOrDefault(x => x.Nombre == comandoSeparado[1]);
+                        var pc = Computadoras.FirstOrDefault(x => x.MAC == comandoSeparado[1]);
                         if (pc != null)
                         {
                             pc.UltimoPing = DateTime.Now;

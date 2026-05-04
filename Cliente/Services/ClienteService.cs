@@ -144,9 +144,9 @@ namespace Cliente.Services
                 InformacionActualizada?.Invoke("No deje en blanco ningun dato.");
                 return;
             }
-            if (nombre.Length >= 30)
+            if (nombre.Length > 20)
             {
-                InformacionActualizada?.Invoke("Introduzca un máximo de 30 caracteres.");
+                InformacionActualizada?.Invoke("Introduzca un máximo de 20 caracteres.");
                 return;
             }
             if (nombre.Contains("|"))
@@ -346,7 +346,7 @@ namespace Cliente.Services
                         ultimoPing = DateTime.Now;
 
                         IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-                        string comando = $"{Orden.INTERNET}|{Registro.NombreAsignado}";
+                        string comando = $"{Orden.INTERNET}|{Registro.MAC}";
                         byte[] buffer = Encoding.UTF8.GetBytes(comando);
                         Cliente?.Send(buffer, buffer.Length, remoto);
 
@@ -396,7 +396,7 @@ namespace Cliente.Services
                 try
                 {
                     IPEndPoint remoto = new IPEndPoint(IPAddress.Parse(Registro.IpServidor), Registro.PuertoServidor);
-                    string comando = $"{Orden.HEARTHBEAT}|{Registro.NombreAsignado}";
+                    string comando = $"{Orden.HEARTHBEAT}|{Registro.MAC}";
                     byte[] buffer = Encoding.UTF8.GetBytes(comando);
                     Cliente?.Send(buffer, buffer.Length, remoto);
 

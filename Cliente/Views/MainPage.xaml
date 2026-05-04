@@ -33,7 +33,7 @@
 
                 <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Nombre del equipo:</TextBlock>
                 <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" ></TextBox>
+                    <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" MaxLength="20"></TextBox>
                 </Border>
 
 
