@@ -35,6 +35,7 @@ namespace Servidor.Services
         private readonly object _lock = new();
         private IPAddress ip = IPAddress.Any;
         private int puerto = 60000;
+        bool registrando = false;
         public int LatidosRecibidos { set; get; }
 
         UdpClient? Server { set; get; }
@@ -65,35 +66,35 @@ namespace Servidor.Services
             hiloEscuchar.Start();
 
 
-            
+
 
             TimerEstado.Elapsed += TimerEstado_Tick;
             TimerEstado.AutoReset = true;
             TimerEstado.Enabled = true;
         }
 
+
         private void RecibirSolicitudRegistro(IPEndPoint remoto, string nombre, string laboratorio, string mac)
         {
-            //if (Computadoras.Any(x => x.Nombre == nombre))
-            //{
-            //    ErrorAlRegistrar?.Invoke("Una computadora se ha intentado registrar con un nombre ya existente.");
-            //    return;
-            //}
-            if (Computadoras.Any(x => x.MAC == mac))
+            if (!registrando)
             {
-                ErrorAlRegistrar?.Invoke("Una computadora se ha vuelto a intentar registrar.");
-                return;
+                registrando = true;
+                if (Computadoras.Any(x => x.MAC == mac))
+                {
+                    ErrorAlRegistrar?.Invoke("Una computadora se ha vuelto a intentar registrar.");
+                    return;
+                }
+                PcInfo pc = new PcInfo
+                {
+                    Nombre = nombre,
+                    Ip = remoto.Address.ToString(),
+                    Puerto = remoto.Port,
+                    Laboratorio = laboratorio,
+                    MAC = mac,
+                    EstadoEnlazado = false,
+                };
+                RegistroCreado?.Invoke(pc);
             }
-            PcInfo pc = new PcInfo
-            {
-                Nombre = nombre,
-                Ip = remoto.Address.ToString(),
-                Puerto = remoto.Port,
-                Laboratorio = laboratorio,
-                MAC = mac,
-                EstadoEnlazado = false,
-            };
-            RegistroCreado?.Invoke(pc);//
         }
 
 
@@ -107,10 +108,11 @@ namespace Servidor.Services
                 {
                     if (!Computadoras.Any(x => x.MAC == pc.MAC))
                     {
-                        Computadoras.Insert(0,pc);
+                        Computadoras.Insert(0, pc);
                         GuardarOC(Computadoras, computadorasFilename);
                     }
                 }
+                registrando = false;
                 RegistroCompletado?.Invoke(pc);
             }
 
@@ -144,9 +146,9 @@ namespace Servidor.Services
                 ErrorAlEditar?.Invoke("Indique un nombre.");
                 return;
             }
-            if (clon.Nombre.Length >= 30)
+            if (clon.Nombre.Length > 20)
             {
-                ErrorAlEditar?.Invoke("Introduzca un máximo de 30 caracteres.");
+                ErrorAlEditar?.Invoke("Introduzca un máximo de 20 caracteres.");
                 return;
             }
             if (clon.Nombre.Contains("|"))
@@ -203,8 +205,8 @@ namespace Servidor.Services
                 {
                     foreach (var o in list)
                     {
-                        oc.Insert(0,o);
-                        
+                        oc.Insert(0, o);
+
                     }
                     ListaActualizada?.Invoke(filename.Replace(".json", ""));
                 }
@@ -264,7 +266,7 @@ namespace Servidor.Services
 
                                     GuardarOC(Computadoras, computadorasFilename);
 
-                                    HistorialConexiones.Insert(0,pc);
+                                    HistorialConexiones.Insert(0, pc);
                                     GuardarOC(HistorialConexiones, conexionesFilename);
                                     ComputadoraResponder = pc;
 
@@ -300,7 +302,7 @@ namespace Servidor.Services
 
                     if (comando != Orden.ENLAZADO)
                     {
-                        HistorialComandos.Insert(0,new ComandoInfo
+                        HistorialComandos.Insert(0, new ComandoInfo
                         {
                             Destino = pc.Identificador,
                             Comando = comando,

@@ -178,8 +178,8 @@ namespace Servidor.ViewModels
         {
             App.Current.Dispatcher.BeginInvoke(() =>
             {
-                Info = error;
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                Error = error;
+                PropertyChanged?.Invoke(this, new(nameof(Error)));
             });
         }
 
@@ -188,9 +188,7 @@ namespace Servidor.ViewModels
             if (clon != null)
             {
                 Service.EditarComputadora(clon);
-            }
-            Clon = null;
-            PropertyChanged?.Invoke(this, new(nameof(Clon)));
+            }           
         }
 
         private void Service_ComputadoraEditada(PcInfo clon)
@@ -199,6 +197,8 @@ namespace Servidor.ViewModels
             {
                 //ver si quitar
                 ComputadoraSeleccionada = clon;
+                Clon = null;
+                PropertyChanged?.Invoke(this, new(nameof(Clon)));
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
                 VentanaCerrada?.Invoke();
             });

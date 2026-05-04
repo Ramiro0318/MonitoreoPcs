@@ -42,12 +42,12 @@
                 <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,0">
 
                     <Border Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="250">
-                        <TextBox TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Clon.Nombre, Mode=TwoWay}" FontSize="22"></TextBox>
+                        <TextBox TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Clon.Nombre, Mode=TwoWay}" MaxLength="20" FontSize="22"></TextBox>
                     </Border>
                     <Border Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="250">
                         <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding Clon.Laboratorio, Mode=TwoWay}" FontSize="22" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
                     </Border>
-                    <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Error}"  FontSize="18" ></TextBlock>
+                    <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="#064789" Text="{Binding Error}" FontSize="18" ></TextBlock>
 
                 </StackPanel>
 
