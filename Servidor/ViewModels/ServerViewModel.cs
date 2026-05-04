@@ -292,7 +292,10 @@ namespace Servidor.ViewModels
                     else if (Pagina == Pagina.Laboratorios)
                     {
                         foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false && x.Laboratorio == LaboratorioSeleccionado))
+                        {
+                            pc.TiempoDesconectada = CalcularTiempoDesconectada(pc.UltimoLatido);
                             Computadoras.Add(pc);
+                        }
                     }
                     else if (Pagina == Pagina.Historico)
                     {
@@ -340,7 +343,8 @@ namespace Servidor.ViewModels
                 case >= 21: return "Hace 3 semanas";
                 case >= 14: return "Hace 2 semanas";
                 case >= 7: return "Hace 1 semana";
-                default: return "Menos de 1 semana";
+                case >= 2: return $"Hace {dias} dias";
+                default: return "Hoy";
             }
         }
 

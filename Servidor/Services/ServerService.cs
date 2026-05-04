@@ -107,7 +107,7 @@ namespace Servidor.Services
                 {
                     if (!Computadoras.Any(x => x.MAC == pc.MAC))
                     {
-                        Computadoras.Add(pc);
+                        Computadoras.Insert(0,pc);
                         GuardarOC(Computadoras, computadorasFilename);
                     }
                 }
@@ -203,7 +203,8 @@ namespace Servidor.Services
                 {
                     foreach (var o in list)
                     {
-                        oc.Add(o);
+                        oc.Insert(0,o);
+                        
                     }
                     ListaActualizada?.Invoke(filename.Replace(".json", ""));
                 }
@@ -263,7 +264,7 @@ namespace Servidor.Services
 
                                     GuardarOC(Computadoras, computadorasFilename);
 
-                                    HistorialConexiones.Add(pc);
+                                    HistorialConexiones.Insert(0,pc);
                                     GuardarOC(HistorialConexiones, conexionesFilename);
                                     ComputadoraResponder = pc;
 
@@ -299,7 +300,7 @@ namespace Servidor.Services
 
                     if (comando != Orden.ENLAZADO)
                     {
-                        HistorialComandos.Add(new ComandoInfo
+                        HistorialComandos.Insert(0,new ComandoInfo
                         {
                             Destino = pc.Identificador,
                             Comando = comando,

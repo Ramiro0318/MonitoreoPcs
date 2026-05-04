@@ -44,7 +44,7 @@
                     <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >IP</Label>
                     <Label  Grid.Column="2"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Laboratorio</Label>
                     <Label  Grid.Column="3"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >MAC</Label>
-                    <Label  Grid.Column="4"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Tiempo desconectada</Label>
+                    <Label  Grid.Column="4"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Última conexión</Label>
                     <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
 
 

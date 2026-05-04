@@ -115,7 +115,7 @@ namespace Cliente.ViewModels
                 Info = info;
                 Registro = null;
                 Nombre = string.Empty;
-                Laboratorio = string.Empty;
+                Laboratorio = "Laboratorio 1";
                 IpPorValidar = string.Empty;
                 PropertyChanged?.Invoke(this, new(nameof(Info)));
                 PropertyChanged?.Invoke(this, new(nameof(Registro)));
