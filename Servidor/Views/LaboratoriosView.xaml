@@ -7,159 +7,136 @@
       xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
       mc:Ignorable="d" >
 
-    <Grid Margin="20">
-        <Border Grid.Row="0" Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
+    <Border Margin="20" Grid.Row="0" Padding="10" BorderThickness="3" BorderBrush="#427AA1" CornerRadius="10" Background="White">
+        <StackPanel Orientation="Vertical">
+
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="/Images/monitor.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
+                <TextBlock  FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de computadoras</TextBlock>
+            </WrapPanel>
+
+
+            <Border Background="#F0F8FF" CornerRadius="8" BorderBrush="#427AA1" BorderThickness="1" Padding="5"  Width="250">
+                <WrapPanel>
+                    <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding LaboratorioSeleccionado}"  FontSize="22" Width="180" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                    <Button Command="{Binding FiltrarCommand}" Width="58" Content="Filtrar"></Button>
+                </WrapPanel>
+            </Border>
+
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" >
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                        <Image Source="/Images/monitor.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
-
-                        <TextBlock  FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de computadoras</TextBlock>
-
-                    </StackPanel>
-
-                </Grid>
-
-                <Border Grid.Row="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="250">
-                    <WrapPanel>
-                        <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding LaboratorioSeleccionado}"  FontSize="22" Width="180" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
-                        <Button Command="{Binding FiltrarCommand}" Width="58" Content="Filtrar"></Button>
-                    </WrapPanel>
-                </Border>
-                
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="105"></ColumnDefinition>
-                        <ColumnDefinition Width="70" ></ColumnDefinition>
-                        <ColumnDefinition Width="100"></ColumnDefinition>
-                        <ColumnDefinition Width="110"></ColumnDefinition>
-                        <ColumnDefinition Width="85"></ColumnDefinition>
-                        <ColumnDefinition Width="85"></ColumnDefinition>
-                        <ColumnDefinition Width="110"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="105"></ColumnDefinition>
+                    <ColumnDefinition Width="70" ></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="110"></ColumnDefinition>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="110"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
 
-                    <Label Grid.Column="0" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold"   FontSize="15">Nombre</Label>
-                    <Label Grid.Column="1" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">IP</Label>
-                    <Label Grid.Column="2" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">MAC</Label>
-                    <Label Grid.Column="3" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Estado</Label>
-                    <Label Grid.Column="4" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Internet</Label>
-                    <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Última conexión</Label>
-                    <Label Grid.Column="6" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15">Comandos</Label>
-                </Grid>
-
-                <Grid Grid.Row="3" Height="130">
-
-                    <ListBox ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Style.Triggers>
-                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                        <Setter Property="IsSelected" Value="True"></Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="105"></ColumnDefinition>
-                                        <ColumnDefinition Width="70" ></ColumnDefinition>
-                                        <ColumnDefinition Width="100"></ColumnDefinition>
-                                        <ColumnDefinition Width="110"></ColumnDefinition>
-                                        <ColumnDefinition Width="85"></ColumnDefinition>
-                                        <ColumnDefinition Width="85"></ColumnDefinition>
-                                        <ColumnDefinition Width="110"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-
-
-
-                                    <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="2"></TextBlock>
-
-
-                                    <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="Desconectado" />
-                                                <Setter Property="Foreground" Value="#C00707" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding EstadoEnlazado}" Value="True">
-                                                        <Setter Property="Text" Value="Enlazado" />
-                                                        <Setter Property="Foreground" Value="#679436" />
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding EstadoEnlazado}" Value="False">
-                                                        <Setter Property="Text" Value="Sin respuesta" />
-                                                        <Setter Property="Foreground" Value="#C00707" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-
-                                    <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="Desconectado" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding EstadoInternet}" Value="True">
-                                                        <Setter Property="Text" Value="Conectado" />
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding EstadoInternet}" Value="False">
-                                                        <Setter Property="Text" Value="Sin internet" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding TiempoDesconectada }" Grid.Column="5"></TextBlock>
-                                    <Grid Grid.Column="6" HorizontalAlignment="Right">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static local:Orden.APAGAR}" >
-                                            <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
-                                        </Button>
-
-                                        <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
-                                            <Image  Source="/Images/refresh-arrow.png" Width="16" Height="16" ></Image>
-                                        </Button>
-
-                                        <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"  CommandParameter="{Binding}" >
-                                            <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
-                                        </Button>
-
-                                        <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"> 
-                                            <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
-                                        </Button>
-                                    </Grid>
-
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
+                <Label Grid.Column="0" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold"   FontSize="15">Nombre</Label>
+                <Label Grid.Column="1" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">IP</Label>
+                <Label Grid.Column="2" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">MAC</Label>
+                <Label Grid.Column="3" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Estado</Label>
+                <Label Grid.Column="4" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Internet</Label>
+                <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Última conexión</Label>
+                <Label Grid.Column="6" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15">Comandos</Label>
             </Grid>
 
-        </Border>
 
-    </Grid>
+            <ListBox Height="130" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Style.Triggers>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter Property="IsSelected" Value="True"></Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="105"></ColumnDefinition>
+                                <ColumnDefinition Width="70" ></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="110"></ColumnDefinition>
+                                <ColumnDefinition Width="85"></ColumnDefinition>
+                                <ColumnDefinition Width="85"></ColumnDefinition>
+                                <ColumnDefinition Width="110"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+
+
+                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="2"></TextBlock>
+
+
+                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Desconectado" />
+                                        <Setter Property="Foreground" Value="#C00707" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding EstadoEnlazado}" Value="True">
+                                                <Setter Property="Text" Value="Enlazado" />
+                                                <Setter Property="Foreground" Value="#679436" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding EstadoEnlazado}" Value="False">
+                                                <Setter Property="Text" Value="Sin respuesta" />
+                                                <Setter Property="Foreground" Value="#C00707" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Desconectado" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding EstadoInternet}" Value="True">
+                                                <Setter Property="Text" Value="Conectado" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding EstadoInternet}" Value="False">
+                                                <Setter Property="Text" Value="Sin internet" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="5" HorizontalAlignment="Center" Text="{Binding TiempoDesconectada }"></TextBlock>
+                            <Grid Grid.Column="6" HorizontalAlignment="Right" ColumnDefinitions="*,*,*,*">
+                                <Button Background="White" BorderBrush="White" Width="20" Command="{Binding DataContext.EnviarComandoCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static local:Orden.APAGAR}" >
+                                    <Image Source="/Images/power-on.png"  Width="16" Height="16"/>
+                                </Button>
+
+                                <Button Background="White" BorderBrush="White" Grid.Column="1" Width="20" Command="{Binding DataContext.EnviarComandoCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{x:Static local:Orden.REINICIAR}" >
+                                    <Image  Source="/Images/refresh-arrow.png" Width="16" Height="16" ></Image>
+                                </Button>
+
+                                <Button Background="White" BorderBrush="White" Grid.Column="2" Width="20" Command="{Binding DataContext.IrEditarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"  CommandParameter="{Binding}" >
+                                    <Image Source="/Images/pen.png" Width="16"   Height="16"></Image>
+                                </Button>
+
+                                <Button Background="White" BorderBrush="White" Grid.Column="3" Width="20" Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}">
+                                    <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+    </Border>
+
 </UserControl>

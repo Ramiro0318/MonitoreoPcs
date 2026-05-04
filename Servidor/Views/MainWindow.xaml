@@ -44,20 +44,11 @@
                     </Setter>
                 </DataTrigger>
             </Style.Triggers>
-
         </Style>
     </Window.Resources>
 
-    <ScrollViewer Visibility="Visible" VerticalScrollBarVisibility="Hidden">
-        <Grid>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-
-
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+        <StackPanel>
             <Menu Grid.Row="0" Margin="0,0,0,20" FontSize="16">
                 <MenuItem Header="Ver más" Margin="10,0,0,0">
                     <MenuItem Header="Ver lista de computadoras..." Command="{Binding NavegarCommand}" CommandParameter="{x:Static viewmodel:Pagina.Computadoras}"></MenuItem>
@@ -67,23 +58,14 @@
                 </MenuItem>
             </Menu>
 
-            <Grid Grid.Row="1" >
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                    <Image Source="/Images/cliente-servidor.png" Width="70" Height="75" Margin="0,0,10,0"></Image>
-
-                    <TextBlock  FontWeight="SemiBold" Foreground="#064789" FontFamily="Bold"  FontSize="30" VerticalAlignment="Center">Servidor - Control de Laboratorios</TextBlock>
-                </StackPanel>
-            </Grid>
-
-
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="/Images/cliente-servidor.png" Width="70" Height="75" Margin="0,0,10,0"></Image>
+                <TextBlock  FontWeight="SemiBold" Foreground="#064789" FontFamily="Bold"  FontSize="30" VerticalAlignment="Center">Servidor - Control de Laboratorios</TextBlock>
+            </StackPanel>
 
             <ContentControl Grid.Row="2" Style="{StaticResource contenedorPagina}"></ContentControl>
-            
 
-
-
-        </Grid>
+        </StackPanel>
     </ScrollViewer>
 
 </Window>

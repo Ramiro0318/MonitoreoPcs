@@ -17,64 +17,43 @@
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
             </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0" >
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                    <Image Source="/Images/usuario-de-computadora-portatil.png" Width="40" Height="40" Margin="0,0,10,0"></Image>
-
-                    <TextBlock FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="23">Cliente de laboratorio</TextBlock>
-                </StackPanel>
-            </Grid>
-
-            
-            <TextBlock Grid.Row="1" Margin="5" FontFamily="Bold" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="#064789" FontSize="15">Informacioncion:</TextBlock>
-
-            
-            <Grid Grid.Row="2" Margin="5" ColumnDefinitions="*, *">
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">ID Asignado:</TextBlock>
-
-                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-
-                    <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.NombreAsignado}" ></TextBlock>
-                </Border>
-            </Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
 
-            <Grid Grid.Row="3" Margin="5" ColumnDefinitions="*, *">
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">IP:</TextBlock>
+            <WrapPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="/Images/usuario-de-computadora-portatil.png" Width="40" Height="40" Margin="0,0,10,0"></Image>
+                <TextBlock FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="23">Cliente de laboratorio</TextBlock>
+            </WrapPanel>
 
-                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" FontFamily="Bold" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="#064789" FontSize="15">Informacioncion:</TextBlock>
 
-                    <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.IpServidor}" ></TextBlock>
-                </Border>
-            </Grid>
+            <TextBlock Grid.Row="2" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">ID Asignado:</TextBlock>
+            <Border Grid.Row="2" Margin="5" Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+                <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.NombreAsignado}" ></TextBlock>
+            </Border>
 
-
-            <Grid Grid.Row="4" Margin="5" ColumnDefinitions="*, *">
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Puerto:</TextBlock>
-                
-                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-                    <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.PuertoServidor}" ></TextBlock>
-                </Border>
-            </Grid>
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">IP:</TextBlock>
+            <Border Grid.Row="3" Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+                <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.IpServidor}" ></TextBlock>
+            </Border>
 
 
-            <Grid Grid.Row="5" Margin="5" ColumnDefinitions="*, *">
-                <TextBlock FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Laboratorio:</TextBlock>
+            <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Puerto:</TextBlock>
+            <Border Grid.Row="4" Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+                <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.PuertoServidor}" ></TextBlock>
+            </Border>
 
-                <Border Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-                    <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.Laboratorio}" ></TextBlock>
-                </Border>
-            </Grid>
 
-            <Grid Grid.Row="6">
-                <TextBlock Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789" FontSize="15"></TextBlock>
-            </Grid>
+            <TextBlock Grid.Row="5" Grid.Column="0" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Laboratorio:</TextBlock>
+            <Border Grid.Row="5" Grid.Column="1" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+                <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Registro.Laboratorio}" ></TextBlock>
+            </Border>
 
+            <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789" FontSize="15"></TextBlock>
         </Grid>
     </Border>
-
-
 </UserControl>
 

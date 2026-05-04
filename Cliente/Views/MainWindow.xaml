@@ -13,7 +13,7 @@
         <viewmodel:ClienteViewModel></viewmodel:ClienteViewModel>
     </Window.DataContext>
 
-
+    
     <Window.Resources>
         <Style x:Key="contenedorPagina" TargetType="ContentControl">
             <Setter Property="Content">
