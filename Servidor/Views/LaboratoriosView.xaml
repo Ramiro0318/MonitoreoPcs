@@ -35,13 +35,13 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Label Grid.Column="0" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold"   FontSize="15">Nombre</Label>
-                <Label Grid.Column="1" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">IP</Label>
-                <Label Grid.Column="2" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">MAC</Label>
-                <Label Grid.Column="3" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Estado</Label>
-                <Label Grid.Column="4" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Internet</Label>
-                <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" Foreground="#064789" FontWeight="SemiBold" FontSize="15">Última conexión</Label>
-                <Label Grid.Column="6" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15">Comandos</Label>
+                <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
+                <Label Grid.Column="2" HorizontalAlignment="Center">MAC</Label>
+                <Label Grid.Column="3" HorizontalAlignment="Center">Estado</Label>
+                <Label Grid.Column="4" HorizontalAlignment="Center">Internet</Label>
+                <Label Grid.Column="5" HorizontalAlignment="Center">Última conexión</Label>
+                <Label Grid.Column="6" HorizontalAlignment="Right" >Comandos</Label>
             </Grid>
 
 

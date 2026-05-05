@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels"
         mc:Ignorable="d" x:Name="VentanaRegistro"
-        Title="NotificacionRegistro" Height="230" Width="370"  Background="#EBF2FA">
+        Title="NotificacionRegistro" Height="230" Width="370" Background="#EBF2FA">
     <Border Padding="20" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
         <Grid>
             <Grid.RowDefinitions>

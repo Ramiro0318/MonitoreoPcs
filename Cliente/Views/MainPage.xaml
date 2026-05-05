@@ -25,12 +25,10 @@
             <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="23">Cliente de laboratorio</TextBlock>
             <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" FontFamily="Bold" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="#064789"  FontSize="15">Configurancion:</TextBlock>
 
-
             <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Nombre del equipo:</TextBlock>
             <Border Grid.Row="2" Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5" Width="150">
                 <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" MaxLength="20"></TextBox>
             </Border>
-
 
             <TextBlock  Grid.Row="3" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Direccion IP del servidor:</TextBlock>
             <Border  Grid.Row="3"  Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">

@@ -32,12 +32,12 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Label  Grid.Column="0" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >Nombre</Label>
-                <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >IP</Label>
-                <Label  Grid.Column="2"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Laboratorio</Label>
-                <Label  Grid.Column="3"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >MAC</Label>
-                <Label  Grid.Column="4"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Última conexión</Label>
-                <Label Grid.Column="5" FontFamily="Bold" Margin="10,0,0,0" HorizontalAlignment="Right" Foreground="#064789" FontWeight="SemiBold"  FontSize="15" >Comandos</Label>
+                <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
+                <Label Grid.Column="2" HorizontalAlignment="Center">Laboratorio</Label>
+                <Label Grid.Column="3" HorizontalAlignment="Center">MAC</Label>
+                <Label Grid.Column="4" HorizontalAlignment="Center">Última conexión</Label>
+                <Label Grid.Column="5" HorizontalAlignment="Right" >Comandos</Label>
             </Grid>
 
             <ListBox Height="130" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">

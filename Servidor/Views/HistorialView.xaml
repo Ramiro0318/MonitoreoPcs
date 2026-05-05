@@ -37,10 +37,10 @@
                     </Grid.ColumnDefinitions>
 
 
-                    <Label  Grid.Column="0" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Left"  FontSize="15" >Nombre</Label>
-                    <Label  Grid.Column="1"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >IP</Label>
-                    <Label  Grid.Column="2"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Puerto</Label>
-                    <Label  Grid.Column="3"  FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="15" >Fecha</Label>
+                    <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                    <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
+                    <Label Grid.Column="2" HorizontalAlignment="Center">Puerto</Label>
+                    <Label Grid.Column="3" HorizontalAlignment="Center">Fecha</Label>
                 </Grid>
 
                 <ListBox Height="130" ItemsSource="{Binding HistorialConexiones}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -67,7 +67,7 @@
 
 
 
-        <Border Padding="10" BorderThickness="3" BorderBrush="#427AA1"  Margin="20" CornerRadius="10" Background="White">
+        <Border Padding="10" BorderThickness="3" BorderBrush="#427AA1" Margin="20" CornerRadius="10" Background="White">
             <StackPanel Orientation="Vertical">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -94,10 +94,10 @@
                         <ColumnDefinition Width="150"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Label Grid.Column="0" FontFamily="Bold" HorizontalAlignment="Left"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15" >ID Computadora</Label>
-                    <Label Grid.Column="1"  FontFamily="Bold" HorizontalAlignment="Center"  Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Comando</Label>
-                    <Label Grid.Column="2" FontFamily="Bold " HorizontalAlignment="Center"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Nuevo nombre</Label>
-                    <Label Grid.Column="3" FontFamily="Bold" HorizontalAlignment="Center"   Foreground="#064789"  FontWeight="SemiBold" FontSize="15">Fecha</Label>
+                    <Label Grid.Column="0" HorizontalAlignment="Left"  >ID Computadora</Label>
+                    <Label Grid.Column="1" HorizontalAlignment="Center">Comando</Label>
+                    <Label Grid.Column="2" HorizontalAlignment="Center">Nuevo nombre</Label>
+                    <Label Grid.Column="3" HorizontalAlignment="Center">Fecha</Label>
                 </Grid>
 
                 <ListBox Height="130" ItemsSource="{Binding HistorialComandos}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -105,12 +105,11 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" ></ColumnDefinition>
-                                    <ColumnDefinition Width="100" ></ColumnDefinition>
+                                    <ColumnDefinition Width="200"></ColumnDefinition>
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
                                     <ColumnDefinition Width="200"></ColumnDefinition>
                                     <ColumnDefinition Width="150"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-
 
 
                                 <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" ></TextBlock>
