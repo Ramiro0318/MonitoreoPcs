@@ -18,17 +18,17 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
-                    <ColumnDefinition Width="80" ></ColumnDefinition>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="90"></ColumnDefinition>
+                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                    <ColumnDefinition Width="110"></ColumnDefinition>
                     <ColumnDefinition Width="120"></ColumnDefinition>
-                    <ColumnDefinition Width="85"></ColumnDefinition>
-                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                    <ColumnDefinition Width="85" ></ColumnDefinition>
                     <ColumnDefinition Width="100"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
 
-                <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                <Label Grid.Column="0" HorizontalAlignment="Left"   Margin="5,0,0,0">Nombre</Label>
                 <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
                 <Label Grid.Column="2" HorizontalAlignment="Center">Laboratorio</Label>
                 <Label Grid.Column="3" HorizontalAlignment="Center">MAC</Label>
@@ -52,17 +52,17 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="80" ></ColumnDefinition>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="90"></ColumnDefinition>
+                                <ColumnDefinition Width="85" ></ColumnDefinition>
+                                <ColumnDefinition Width="110"></ColumnDefinition>
                                 <ColumnDefinition Width="120"></ColumnDefinition>
-                                <ColumnDefinition Width="85"></ColumnDefinition>
-                                <ColumnDefinition Width="85"></ColumnDefinition>
+                                <ColumnDefinition Width="85" ></ColumnDefinition>
+                                <ColumnDefinition Width="85" ></ColumnDefinition>
                                 <ColumnDefinition Width="100"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
 
-                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
+                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Margin="5,0,0,0" Grid.Column="0"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding Laboratorio}" Grid.Column="2"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="3"></TextBlock>

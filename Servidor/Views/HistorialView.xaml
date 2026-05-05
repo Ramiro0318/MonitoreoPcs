@@ -30,17 +30,21 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150" ></ColumnDefinition>
                         <ColumnDefinition Width="100" ></ColumnDefinition>
-                        <ColumnDefinition Width="120" ></ColumnDefinition>
-                        <ColumnDefinition Width="120" ></ColumnDefinition>
+                        <ColumnDefinition Width="90" ></ColumnDefinition>
+                        <ColumnDefinition Width="85" ></ColumnDefinition>
+                        <ColumnDefinition Width="110" ></ColumnDefinition>
+                        <ColumnDefinition Width="140" ></ColumnDefinition>
+                        <ColumnDefinition Width="130" ></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
 
-                    <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                    <Label Grid.Column="0" HorizontalAlignment="Left" Margin="5,0,0,0" >Nombre</Label>
                     <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
                     <Label Grid.Column="2" HorizontalAlignment="Center">Puerto</Label>
-                    <Label Grid.Column="3" HorizontalAlignment="Center">Fecha</Label>
+                    <Label Grid.Column="3" HorizontalAlignment="Center">Laboratorio</Label>
+                    <Label Grid.Column="4" HorizontalAlignment="Center">MAC</Label>
+                    <Label Grid.Column="5" HorizontalAlignment="Center">Fecha conexión</Label>
                 </Grid>
 
                 <ListBox Height="130" ItemsSource="{Binding HistorialConexiones}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -48,16 +52,20 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150" ></ColumnDefinition>
                                     <ColumnDefinition Width="100" ></ColumnDefinition>
-                                    <ColumnDefinition Width="120" ></ColumnDefinition>
-                                    <ColumnDefinition Width="120" ></ColumnDefinition>
+                                    <ColumnDefinition Width="90" ></ColumnDefinition>
+                                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                                    <ColumnDefinition Width="110" ></ColumnDefinition>
+                                    <ColumnDefinition Width="140" ></ColumnDefinition>
+                                    <ColumnDefinition Width="130" ></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Margin="5,0,0,0" Grid.Column="0"></TextBlock>
                                 <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                                 <TextBlock HorizontalAlignment="Center" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding HoraConexion }" Grid.Column="3"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Laboratorio}" Grid.Column="3"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="4"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding HoraConexion }" Grid.Column="5"></TextBlock>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -88,13 +96,13 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" ></ColumnDefinition>
-                        <ColumnDefinition Width="100" ></ColumnDefinition>
-                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="210"></ColumnDefinition>
+                        <ColumnDefinition Width="120"></ColumnDefinition>
+                        <ColumnDefinition Width="170"></ColumnDefinition>
                         <ColumnDefinition Width="150"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Label Grid.Column="0" HorizontalAlignment="Left"  >ID Computadora</Label>
+                    <Label Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,0,0">ID Computadora</Label>
                     <Label Grid.Column="1" HorizontalAlignment="Center">Comando</Label>
                     <Label Grid.Column="2" HorizontalAlignment="Center">Nuevo nombre</Label>
                     <Label Grid.Column="3" HorizontalAlignment="Center">Fecha</Label>
@@ -105,14 +113,14 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"></ColumnDefinition>
-                                    <ColumnDefinition Width="100"></ColumnDefinition>
-                                    <ColumnDefinition Width="200"></ColumnDefinition>
+                                    <ColumnDefinition Width="210"></ColumnDefinition>
+                                    <ColumnDefinition Width="120"></ColumnDefinition>
+                                    <ColumnDefinition Width="170"></ColumnDefinition>
                                     <ColumnDefinition Width="150"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
 
 
-                                <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" ></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" Margin="5,0,0,0"></TextBlock>
                                 <TextBlock HorizontalAlignment="Left" Text="{Binding Comando }" Grid.Column="1"></TextBlock>
                                 <TextBlock HorizontalAlignment="Center" Text="{Binding NuevoNombre }" Grid.Column="2"></TextBlock>
                                 <TextBlock HorizontalAlignment="Center" Text="{Binding Fecha }" Grid.Column="3"></TextBlock>

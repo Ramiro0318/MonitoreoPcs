@@ -18,29 +18,29 @@
                 <RowDefinition Height="20"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center"  FontSize="23">Cliente de laboratorio</TextBlock>
-            <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" FontFamily="Bold" HorizontalAlignment="Left" FontWeight="SemiBold" Foreground="#064789"  FontSize="15">Configurancion:</TextBlock>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" FontSize="23">Cliente de laboratorio</TextBlock>
+            <Label Grid.Row="1" Grid.Column="0" Margin="5" HorizontalAlignment="Left">Configurancion:</Label>
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Nombre del equipo:</TextBlock>
-            <Border Grid.Row="2" Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5" Width="150">
+            <Label Grid.Row="2" Grid.Column="0" Margin="5" HorizontalAlignment="Right">Nombre del equipo:</Label>
+            <Border Grid.Row="2" Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5">
                 <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789" Text="{Binding Nombre}" MaxLength="20"></TextBox>
             </Border>
 
-            <TextBlock  Grid.Row="3" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Direccion IP del servidor:</TextBlock>
-            <Border  Grid.Row="3"  Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
+            <Label  Grid.Row="3" Grid.Column="0" Margin="5" HorizontalAlignment="Right">Direccion IP del servidor:</Label>
+            <Border  Grid.Row="3" Grid.Column="1" Margin="5" Background="#F0F8FF" CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5">
                 <TextBox  TextAlignment="Center" Background="#EBF2FA" BorderBrush="#EBF2FA"  Foreground="#064789" Text="{Binding IpPorValidar}" ></TextBox>
             </Border>
 
-            <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Right" Padding="6" FontSize="10">Laboratorio:</TextBlock>
-            <Border Grid.Row="4"  Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="5"  Width="150">
-                <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding Laboratorio}" FontSize="14" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+            <Label Grid.Row="4" Grid.Column="0" Margin="5" HorizontalAlignment="Right">Laboratorio:</Label>
+            <Border Grid.Row="4"  Grid.Column="1" Margin="5" Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1" BorderThickness="1" Padding="5">
+                <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding Laboratorio}" FontSize="18" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
             </Border>
 
-            <Button Grid.Row="5" Grid.Column="1" Padding="6,0,6,0" Margin="6" FontFamily="Bold" FontSize="15"  HorizontalAlignment="Center" Width="100"  Background="#679436 " Foreground="#F0F0DB"   Command="{Binding EnviarRegistroCommand}">Enviar</Button>
+            <Button Grid.Row="5" Grid.Column="1" Padding="6,0,6,0" Margin="6" FontFamily="Bold" FontSize="18"  HorizontalAlignment="Center" Width="100"  Background="#679436" Foreground="#F0F0DB"   Command="{Binding EnviarRegistroCommand}">Enviar</Button>
 
             <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="{Binding Info}" HorizontalAlignment="Center" Foreground="#064789"  FontSize="15"></TextBlock>
 

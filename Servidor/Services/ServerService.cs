@@ -102,18 +102,37 @@ namespace Servidor.Services
         {
             if (pc != null)
             {
-                EnviarMensajes(Orden.REGISTROAPROBADO, pc);
-
-                lock (_lock)
+                if (string.IsNullOrWhiteSpace(pc.Nombre))
                 {
-                    if (!Computadoras.Any(x => x.MAC == pc.MAC))
-                    {
-                        Computadoras.Insert(0, pc);
-                        GuardarOC(Computadoras, computadorasFilename);
-                    }
+                    ErrorAlRegistrar?.Invoke("Indique un nombre.");
+                    return;
                 }
-                registrando = false;
-                RegistroCompletado?.Invoke(pc);
+                else if (pc.Nombre.Length > 20)
+                {
+                    ErrorAlRegistrar?.Invoke("Introduzca un máximo de 20 caracteres.");
+                    return;
+                }
+                else if (pc.Nombre.Contains("|"))
+                {
+                    ErrorAlRegistrar?.Invoke("No introduzca caracteres invalidos.");
+                    return;
+                }
+                else
+                {
+                    EnviarMensajes(Orden.REGISTROAPROBADO, pc);
+
+                    lock (_lock)
+                    {
+                        if (!Computadoras.Any(x => x.MAC == pc.MAC))
+                        {
+                            Computadoras.Insert(0, pc);
+                            GuardarOC(Computadoras, computadorasFilename);
+                        }
+                    }
+                    registrando = false;
+                    RegistroCompletado?.Invoke(pc);
+                }
+
             }
 
         }

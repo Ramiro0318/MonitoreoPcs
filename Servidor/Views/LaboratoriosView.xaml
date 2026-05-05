@@ -16,26 +16,26 @@
             </WrapPanel>
 
 
-            <Border Background="#F0F8FF" CornerRadius="8" BorderBrush="#427AA1" BorderThickness="1" Padding="5"  Width="250">
+            <Border Background="#F0F8FF" CornerRadius="8" BorderBrush="#427AA1" BorderThickness="1" Padding="5"  Width="265">
                 <WrapPanel>
-                    <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding LaboratorioSeleccionado}"  FontSize="22" Width="180" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
-                    <Button Command="{Binding FiltrarCommand}" Width="58" Content="Filtrar"></Button>
+                    <ComboBox ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding LaboratorioSeleccionado}"  FontSize="20" Width="180" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                    <Button Command="{Binding FiltrarCommand}" Background="#EBF2FA" BorderBrush="#064789" FontSize="17" BorderThickness="1" Width="70" Content="Filtrar"></Button>
                 </WrapPanel>
             </Border>
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="105"></ColumnDefinition>
-                    <ColumnDefinition Width="70" ></ColumnDefinition>
+                    <ColumnDefinition Width="90"></ColumnDefinition>
+                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                    <ColumnDefinition Width="120"></ColumnDefinition>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                    <ColumnDefinition Width="120" ></ColumnDefinition>
                     <ColumnDefinition Width="100"></ColumnDefinition>
-                    <ColumnDefinition Width="110"></ColumnDefinition>
-                    <ColumnDefinition Width="85"></ColumnDefinition>
-                    <ColumnDefinition Width="85"></ColumnDefinition>
-                    <ColumnDefinition Width="110"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
 
-                <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                <Label Grid.Column="0" HorizontalAlignment="Left" Margin="5,0,0,0">Nombre</Label>
                 <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
                 <Label Grid.Column="2" HorizontalAlignment="Center">MAC</Label>
                 <Label Grid.Column="3" HorizontalAlignment="Center">Estado</Label>
@@ -47,7 +47,7 @@
 
             <ListBox Height="130" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <Style.Triggers>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                 <Setter Property="IsSelected" Value="True"></Setter>
@@ -59,23 +59,23 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="105"></ColumnDefinition>
-                                <ColumnDefinition Width="70" ></ColumnDefinition>
+                                <ColumnDefinition Width="90"></ColumnDefinition>
+                                <ColumnDefinition Width="85" ></ColumnDefinition>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition Width="85"></ColumnDefinition>
+                                <ColumnDefinition Width="85" ></ColumnDefinition>
+                                <ColumnDefinition Width="120" ></ColumnDefinition>
                                 <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="110"></ColumnDefinition>
-                                <ColumnDefinition Width="85"></ColumnDefinition>
-                                <ColumnDefinition Width="85"></ColumnDefinition>
-                                <ColumnDefinition Width="110"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
 
 
-                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
+                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Margin="5,0,0,0" Grid.Column="0"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="2"></TextBlock>
 
 
-                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Text" Value="Desconectado" />
@@ -95,7 +95,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0">
+                            <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Text" Value="Desconectado" />

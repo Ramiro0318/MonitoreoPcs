@@ -120,8 +120,8 @@ namespace Servidor.ViewModels
         {
             App.Current.Dispatcher.BeginInvoke(() =>
             {
-                Info = error;
-                PropertyChanged?.Invoke(this, new(nameof(Info)));
+                Error = error;
+                PropertyChanged?.Invoke(this, new(nameof(Error)));
                 PropertyChanged?.Invoke(this, new(nameof(Computadoras)));
             });
         }
@@ -130,7 +130,7 @@ namespace Servidor.ViewModels
         {
             ComputadoraSeleccionada = pc;
             Service.RegistrarComputadora(ComputadoraSeleccionada);
-            VentanaCerrada?.Invoke();
+            
         }
 
         private void Service_RegistroCompletado(PcInfo pc)
@@ -139,6 +139,7 @@ namespace Servidor.ViewModels
             {
                 ComputadoraSeleccionada = null;
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
+                VentanaCerrada?.Invoke();
             });
         }
 

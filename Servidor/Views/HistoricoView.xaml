@@ -24,20 +24,20 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="105"></ColumnDefinition>
-                    <ColumnDefinition Width="70" ></ColumnDefinition>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
-                    <ColumnDefinition Width="110"></ColumnDefinition>
-                    <ColumnDefinition Width="160"></ColumnDefinition>
-                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                    <ColumnDefinition Width="120"></ColumnDefinition>
+                    <ColumnDefinition Width="120"></ColumnDefinition>
+                    <ColumnDefinition Width="170"></ColumnDefinition>
+                    <ColumnDefinition Width="90"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
 
-                <Label Grid.Column="0" HorizontalAlignment="Left"  >Nombre</Label>
+                <Label Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,0,0">Nombre</Label>
                 <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
                 <Label Grid.Column="2" HorizontalAlignment="Center">Laboratorio</Label>
                 <Label Grid.Column="3" HorizontalAlignment="Center">MAC</Label>
                 <Label Grid.Column="4" HorizontalAlignment="Center">Última conexión</Label>
-                <Label Grid.Column="5" HorizontalAlignment="Right" >Comandos</Label>
+                <Label Grid.Column="5" HorizontalAlignment="Center">Eliminar</Label>
             </Grid>
 
             <ListBox Height="130" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -46,20 +46,20 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="105"></ColumnDefinition>
-                                <ColumnDefinition Width="70" ></ColumnDefinition>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="110"></ColumnDefinition>
-                                <ColumnDefinition Width="160"></ColumnDefinition>
-                                <ColumnDefinition Width="85"></ColumnDefinition>
+                                <ColumnDefinition Width="85" ></ColumnDefinition>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition Width="170"></ColumnDefinition>
+                                <ColumnDefinition Width="90"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
 
-                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Grid.Column="0"></TextBlock>
+                            <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Margin="5,0,0,0" Grid.Column="0"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding Laboratorio }" Grid.Column="2"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding MAC }" Grid.Column="3"></TextBlock>
                             <TextBlock HorizontalAlignment="Center" Text="{Binding TiempoDesconectada }" Grid.Column="4"></TextBlock>
-                            <Button Background="White" BorderBrush="White" Grid.Column="5" Width="20" Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}">
+                            <Button    HorizontalAlignment="Center" Background="White" BorderBrush="White" Grid.Column="5" Width="20" Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}">
                                 <Image Source="/Images/delete.png" Width="16" Height="16" ></Image>
                             </Button>
                         </Grid>

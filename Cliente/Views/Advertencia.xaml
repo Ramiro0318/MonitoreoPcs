@@ -7,29 +7,31 @@
         xmlns:viewmodel="clr-namespace:Cliente.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ClienteViewModel}"
              mc:Ignorable="d"
         Background="#EBF2FA">
-    
+
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="15" CornerRadius="10" Background="White">
         <StackPanel Background="White">
 
-            <WrapPanel>
-                <Image Source="/Images/megafono.png" Width="50" Height="40"  Margin="70,0,5,5" HorizontalAlignment="Right"/>
-                <Label FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789 " FontWeight="SemiBold" Margin="0" FontSize="25">¡Atención!</Label>
+            <WrapPanel Margin="0,15,0,0">
+                <Image Source="/Images/megafono.png" Width="50" Height="40" Margin="90,0,5,5" HorizontalAlignment="Right"/>
+                <Label FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" Margin="0" FontSize="25">¡Atención!</Label>
             </WrapPanel>
 
             <StackPanel Margin="10">
-                <TextBlock FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" LineStackingStrategy="BlockLineHeight" Width="240" FontSize="15">
+                <TextBlock FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" LineStackingStrategy="BlockLineHeight" Width="240" FontSize="18">
                     <Run Text="Esta computadora se va a " />
                     <Run Text="{Binding Accion}" FontWeight="SemiBold" />
                     <Run Text=" en un momento." />
                 </TextBlock>
-                <TextBlock Text="{Binding Segundos}" FontFamily="Bold" FontWeight="Bold" Margin="0,8,0,0" Foreground="#064789" HorizontalAlignment="Center" FontSize="30"></TextBlock>
+                <TextBlock Text="{Binding Segundos}" FontFamily="Bold" FontWeight="Bold" Margin="0,8,0,0" Foreground="#064789" HorizontalAlignment="Center" FontSize="34"></TextBlock>
 
-                <WrapPanel Margin="5" >
-                    <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Right"/>
-                    <TextBlock FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center" Margin="10" FontSize="15"> Guarde su trabajo o cancele la tarea.</TextBlock>
-                    <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Left"/>
+                <WrapPanel Margin="0,8,0,12" >
+                    <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Center"/>
+                    <TextBlock FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" FontSize="17"> Guarde su trabajo o cancele la tarea.</TextBlock>
+                    <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Center"/>
                 </WrapPanel>
-                <Button Width="200" FontSize="15" Command="{Binding CancelarComandoCommand}">CANCELAR</Button>
+                <Border Background="#F0F8FF" CornerRadius="8" BorderBrush="#427AA1" BorderThickness="1" Padding="5"  Width="200">
+                    <Button Command="{Binding CancelarComandoCommand}" Background="#EBF2FA" HorizontalAlignment="Center" FontWeight="SemiBold" BorderBrush="#064789" FontSize="15" Width="185">CANCELAR</Button>
+                </Border>
             </StackPanel>
 
         </StackPanel>
