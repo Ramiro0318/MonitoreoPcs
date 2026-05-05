@@ -375,7 +375,7 @@ namespace Servidor.Services
                         cambios = true;
                         ComputadoraEnlazada?.Invoke(pc);
                     }
-                    if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromMinutes(5) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromMinutes(5)) && !pc.EstadoHistorico)
+                    if ((DateTime.Now - pc.UltimoLatido >= TimeSpan.FromDays(7) && DateTime.Now - pc.UltimoPing >= TimeSpan.FromDays(7)) && !pc.EstadoHistorico)
                     {
                         pc.EstadoHistorico = true;
                         cambios = true;
