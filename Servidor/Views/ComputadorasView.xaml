@@ -38,7 +38,7 @@
             </Grid>
 
 
-            <ListBox Height="130" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <ListBox Height="277" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding ComputadoraSeleccionada, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <Style.Triggers>
