@@ -262,7 +262,7 @@ namespace Cliente.Services
                             break;
 
                         case nameof(Orden.REGISTROAPROBADO):
-                            if (!latiendo)
+                            if (!latiendo && Registro == null)
                             {
                                 latiendo = true;
 
@@ -309,6 +309,7 @@ namespace Cliente.Services
                             escuchando = false;
                             latiendo = false;
                             TimerBeat.Stop();
+                            Registro = null;
                             RegistroEliminado?.Invoke("Registro eliminado");
                             PaginaCambiada?.Invoke(Pagina.Registro);
                             File.Delete(filename);
@@ -402,7 +403,7 @@ namespace Cliente.Services
 
                     latidosEnviados++;
 
-                    if (latidosEnviados >= 5)
+                    if (latidosEnviados > 5)
                     {
                         InformacionActualizada?.Invoke("Se ha perdido la conexión con el servidor");
                     }

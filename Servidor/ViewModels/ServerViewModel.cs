@@ -150,6 +150,7 @@ namespace Servidor.ViewModels
             {
                 ComputadoraSeleccionada = null;
                 Clon = null;
+                Service.CancelarRegistro();
                 VentanaCerrada?.Invoke();
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
                 PropertyChanged?.Invoke(this, new(nameof(Clon)));

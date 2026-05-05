@@ -97,6 +97,12 @@ namespace Servidor.Services
             }
         }
 
+        public void CancelarRegistro() 
+        {
+            registrando = false;
+
+        }
+
 
         public void RegistrarComputadora(PcInfo pc)
         {
@@ -287,7 +293,7 @@ namespace Servidor.Services
 
                                     HistorialConexiones.Insert(0, pc);
                                     GuardarOC(HistorialConexiones, conexionesFilename);
-                                    ComputadoraResponder = pc;
+                                    //ComputadoraResponder = pc;
 
                                     EstadoPcActualizado?.Invoke(pc);
                                 }
@@ -311,11 +317,11 @@ namespace Servidor.Services
 
 
 
-        public void EnviarMensajes(Orden comando, PcInfo computadoraSeleccionada)
+        public void EnviarMensajes(Orden comando, PcInfo pc)
         {
             if (comando != Orden.REGISTRO && comando != Orden.HEARTHBEAT && comando != Orden.INTERNET)
             {
-                var pc = comando == Orden.ENLAZADO ? ComputadoraResponder : computadoraSeleccionada;
+                //var pc = comando == Orden.ENLAZADO ? ComputadoraResponder : computadoraSeleccionada;
                 if (pc != null)
                 {
 
