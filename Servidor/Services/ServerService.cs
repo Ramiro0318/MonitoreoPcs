@@ -359,7 +359,7 @@ namespace Servidor.Services
             bool cambios = false;
             lock (_lock)
             {
-                foreach (var pc in Computadoras.ToList())   //ElToList ya no es necesario
+                foreach (var pc in Computadoras.ToList())
                 {
                     if (DateTime.Now - pc.UltimoLatido >= TimeSpan.FromSeconds(30) && pc.EstadoEnlazado)
                     {

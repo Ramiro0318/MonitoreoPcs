@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using Servidor.Models.Entities;
 using Servidor.Services;
+using Servidor.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -130,7 +131,7 @@ namespace Servidor.ViewModels
         {
             ComputadoraSeleccionada = pc;
             Service.RegistrarComputadora(ComputadoraSeleccionada);
-            
+
         }
 
         private void Service_RegistroCompletado(PcInfo pc)
@@ -151,7 +152,7 @@ namespace Servidor.ViewModels
                 Clon = null;
                 VentanaCerrada?.Invoke();
                 PropertyChanged?.Invoke(this, new(nameof(ComputadoraSeleccionada)));
-                PropertyChanged?.Invoke(this, new(nameof(Clon)));   //???
+                PropertyChanged?.Invoke(this, new(nameof(Clon)));
             });
         }
 
@@ -189,7 +190,7 @@ namespace Servidor.ViewModels
             if (clon != null)
             {
                 Service.EditarComputadora(clon);
-            }           
+            }
         }
 
         private void Service_ComputadoraEditada(PcInfo clon)
@@ -326,7 +327,7 @@ namespace Servidor.ViewModels
         private void Filtrar()
         {
             Computadoras.Clear();
-            foreach (var pc in Service.Computadoras.Where(x => x.Laboratorio == LaboratorioSeleccionado))
+            foreach (var pc in Service.Computadoras.Where(x => x.EstadoHistorico == false && x.Laboratorio == LaboratorioSeleccionado))
             {
                 Computadoras.Add(pc);
             }
