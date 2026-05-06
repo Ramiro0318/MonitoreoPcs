@@ -4,28 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Servidor.Views"
+        xmlns:viewmodels="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ServerViewModel}"
         mc:Ignorable="d"
        Title="Eliminar" Height="300" Width="600" Background="#EBF2FA">
-    <Grid Margin="20" >
+    <Grid Margin="20">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-
         </Grid.RowDefinitions>
 
 
         <Grid Grid.Row="0" >
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
-
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Image Source="/Images/cliente-servidor.png" Width="70" Height="60" Margin="40,5,0,5" Grid.Column="0" HorizontalAlignment="Right"/>
             <Label FontFamily="Bold" HorizontalAlignment="Center" Foreground="#064789 " Margin="15" FontSize="25"  Grid.Column="1">Servidor - Control de Laboratorios</Label>
-
         </Grid>
 
         <Border Grid.Row="1" BorderBrush="#427aa1" BorderThickness="3" CornerRadius="10"  Margin="10" Background="White" >
@@ -38,34 +35,17 @@
 
 
                 <Label FontFamily="Bold"  HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="10,5" FontSize="18" >¿Deseas eliminar esta computadora?</Label>
-
-
-
-
                 <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,5">
-
                     <Border Background="#F0F8FF " CornerRadius="8" BorderBrush="#427AA1 " BorderThickness="1" Padding="10"  Width="250">
-
-                        <TextBlock  TextAlignment="Center"  Foreground="#064789" Text="{Binding Identificador}" ></TextBlock>
+                        <TextBlock  TextAlignment="Center" Foreground="#064789" Text="{Binding ComputadoraSeleccionada.Nombre}" ></TextBlock>
                     </Border>
-
-
                 </StackPanel>
-
-
-
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button  Padding="5" Margin="5" HorizontalAlignment="Right" Background="#679436 " Foreground="#F0F0DB" Width="100" FontFamily="bold">Eliminar</Button>
-                    <Button   Padding="5" Margin="5" HorizontalAlignment="Left" Background="#30364F" Foreground="#F0F0DB" Width="100" FontFamily="bold">Cancelar</Button>
+                    <Button Command="{Binding EliminarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}" Padding="5" Margin="5" HorizontalAlignment="Right" Background="#679436 " Foreground="#F0F0DB" Width="100" FontFamily="bold">Eliminar</Button>
+                    <Button Command="{Binding RechazarCommand}"  Padding="5" Margin="5" HorizontalAlignment="Left" Background="#30364F" Foreground="#F0F0DB" Width="100" FontFamily="bold">Cancelar</Button>
                 </StackPanel>
-
             </Grid>
         </Border>
-
-
-
-
-
     </Grid>
 </Window>

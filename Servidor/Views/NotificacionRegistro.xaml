@@ -3,68 +3,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ServerViewModel}"
-        mc:Ignorable="d"
-        Title="NotificacionRegistro" Height="200" Width="350"  Background="#EBF2FA">
-    <Border  Padding="10"  BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White" >
-        <Grid Margin="20">
+        xmlns:local="clr-namespace:Servidor.Views" xmlns:viewmodels="clr-namespace:Servidor.ViewModels"
+        mc:Ignorable="d" x:Name="VentanaRegistro"
+        Title="NotificacionRegistro" Height="265" Width="410" Background="#EBF2FA">
+    <Border Padding="10,5,10,10" BorderThickness="3" BorderBrush="#427AA1" Margin="10" CornerRadius="10" Background="White">
+        <Grid>
             <Grid.RowDefinitions>
-
                 <RowDefinition Height="auto"></RowDefinition>
-
-                <RowDefinition Height="*"></RowDefinition>
-
-
-
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
-
-            <TextBlock  Grid.Row="0" FontFamily="Bold" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789"   FontSize="15">Nueva Solicitud de Registro</TextBlock>
-
-
-
-            <Grid Grid.Row="1">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="auto"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
 
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="#064789" Margin="0,0,0,5" FontSize="20">Nueva Solicitud de Registro</TextBlock>
 
-                <StackPanel  Grid.Column="0">
-                    <TextBox HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Nombre, Mode=TwoWay}" Width="110" TextAlignment="Center"></TextBox>
-
-                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}"></TextBlock>
-
-                    <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}"></TextBlock>
-
-                </StackPanel>
-
-
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <TextBox HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Nombre, Mode=TwoWay}" Width="150" FontSize="17" Margin="0,0,0,5" TextAlignment="Center"></TextBox>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Ip}" FontSize="16" Margin="0,0,0,2"></TextBlock>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.Puerto}" FontSize="16" Margin="0,0,0,2"></TextBlock>
+                <ComboBox HorizontalAlignment="Center"  ItemsSource="{Binding Laboratorios}" SelectedItem="{Binding ComputadoraSeleccionada.Laboratorio}" Width="150" FontSize="18" Margin="0,0,0,2" Background="#EBF2FA" BorderBrush="#EBF2FA" Foreground="#064789"></ComboBox>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding ComputadoraSeleccionada.MAC}" FontSize="16" Margin="0,0,0,1"></TextBlock>
+            </StackPanel>
 
 
-                <StackPanel Grid.Column="1"  VerticalAlignment="Center" Margin="10,0,0,0">
+            <WrapPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,10,0">
+                <Button Margin="0,5" Width="100" FontFamily="Bold" Foreground="White" Background="#679436" Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}" FontSize="16">Registrar</Button>
+                <Button Margin="0,5" Width="100" FontFamily="Bold" Foreground="White" Background="#C00707" Command="{Binding RechazarCommand}" FontSize="16">Rechazar</Button>
+            </WrapPanel>
 
-
-                    <Button   Margin="0,5"  Width="100" FontFamily=" Bold" Foreground="White" Background="#679436" HorizontalAlignment="Left"  Command="{Binding RegistrarCommand}" CommandParameter="{Binding ComputadoraSeleccionada}" Click="Button_Click">Registrar</Button>
-                    <Button   Margin="0,5"  Width="100"  FontFamily="Bold" Foreground="White" Background="#C00707" HorizontalAlignment="Right" Command="{Binding RechazarCommand}"  Click="Button_Click">Rechazar</Button>
-
-
-                </StackPanel>
-
-            </Grid>
-
-
-
-
-
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="{Binding Error}" FontSize="16"></TextBlock>
         </Grid>
-
-
-
-
     </Border>
-
 </Window>
 
 

@@ -60,6 +60,26 @@ namespace Servidor.Models.Entities
             }
         }
 
+        private bool estadoHistorico;
+        public bool EstadoHistorico
+        {
+            get { return estadoHistorico; }
+            set
+            {
+                if (estadoHistorico != value)
+                {
+                    estadoHistorico = value;
+                    PropertyChanged?.Invoke(this, new(nameof(EstadoHistorico)));
+                }
+            }
+        }
+        public string Laboratorio { set; get; } = null!;
+        public string? MAC { set; get; }
+
+        public string? TiempoDesconectada {set; get; }
+
+        
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

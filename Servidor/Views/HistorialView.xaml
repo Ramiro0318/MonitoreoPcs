@@ -1,0 +1,135 @@
+﻿<UserControl x:Class="Servidor.Views.HistorialView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Servidor.Views"
+      xmlns:viewmodel="clr-namespace:Servidor.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ServerViewModel}"
+      mc:Ignorable="d" >
+
+    <StackPanel>
+
+        <Border Grid.Row="0" Padding="10" Margin="20,20,15,10" BorderThickness="3" BorderBrush="#427AA1"  CornerRadius="10" Background="White">
+            <StackPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
+                        <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de historial de conexiones</TextBlock>
+                    </WrapPanel>
+
+                    <Button HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="conexiones">
+                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
+                    </Button>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" ></ColumnDefinition>
+                        <ColumnDefinition Width="90" ></ColumnDefinition>
+                        <ColumnDefinition Width="85" ></ColumnDefinition>
+                        <ColumnDefinition Width="110" ></ColumnDefinition>
+                        <ColumnDefinition Width="140" ></ColumnDefinition>
+                        <ColumnDefinition Width="130" ></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label Grid.Column="0" HorizontalAlignment="Left" Margin="5,0,0,0" >Nombre</Label>
+                    <Label Grid.Column="1" HorizontalAlignment="Center">IP</Label>
+                    <Label Grid.Column="2" HorizontalAlignment="Center">Puerto</Label>
+                    <Label Grid.Column="3" HorizontalAlignment="Center">Laboratorio</Label>
+                    <Label Grid.Column="4" HorizontalAlignment="Center">MAC</Label>
+                    <Label Grid.Column="5" HorizontalAlignment="Center">Fecha conexión</Label>
+                </Grid>
+
+                <ListBox Height="150" ItemsSource="{Binding HistorialConexiones}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" ></ColumnDefinition>
+                                    <ColumnDefinition Width="90" ></ColumnDefinition>
+                                    <ColumnDefinition Width="85" ></ColumnDefinition>
+                                    <ColumnDefinition Width="110" ></ColumnDefinition>
+                                    <ColumnDefinition Width="140" ></ColumnDefinition>
+                                    <ColumnDefinition Width="130" ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding Nombre}" Margin="5,0,0,0" Grid.Column="0"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Ip}" Grid.Column="1"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Puerto}" Grid.Column="2"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Laboratorio}" Grid.Column="3"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding MAC}" Grid.Column="4"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding HoraConexion }" Grid.Column="5"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+
+
+        <Border Padding="10" Margin="20,10,15,20" BorderThickness="3" BorderBrush="#427AA1" CornerRadius="10" Background="White">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0">
+                        <Image Source="/Images/computadora-portatil.png" Width="50" Height="50" Margin="0,0,10,0"></Image>
+                        <TextBlock FontWeight="SemiBold" Foreground="#064789"  FontSize="20" VerticalAlignment="Center">Lista de historial de comandos</TextBlock>
+                    </WrapPanel>
+
+                    <Button Grid.Row="0" HorizontalAlignment="Right" BorderBrush="White" Background="White" Command="{Binding LimpiarCommand}" CommandParameter="comandos">
+                        <Image Source="/Images/delete.png" Width="30" Height="36"/>
+                    </Button>
+                </Grid>
+
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210"></ColumnDefinition>
+                        <ColumnDefinition Width="120"></ColumnDefinition>
+                        <ColumnDefinition Width="170"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,0,0">ID Computadora</Label>
+                    <Label Grid.Column="1" HorizontalAlignment="Center">Comando</Label>
+                    <Label Grid.Column="2" HorizontalAlignment="Center">Nuevo nombre</Label>
+                    <Label Grid.Column="3" HorizontalAlignment="Center">Fecha</Label>
+                </Grid>
+
+                <ListBox Height="130" ItemsSource="{Binding HistorialComandos}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="210"></ColumnDefinition>
+                                    <ColumnDefinition Width="120"></ColumnDefinition>
+                                    <ColumnDefinition Width="170"></ColumnDefinition>
+                                    <ColumnDefinition Width="150"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding Destino}" Margin="5,0,0,0"></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding Comando }" Grid.Column="1"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding NuevoNombre }" Grid.Column="2"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Fecha }" Grid.Column="3"></TextBlock>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

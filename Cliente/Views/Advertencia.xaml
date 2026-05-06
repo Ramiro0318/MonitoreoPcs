@@ -4,63 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cliente.Views"
-        mc:Ignorable="d"
+        xmlns:viewmodel="clr-namespace:Cliente.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodel:ClienteViewModel}"
+             mc:Ignorable="d"
         Background="#EBF2FA">
 
-
     <Border BorderThickness="3" BorderBrush="#427AA1" Margin="15" CornerRadius="10" Background="White">
-         <Grid Margin="10" Background="White" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto" ></RowDefinition>
-            <RowDefinition Height="auto"  ></RowDefinition>
-        </Grid.RowDefinitions>
+        <StackPanel Background="White">
 
-            <Grid Grid.Row="0" >
+            <WrapPanel Margin="0,15,0,0">
+                <Image Source="/Images/megafono.png" Width="50" Height="40" Margin="90,0,5,5" HorizontalAlignment="Right"/>
+                <Label FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789" FontWeight="SemiBold" Margin="0" FontSize="25">¡Atención!</Label>
+            </WrapPanel>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"></ColumnDefinition>
+            <StackPanel Margin="10">
+                <TextBlock FontFamily="Bold" FontWeight="SemiBold" Foreground="#064789" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" LineStackingStrategy="BlockLineHeight" Width="240" FontSize="18">
+                    <Run Text="Esta computadora se va a " />
+                    <Run Text="{Binding Accion}" FontWeight="SemiBold" />
+                    <Run Text=" en un momento." />
+                </TextBlock>
+                <TextBlock Text="{Binding Segundos}" FontFamily="Bold" FontWeight="Bold" Margin="0,8,0,0" Foreground="#064789" HorizontalAlignment="Center" FontSize="34"></TextBlock>
 
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+                <WrapPanel Margin="0,8,0,12" >
+                    <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Center"/>
+                    <TextBlock FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" FontSize="17"> Guarde su trabajo o cancele la tarea.</TextBlock>
+                    <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Center"/>
+                </WrapPanel>
+                <Border Background="#F0F8FF" CornerRadius="8" BorderBrush="#427AA1" BorderThickness="1" Padding="5"  Width="200">
+                    <Button Command="{Binding CancelarComandoCommand}" Background="#EBF2FA" HorizontalAlignment="Center" FontWeight="SemiBold" BorderBrush="#064789" FontSize="15" Width="185">CANCELAR</Button>
+                </Border>
+            </StackPanel>
 
-                <Image Source="/Images/megafono.png" Width="50" Height="40"  Margin="70,0,5,5"  Grid.Column="0" HorizontalAlignment="Right"/>
-                <Label FontFamily="Bold" HorizontalAlignment="Left" Foreground="#064789 " FontWeight="SemiBold" Margin="0" FontSize="25"  Grid.Column="1">¡Atencion!</Label>
-
-            </Grid>
-             
-             
-             
-             
-             
-            <Grid Grid.Row="1" Margin="15">
-                <Grid.RowDefinitions>
-                    <RowDefinition  Height="auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock  FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">Esta computadora va a APAGARSE  en un </TextBlock>
-                <TextBlock Grid.Row="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center"  FontSize="15">momento.</TextBlock>
-            </Grid>
-
-        <Grid Grid.Row="2" Margin="5" >
-
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition  Width="auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-            
-            <Image Source="/Images/crisis.png" Width="40" Height="40" HorizontalAlignment="Right"/>
-
-                <TextBlock Grid.Column="1" FontFamily="Bold" FontWeight="SemiBold"  Foreground="#064789 " HorizontalAlignment="Center" Margin="10" FontSize="15"> Guarde su trabajo. </TextBlock>
-                <Image Source="/Images/crisis.png" Grid.Column="2" Width="40" Height="40" HorizontalAlignment="Left"/>
-
-
-            </Grid>
-
-
-    </Grid>
+        </StackPanel>
     </Border>
-   
 </UserControl>

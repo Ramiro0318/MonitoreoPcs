@@ -10,6 +10,8 @@ namespace Cliente.Models.Entities
         public string NombreAsignado { get; set; } = null!;
         public string IpServidor { get; set; } = null!;
         public int PuertoServidor { get; set; }
+        public string? Laboratorio { set; get; }
+        public string? MAC { set; get; }
     }
 
 }

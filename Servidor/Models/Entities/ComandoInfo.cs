@@ -1,4 +1,5 @@
-﻿using Servidor.ViewModels;
+﻿using Servidor.Services;
+using Servidor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,5 +12,8 @@ namespace Servidor.Models.Entities
         public Orden Comando { get; set; }
         public DateTime Fecha { get; set; }
         public string? NuevoNombre { get; set; }
+        public string? Laboratorio { get; set; }
+        public string? MAC { get; set; }
+        
     }
 }
